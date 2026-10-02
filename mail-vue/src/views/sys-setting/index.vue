@@ -447,7 +447,7 @@
               <div class="concerning-item">
                 <span>{{ $t('version') }} :</span>
                 <el-badge is-dot :hidden="!hasUpdate">
-                  <el-button @click="jump('https://github.com/minhduc290613/cloud-mail/release')">
+                  <el-button @click="jump('https://github.com/minhduc290613/cloud-mail/releases')">
                     {{ currentVersion }}
                     <template #icon>
                       <Icon icon="qlementine-icons:version-control-16" style="font-size: 20px" color="#1890FF"/>
@@ -475,7 +475,7 @@
               <div class="concerning-item">
                 <span>{{ $t('support') }} : </span>
                 <el-button @click="jump('https://protechvn.io.vn')">
-                  {{ t('supportDesc') }}
+                  Website
                   <template #icon>
                     <Icon color="#79D6B5" icon="simple-icons:website" width="20" height="20"/>
                   </template>
