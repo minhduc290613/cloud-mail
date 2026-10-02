@@ -216,3 +216,72 @@ html[data-theme-to="light"]::view-transition-old(root) {
     from { clip-path: circle(var(--vt-end-radius, 0px) at var(--vt-x) var(--vt-y)); }
     to   { clip-path: circle(0px at var(--vt-x) var(--vt-y)); }
 }
+
+/* Cloud Mail refresh — giao diện kính mờ, chuyển động nhẹ và thân thiện hơn */
+:root {
+    --el-color-primary: #6d5dfc;
+    --el-color-primary-light-3: #9186ff;
+    --el-color-primary-light-5: #aaa2ff;
+    --el-color-primary-light-7: #c9c4ff;
+    --el-color-primary-light-9: #f0eeff;
+    --el-color-primary-dark-2: #5143d6;
+    --cm-accent: #6d5dfc;
+    --cm-accent-2: #24c8b5;
+    --cm-glow: rgba(109, 93, 252, .22);
+    --cm-radius: 16px;
+}
+
+body {
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #f6f7fb;
+    letter-spacing: .005em;
+}
+
+button, .el-button, .el-menu-item, .el-input__wrapper, .el-select, .el-card, .el-dialog, .el-dropdown {
+    transition: background-color .22s ease, border-color .22s ease, box-shadow .22s ease, transform .22s ease, opacity .22s ease;
+}
+
+.el-button {
+    border-radius: 10px;
+    font-weight: 650;
+}
+.el-button--primary {
+    border: 0;
+    background: linear-gradient(135deg, var(--cm-accent), #897cff);
+    box-shadow: 0 8px 18px var(--cm-glow);
+}
+.el-button--primary:hover { transform: translateY(-1px); box-shadow: 0 12px 24px var(--cm-glow); }
+.el-input__wrapper, .el-textarea__inner {
+    border-radius: 11px !important;
+    box-shadow: 0 0 0 1px rgba(109, 93, 252, .12) inset !important;
+}
+.el-input__wrapper:focus-within { box-shadow: 0 0 0 2px rgba(109, 93, 252, .26) inset, 0 6px 18px rgba(109,93,252,.08) !important; }
+.el-card, .el-dialog { border-radius: var(--cm-radius); box-shadow: 0 18px 50px rgba(37, 39, 78, .10); }
+.el-table { border-radius: 14px; overflow: hidden; }
+.el-table tr { transition: background-color .18s ease; }
+.el-table tr:hover td { background: rgba(109, 93, 252, .045) !important; }
+
+.layout { animation: cm-page-in .45s ease both; }
+.main-container { background: radial-gradient(circle at 90% 0%, rgba(109,93,252,.07), transparent 28%), var(--el-bg-color); }
+.el-header { backdrop-filter: blur(16px); background: color-mix(in srgb, var(--el-bg-color) 84%, transparent) !important; }
+
+@keyframes cm-page-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes cm-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+@keyframes cm-shimmer { from { background-position: 0 0; } to { background-position: 200% 0; } }
+
+.dark {
+    --cm-glow: rgba(137, 124, 255, .26);
+    --settings-page-background: #151622;
+    --email-hover-background: rgba(109, 93, 252, .12);
+}
+.dark .main-container { background: radial-gradient(circle at 90% 0%, rgba(109,93,252,.14), transparent 32%), var(--el-bg-color); }
+.dark .el-card, .dark .el-dialog { box-shadow: 0 18px 50px rgba(0,0,0,.28); }
+
+/* Cải thiện feedback tương tác cho menu và thanh công cụ */
+.el-menu-item { position: relative; overflow: hidden; }
+.el-menu-item::after { content: ''; position: absolute; inset: auto 10px 0; height: 2px; background: linear-gradient(90deg, var(--cm-accent), var(--cm-accent-2)); transform: scaleX(0); transform-origin: left; transition: transform .25s ease; }
+.el-menu-item:hover::after, .el-menu-item.choose-item::after { transform: scaleX(1); }
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

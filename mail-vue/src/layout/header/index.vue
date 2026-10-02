@@ -183,7 +183,7 @@ async function copyEmail(email) {
 }
 
 function changeLang(lang) {
-  setExtend(lang === 'en' ? 'en' : 'zh-cn')
+  setExtend(lang === 'en' ? 'en' : lang === 'zh' ? 'zh-cn' : 'vi')
   settingStore.lang = lang
 }
 
@@ -380,7 +380,8 @@ function formatName(email) {
     height: 34px;
     border-radius: 50%;
     color: #ffffff;
-    background: linear-gradient(135deg, #1890ff, #3a80dd);
+    background: linear-gradient(135deg, #6d5dfc, #24c8b5);
+    box-shadow: 0 8px 20px rgba(109, 93, 252, .3);
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -431,6 +432,7 @@ function formatName(email) {
 
   .icon-item:hover {
     background: var(--base-fill);
+    transform: translateY(-2px);
   }
 
   .notice {
@@ -461,6 +463,7 @@ function formatName(email) {
       align-items: center;
       border-radius: 8px;
       border: 1px solid var(--dark-border);
+      box-shadow: 0 5px 14px rgba(30, 32, 70, .08);
     }
 
     .setting-icon {

@@ -203,14 +203,14 @@ function formatUserCreateTime(regKey) {
       return createTime.format('MMM D, YYYY HH:mm');
     }
 
+  } else if (settingStore.lang === 'zh') {
+    return expireYear === currentYear
+      ? createTime.format('M月D日 HH:mm')
+      : createTime.format('YYYY年M月D日 HH:mm');
   } else {
-
-    if (expireYear === currentYear) {
-      return createTime.format('M月D日 HH:mm');
-    } else {
-      return createTime.format('YYYY年M月D日 HH:mm');
-    }
-
+    return expireYear === currentYear
+      ? createTime.format('DD/MM HH:mm')
+      : createTime.format('DD/MM/YYYY HH:mm');
   }
 
 }
@@ -226,12 +226,14 @@ function formatExpireTime(expireTime) {
         ? expireDate.format('MMM D')
         : expireDate.format('MMM D, YYYY');
 
-  } else {
-
+  } else if (settingStore.lang === 'zh') {
     return expireYear === currentYear
-        ? expireDate.format('M月D日')
-        : expireDate.format('YYYY年M月D日');
-
+      ? expireDate.format('M月D日')
+      : expireDate.format('YYYY年M月D日');
+  } else {
+    return expireYear === currentYear
+      ? expireDate.format('DD/MM')
+      : expireDate.format('DD/MM/YYYY');
   }
 }
 

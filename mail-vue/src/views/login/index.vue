@@ -1,5 +1,5 @@
 <template>
-  <div id="login-box" :style=" background ? 'background: var(--el-bg-color)' : ''" v-loading="oauthLoading" element-loading-text="登录中...">
+  <div id="login-box" :style=" background ? 'background: var(--el-bg-color)' : ''" v-loading="oauthLoading" :element-loading-text="$t('loginBtn') + '…'">
     <div id="background-wrap" v-if="!settingStore.settings.background">
       <div class="x1 cloud"></div>
       <div class="x2 cloud"></div>
@@ -110,7 +110,7 @@
         </template>
       </div>
     </div>
-    <el-dialog class="bind-dialog" v-model="showBindForm"  title="注册邮箱" >
+    <el-dialog class="bind-dialog" v-model="showBindForm"  :title="$t('emailAccount')" >
       <div class="bind-container">
         <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="bindForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="bind">
           <template #append v-if="!hideLoginDomain">
@@ -140,7 +140,7 @@
         <el-input v-if="settingStore.settings.regKey === 2" v-model="bindForm.code"
                   :placeholder="$t('regKeyOptional')" type="text" autocomplete="off" @keyup.enter="bind"/>
         <el-button class="btn" type="primary" @click="bind" :loading="bindLoading"
-        >绑定
+        >{{ $t('confirm') }}
         </el-button>
       </div>
     </el-dialog>
@@ -324,7 +324,7 @@ async function oauthGetUser() {
       showBindForm.value = true
       oauthLoading.value = false
       ElMessage({
-        message: '请注册绑定一个邮箱',
+        message: t('regTitle'),
         type: 'warning',
         duration: 4000,
         plain: true,
@@ -631,6 +631,15 @@ function submitRegister() {
 </style>
 
 <style lang="scss" scoped>
+#login-box {
+  background: radial-gradient(circle at 15% 15%, rgba(109,93,252,.22), transparent 32%), radial-gradient(circle at 85% 80%, rgba(36,200,181,.18), transparent 30%);
+}
+.form-wrapper { animation: cm-login-in .7s cubic-bezier(.2,.8,.2,1) both; }
+.container { border-radius: 24px; box-shadow: 0 24px 70px rgba(27, 32, 69, .16); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.38); }
+.form-title { letter-spacing: -.03em; }
+.btn { border-radius: 12px; transition: transform .22s ease, box-shadow .22s ease; }
+.btn:hover { transform: translateY(-2px); }
+@keyframes cm-login-in { from { opacity: 0; transform: translateY(22px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
 .form-wrapper {
   position: fixed;

@@ -1,0 +1,34 @@
+import en from './en.js'
+
+// Bản dịch tiếng Việt ưu tiên các luồng sử dụng thường xuyên; các khóa còn lại
+// dùng bản tiếng Anh làm dự phòng để không bao giờ hiển thị chuỗi tiếng Trung.
+const vi = {
+  ...en,
+  inbox: 'Hộp thư đến', drafts: 'Bản nháp', sent: 'Đã gửi', starred: 'Đã gắn sao',
+  settings: 'Cài đặt cá nhân', analytics: 'Phân tích', allUsers: 'Danh sách người dùng',
+  allMail: 'Tất cả thư', permissions: 'Phân quyền', inviteCode: 'Mã mời',
+  SystemSettings: 'Cài đặt hệ thống', noMoreData: 'Không còn dữ liệu', noMessagesFound: 'Chưa có email nào',
+  addAccount: 'Thêm địa chỉ email', emailAccount: 'Email', account: 'Địa chỉ', userAccount: 'Email người dùng',
+  deleteUser: 'Xóa tài khoản', deleteUserBtn: 'Xóa', changePassword: 'Đổi mật khẩu', newPassword: 'Mật khẩu mới',
+  confirmPassword: 'Xác nhận mật khẩu', add: 'Thêm', manage: 'Quản lý', rename: 'Đổi tên', delete: 'Xóa', save: 'Lưu',
+  profile: 'Hồ sơ', change: 'Thay đổi', changePwdBtn: 'Đổi mật khẩu', username: 'Tên người dùng', trustLevel: 'Cấp độ', password: 'Mật khẩu',
+  delAccount: 'Xóa tài khoản', delAccountMsg: 'Thao tác này sẽ xóa vĩnh viễn tài khoản và toàn bộ dữ liệu, không thể khôi phục.',
+  totalReceived: 'Tổng thư nhận', totalSent: 'Tổng thư gửi', totalMailboxes: 'Tổng địa chỉ email', totalUsers: 'Tổng người dùng',
+  deleted: 'Đã xóa', selectDeleted: 'Đã xóa', active: 'Đang hoạt động', emailSource: 'Nguồn email', userGrowth: 'Tăng trưởng người dùng', emailGrowth: 'Tăng trưởng email',
+  emailSent: 'Đã gửi', emailReceived: 'Đã nhận', sentToday: 'Gửi hôm nay', total: 'Tổng số', growthTotalUsers: 'Tổng người dùng',
+  searchByEmail: 'Nhập email để tìm kiếm', tabEmailAddress: 'Email', tabReceived: 'Đã nhận', tabSent: 'Đã gửi', tabMailboxes: 'Địa chỉ',
+  tabRegisteredAt: 'Ngày đăng ký', tabStatus: 'Trạng thái', tabRole: 'Vai trò', roleName: 'Tên', role: 'Vai trò', all: 'Tất cả', normal: 'Bình thường', banned: 'Đã khóa', reset: 'Đặt lại', restore: 'Khôi phục',
+  tabSetting: 'Cài đặt', registrationIp: 'IP đăng ký', recentIP: 'IP gần đây', recentActivity: 'Hoạt động gần đây', loginDevice: 'Thiết bị đăng nhập', loginSystem: 'Hệ điều hành', browserLogin: 'Trình duyệt', unauthorized: 'Không có quyền', unlimited: 'Không giới hạn',
+  action: 'Thao tác', admin: 'Quản trị viên', addUser: 'Thêm người dùng', select: 'Vui lòng chọn', unknown: 'Không xác định', changePerm: 'Đổi vai trò',
+  from: 'Người gửi', subject: 'Chủ đề', sender: 'Người gửi', user: 'Người dùng', searchByContent: 'Nhập nội dung để tìm', noRecipient: 'Không có người nhận', received: 'Đã nhận', order: 'Thứ tự', default: 'Mặc định', description: 'Mô tả', expand: 'Mở rộng', collapse: 'Thu gọn', daily: 'Hàng ngày', internal: 'Nội bộ',
+  remainingUses: 'Số lượt còn lại', exhausted: 'Đã hết', validUntil: 'Có hiệu lực đến', expired: 'Đã hết hạn', copy: 'Sao chép', copyCode: 'Sao chép mã', codeLabel: 'Mã: ', history: 'Lịch sử', date: 'Thời gian', noSubject: 'Không có chủ đề', recipient: 'Người nhận', attachments: 'Tệp đính kèm',
+  error404: '404 — Không tìm thấy trang', home: 'Về trang chủ', loginBtn: 'Đăng nhập', regBtn: 'Đăng ký', loginTitle: 'Đăng nhập để bắt đầu sử dụng hộp thư', regTitle: 'Tạo tài khoản email mới', confirmPwd: 'Xác nhận mật khẩu', regKeyOptional: 'Mã mời (không bắt buộc)', noAccount: 'Chưa có tài khoản? ', hasAccount: 'Đã có tài khoản? ', regSwitch: 'Tạo tài khoản', loginSwitch: 'Đăng nhập',
+  websiteSetting: 'Cài đặt chung', websiteReg: 'Đăng ký người dùng', loginDomain: 'Ẩn tên miền đăng nhập', syncDelete: 'Xóa đồng bộ', syncDeleteDesc: 'Xóa vĩnh viễn thay vì đánh dấu đã xóa.', multipleEmail: 'Nhiều địa chỉ email', multipleEmailDesc: 'Cho phép người dùng thêm nhiều địa chỉ.', customization: 'Tùy biến', websiteTitle: 'Tiêu đề website', loginBoxOpacity: 'Độ trong suốt', loginBackground: 'Ảnh nền', emailSetting: 'Email', receiveEmail: 'Nhận email', autoRefresh: 'Tự động làm mới', autoRefreshDesc: 'Tự động lấy email mới nhất từ máy chủ', sendEmail: 'Gửi email', blackList: 'Danh sách chặn', autoClean: 'Tự động dọn dẹp', autoCleanDays: 'Số ngày lưu trữ',
+  codeRecognition: 'Nhận diện mã xác minh', oss: 'Lưu trữ đối tượng', emailPush: 'Đẩy email', tgBot: 'Bot Telegram', disable: 'Tắt', disabled: 'Đã tắt', otherEmail: 'Email bên ngoài', webhook: 'Webhook', forwardingRules: 'Quy tắc chuyển tiếp', forwardAll: 'Chuyển tiếp tất cả', rules: 'Theo quy tắc',
+  about: 'Giới thiệu', version: 'Phiên bản', community: 'Cộng đồng', changeTitle: 'Đổi tiêu đề', addResendTokenDesc: 'Nhập nội dung để thêm, để trống để xóa', addOsDomain: 'Thêm tên miền', domain: 'Tên miền', optional: 'Không bắt buộc', subjectInputDesc: 'Nhập chủ đề email', changeUserName: 'Đổi tên người dùng', send: 'Gửi', reply: 'Trả lời', forward: 'Chuyển tiếp', confirm: 'Xác nhận', cancel: 'Hủy',
+  delEmailConfirm: 'Bạn chắc chắn muốn xóa email này?', delSuccessMsg: 'Xóa thành công', emptyEmailMsg: 'Email không được để trống', notEmailMsg: 'Email không hợp lệ', emptyPwdMsg: 'Mật khẩu không được để trống', pwdLengthMsg: 'Mật khẩu phải có ít nhất 6 ký tự', confirmPwdFailMsg: 'Mật khẩu nhập lại không khớp', regSuccessMsg: 'Đăng ký thành công', copySuccessMsg: 'Đã sao chép', copyFailMsg: 'Sao chép thất bại', addSuccessMsg: 'Thêm thành công', saveSuccessMsg: 'Lưu thành công', warning: 'Cảnh báo', enable: 'Bật', enabled: 'Đã bật', logOut: 'Đăng xuất',
+  emptyRecipientMsg: 'Email người nhận không được để trống', emptySubjectMsg: 'Chủ đề không được để trống', emptyContentMsg: 'Nội dung không được để trống', sendSuccessMsg: 'Gửi thành công', sendFailMsg: 'Gửi thất bại', saveDraftConfirm: 'Lưu bản nháp?', sending: 'Đang gửi email…', networkErrorMsg: 'Lỗi mạng, hãy kiểm tra kết nối', timeoutErrorMsg: 'Hết thời gian chờ, hãy thử lại sau', serverBusyErrorMsg: 'Máy chủ bận, hãy thử lại sau', reqFailErrorMsg: 'Yêu cầu thất bại, hãy thử lại sau', message: 'Chi tiết email', language: 'Ngôn ngữ',
+  unlimited: 'Không giới hạn', unauthorized: 'Không có quyền', support: 'Ủng hộ', supportDesc: 'Mời tôi một ly trà sữa', details: 'Chi tiết', userDetails: 'Chi tiết người dùng', markAsRead: 'Đánh dấu đã đọc', star: 'Gắn sao', setRole: 'Đặt vai trò', adminDeleteUser: 'Xóa người dùng', banUser: 'Khóa người dùng', enableUser: 'Mở khóa người dùng', restoreUser: 'Khôi phục người dùng', searchUser: 'Tìm người dùng', searchEmail: 'Tìm email', searchSender: 'Tìm người gửi', userEmail: 'Địa chỉ email', oauthSetting: 'OAuth', clientId: 'Client ID', clientSecret: 'Client secret'
+}
+
+export default vi

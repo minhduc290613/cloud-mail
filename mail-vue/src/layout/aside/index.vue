@@ -94,7 +94,9 @@ const route = useRoute();
   justify-content: center;
   gap: 5px;
   color: #ffffff;
-  background: linear-gradient(135deg, #1890ff, #3a80dd);
+  background: linear-gradient(135deg, #6d5dfc, #24c8b5);
+  box-shadow: 0 10px 24px rgba(109, 93, 252, .28);
+  animation: cm-brand-float 5s ease-in-out infinite;
   transition: all 0.3s ease;
   max-width: 240px;
   padding: 0 10px;
@@ -132,6 +134,7 @@ const route = useRoute();
   border-radius: 6px;
   height: 36px;
   padding: 10px !important;
+  transition: transform .22s ease, background .22s ease, box-shadow .22s ease !important;
 }
 
 .choose-item {
@@ -141,8 +144,10 @@ const route = useRoute();
 }
 
 @media (hover: hover) {
-  .el-menu-item:hover {
-    background: rgba(255, 255, 255, 0.08) !important;
+.el-menu-item:hover {
+    background: rgba(255, 255, 255, 0.1) !important;
+    transform: translateX(4px);
+    box-shadow: 0 8px 18px rgba(0,0,0,.12);
   }
 }
 
@@ -176,4 +181,8 @@ const route = useRoute();
 .scroll {
 
 }
+</style>
+
+<style>
+@keyframes cm-brand-float { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
 </style>
