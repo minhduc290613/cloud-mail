@@ -939,13 +939,13 @@ import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
+import { version } from 'mail-vue/package.json'
 
 defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = 'v3.3.0'
-const hasUpdate = ref(false)
+const currentVersion = `v${version}`
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
 const firstLoading = ref(true)
