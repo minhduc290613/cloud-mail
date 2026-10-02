@@ -231,52 +231,52 @@ jobs:
           echo "worker_url=$WORKER_URL" >> $GITHUB_OUTPUT
           echo "✅ Setup completed."
 
-          - name: ♻️ 初始化数据库 / Initialize database
-          run: |
-            echo "🛠️ Starting database initialization..."
-            sleep 15
+      - name: ♻️ 初始化数据库 / Initialize database
+        run: |
+          echo "🛠️ Starting database initialization..."
+          sleep 15
     
-            WORKER_URL="${CUSTOM_DOMAIN:+https://$CUSTOM_DOMAIN}"
-            WORKER_URL="${WORKER_URL:-${{ steps.deploy.outputs.worker_url }}}"
+          WORKER_URL="${CUSTOM_DOMAIN:+https://$CUSTOM_DOMAIN}"
+          WORKER_URL="${WORKER_URL:-${{ steps.deploy.outputs.worker_url }}}"
     
-            if [ -z "$WORKER_URL" ]; then
-              echo "❌ Preview URL not available. Please set CUSTOM_DOMAIN."
-              exit 1
-            fi
-    
-            echo "📍 Attempting to initialize: $WORKER_URL/api/init/***"
-    
-            # Add retries with exponential backoff
-            MAX_RETRIES=3
-            RETRY_COUNT=0
-    
-            while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
-              HTTP_CODE=$(curl -sL -w "%{http_code}" -o response.txt \
-                -H "User-Agent: GitHub-Actions" \
-                "$WORKER_URL/api/init/${JWT_SECRET}")
-              RESPONSE_BODY=$(cat response.txt)
-      
-              echo "Response Code: $HTTP_CODE"
-              echo "Response Body: $RESPONSE_BODY" | head -c 200
-              echo ""
-      
-              if [ "$RESPONSE_BODY" = "success" ]; then
-                echo "✅ Setup completed."
-                exit 0
-              elif [ "$HTTP_CODE" -eq 403 ]; then
-                RETRY_COUNT=$((RETRY_COUNT + 1))
-                if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
-                WAIT_TIME=$((2 ** RETRY_COUNT))
-                echo "⚠️ Got 403, retrying in ${WAIT_TIME}s... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
-                sleep $WAIT_TIME
-                continue
-                fi
-              fi
-              break
-            done
-    
-            echo "❌ Failed. HTTP: $HTTP_CODE"
+          if [ -z "$WORKER_URL" ]; then
+            echo "❌ Preview URL not available. Please set CUSTOM_DOMAIN."
             exit 1
+          fi
+    
+          echo "📍 Attempting to initialize: $WORKER_URL/api/init/***"
+    
+          # Add retries with exponential backoff
+          MAX_RETRIES=3
+          RETRY_COUNT=0
+    
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            HTTP_CODE=$(curl -sL -w "%{http_code}" -o response.txt \
+              -H "User-Agent: GitHub-Actions" \
+              "$WORKER_URL/api/init/${JWT_SECRET}")
+            RESPONSE_BODY=$(cat response.txt)
+      
+            echo "Response Code: $HTTP_CODE"
+            echo "Response Body: $RESPONSE_BODY" | head -c 200
+            echo ""
+      
+            if [ "$RESPONSE_BODY" = "success" ]; then
+              echo "✅ Setup completed."
+              exit 0
+            elif [ "$HTTP_CODE" -eq 403 ]; then
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              if [ $RETRY_COUNT -lt $MAX_RETRIES ]; then
+              WAIT_TIME=$((2 ** RETRY_COUNT))
+              echo "⚠️ Got 403, retrying in ${WAIT_TIME}s... (Attempt $RETRY_COUNT/$MAX_RETRIES)"
+              sleep $WAIT_TIME
+              continue
+              fi
+            fi
+            break
+          done
+    
+          echo "❌ Failed. HTTP: $HTTP_CODE"
+          exit 1
 
       - name: 🗑️ 删除运行记录 / Delete workflow runs
         uses: GitRML/delete-workflow-runs@main
