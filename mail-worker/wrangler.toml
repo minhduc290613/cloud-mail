@@ -22,6 +22,19 @@ enabled = true
 #[[send_email]]
 #name = "email"			#CF发件, 配置后优先使用
 
+# ...
+
+[[d1_databases]]
+binding = "db"
+database_name = "email"
+database_id = "2ef8835d-b401-4f1a-8fad-3255fc719aa4"
+
+[[kv_namespaces]]
+binding = "kv"
+id = "ffa81aed58ca4fdd9be1fe386904201c"
+# ...
+
+
 [ai]
 binding = "ai"
 
