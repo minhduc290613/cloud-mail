@@ -448,7 +448,7 @@
                 <span>{{ $t('version') }} :</span>
                 <el-badge is-dot :hidden="!hasUpdate">
                   <el-button @click="jump('https://github.com/minhduc290613/cloud-mail/releases')">
-                    {{ currentVersion }}
+                    v1.0.0     
                     <template #icon>
                       <Icon icon="qlementine-icons:version-control-16" style="font-size: 20px" color="#1890FF"/>
                     </template>
@@ -939,12 +939,10 @@ import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
-import { version } from '../../package.json'
 defineOptions({
   name: 'sys-setting'
 })
 
-const currentVersion = `v${version}`
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
 const firstLoading = ref(true)
