@@ -115,19 +115,25 @@ jobs:
           EOF
           fi
 
-          sed -i "s|\${NAME}|${NAME}|g" "$CONFIG_FILE"
-          sed -i "s|\${CUSTOM_DOMAIN}|${CUSTOM_DOMAIN}|g" "$CONFIG_FILE"
-          sed -i "s|\"\${DOMAIN}\"|${DOMAIN}|g" "$CONFIG_FILE"
-          sed -i "s|\${ADMIN}|${ADMIN}|g" "$CONFIG_FILE"
-          sed -i "s|\${JWT_SECRET}|${JWT_SECRET}|g" "$CONFIG_FILE"
-          sed -i "s|\${R2_BUCKET_NAME}|${R2_BUCKET_NAME}|g" "$CONFIG_FILE"
-          sed -i "s|\${PROJECT_LINK}|${PROJECT_LINK}|g" "$CONFIG_FILE"
-          sed -i "s|\${ANALYSIS_CACHE}|${ANALYSIS_CACHE}|g" "$CONFIG_FILE"
-          sed -i "s|\${AI_MODEL}|${AI_MODEL}|g" "$CONFIG_FILE"
-          sed -i "s|\${LINUXDO_CLIENT_ID}|${LINUXDO_CLIENT_ID}|g" "$CONFIG_FILE"
-          sed -i "s|\${LINUXDO_CLIENT_SECRET}|${LINUXDO_CLIENT_SECRET}|g" "$CONFIG_FILE"
-          sed -i "s|\${LINUXDO_CALLBACK_URL}|${LINUXDO_CALLBACK_URL}|g" "$CONFIG_FILE"
-          
+          # Instead of using sed with pipes, use a safer delimiter or escape the variables
+          # Option 1: Use a different sed delimiter (e.g., `#` instead of `|`)
+
+          escape_sed() {
+            echo "$1" | sed -e 's/[\/&]/\\&/g'
+          }
+          sed -i "s#\${NAME}#${NAME}#g" "$CONFIG_FILE"
+          sed -i "s#\${CUSTOM_DOMAIN}#${CUSTOM_DOMAIN}#g" "$CONFIG_FILE"
+          sed -i "s#\"\${DOMAIN}\"#${DOMAIN}#g" "$CONFIG_FILE"
+          sed -i "s#\${ADMIN}#${ADMIN}#g" "$CONFIG_FILE"
+          sed -i "s#\${JWT_SECRET}#${JWT_SECRET}#g" "$CONFIG_FILE"
+          sed -i "s#\${R2_BUCKET_NAME}#${R2_BUCKET_NAME}#g" "$CONFIG_FILE"
+          sed -i "s#\${PROJECT_LINK}#${PROJECT_LINK}#g" "$CONFIG_FILE"
+          sed -i "s#\${ANALYSIS_CACHE}#${ANALYSIS_CACHE}#g" "$CONFIG_FILE"
+          sed -i "s#\${AI_MODEL}#${AI_MODEL}#g" "$CONFIG_FILE"
+          sed -i "s#\${LINUXDO_CLIENT_ID}#${LINUXDO_CLIENT_ID}#g" "$CONFIG_FILE"
+          sed -i "s#\${LINUXDO_CLIENT_SECRET}#${LINUXDO_CLIENT_SECRET}#g" "$CONFIG_FILE"
+          sed -i "s#\${LINUXDO_CALLBACK_URL}#${LINUXDO_CALLBACK_URL}#g" "$CONFIG_FILE"
+
           echo "✅ Environment setup completed."
 
       - name: ⚡ 设置KV数据库 / Set up KV database
