@@ -11,6 +11,11 @@ const settingStore = useSettingStore()
 import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import('@/icons/index.js')
 const { locale } = useI18n()
+const languageMigrationKey = 'cloud-mail-vietnamese-default-v1'
+if (!localStorage.getItem(languageMigrationKey)) {
+  settingStore.lang = 'vi'
+  localStorage.setItem(languageMigrationKey, '1')
+}
 locale.value = settingStore.lang || 'vi'
 if (!settingStore.lang) settingStore.lang = 'vi'
 watch(() => settingStore.lang, () => locale.value = settingStore.lang)

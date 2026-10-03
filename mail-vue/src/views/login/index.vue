@@ -36,6 +36,7 @@
                 <el-select
                     v-if="show === 'login'"
                     ref="mySelect"
+                    popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
                     class="select"
@@ -73,6 +74,7 @@
                 <el-select
                     v-if="show !== 'login'"
                     ref="mySelect"
+                    popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
                     class="select"
@@ -132,6 +134,7 @@
             <div @click.stop="openSelect">
               <el-select
                   ref="mySelect"
+                  popper-class="login-domain-popper"
                   v-model="suffix"
                   :placeholder="$t('select')"
                   class="select"
@@ -959,4 +962,23 @@ function submitRegister() {
 @keyframes cm-orbit { from { transform: rotate(0) translateX(12px); } to { transform: rotate(360deg) translateX(12px); } }
 @media (max-width: 1024px) { .brand-panel { width: 50vw; padding: 52px 34px; } .brand-panel h1 { font-size: 42px; } .form-wrapper { width: 56vw; } }
 @media (max-width: 767px) { .brand-panel { display: none; } .form-wrapper { width: 100%; } .container { min-height: 0; padding: 32px 24px 26px !important; margin: 18px !important; width: calc(100% - 36px) !important; } .mobile-brand-mark { display: grid; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 22px; } }
+</style>
+
+
+<style lang="scss">
+.login-domain-popper { max-width: calc(100vw - 32px) !important; border-radius: 14px !important; overflow: hidden; }
+.login-domain-popper .el-select-dropdown__item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 767px) {
+  body { overflow-x: hidden; }
+  #login-box { min-height: 100dvh; padding: 18px 0; box-sizing: border-box; }
+  #login-box .form-wrapper { position: relative; right: auto; min-height: calc(100dvh - 36px); padding: 0 12px; box-sizing: border-box; }
+  #login-box .container { box-sizing: border-box; width: 100% !important; max-width: 430px; margin: 0 auto !important; padding: 28px 20px 24px !important; border-radius: 24px !important; }
+  #login-box .form-title { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 28px !important; }
+  #login-box .form-desc { display: block; margin-bottom: 20px; font-size: 14px; }
+  #login-box .el-input { width: 100%; }
+  #login-box .el-input-group__append { max-width: 46%; overflow: hidden; }
+  #login-box .el-input-group__append > div { max-width: 100%; overflow: hidden; }
+  #login-box .el-input-group__append span { display: inline-block; max-width: calc(100vw * .34); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
+  #login-box .btn { min-height: 44px; }
+}
 </style>
