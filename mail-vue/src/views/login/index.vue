@@ -289,7 +289,7 @@ const hideLoginDomain = computed(() => settingStore.settings.loginDomain === 1)
 const background = computed(() => {
   const bgUrl = settingStore.settings.background 
     ? cvtR2Url(settingStore.settings.background)
-    : '/mail-vue/public/image/background.jpeg'; // <-- THAY TÊN FILE ẢNH CỦA BẠN TẠI ĐÂY
+    : 'https://github.com/minhduc290613/cloud-mail/blob/4c7c1b1a0e827a455c671e071c2fc5d907146a81/mail-vue/public/image/background.jpeg?raw=true'; // <-- THAY TÊN FILE ẢNH CỦA BẠN TẠI ĐÂY
     
   return {
     'background-image': `url(${bgUrl})`,
