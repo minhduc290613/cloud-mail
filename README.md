@@ -10,12 +10,6 @@
             <img src="https://img.shields.io/badge/license-MIT-green" />
         </a>    
     </p>
-    <p align="center">
-        <a href="https://trendshift.io/repositories/20459" target="_blank" >
-            <img src="https://trendshift.io/api/badge/repositories/20459" alt="trendshift" >
-        </a>
-    </p>
-</p>
 
 ## Description
 With only one domain, you can create multiple different email addresses, similar to major email platforms. This project can be deployed on Cloudflare Workers to reduce server costs and build your own email service.
