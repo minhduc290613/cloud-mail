@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="doc/iamge/logo.png" width="80px" />
+    <img src="doc/image/logo.png" width="80px" />
     <h1 align="center">Cloud Mail</h1>
     <p align="center">A simple, responsive email service designed to run on Cloudflare Workers 🎉</p> 
     <p align="center">
