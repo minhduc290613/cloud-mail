@@ -920,6 +920,7 @@ Authorization: &lt;secret&gt;</pre>
 </template>
 
 <script setup>
+import packageJson from '@/../package.json';
 import {computed, defineOptions, nextTick, reactive, ref} from "vue";
 import {deleteBackground, setBackground, setBlackList, settingQuery, settingSet} from "@/request/setting.js";
 import {useSettingStore} from "@/store/setting.js";
@@ -943,7 +944,9 @@ defineOptions({
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
 
-const currentVersion = `v${__APP_VERSION__}`;
+const currentVersion = `v${packageJson.version}`;
+const latestVersion = ref('');
+const latestReleaseUrl = ref('');
 const hasUpdate = ref(false);
 const firstLoading = ref(true)
 const settingReady = ref(false)
@@ -1160,11 +1163,42 @@ const resendList = computed(() => {
 
   return list;
 });
+  function normalizeVersion(version) {
+  return String(version || '')
+    .trim()
+    .replace(/^v/i, '');
+}
 
+function compareVersions(current, latest) {
+  const currentParts = normalizeVersion(current)
+    .split('.')
+    .map(Number);
+
+  const latestParts = normalizeVersion(latest)
+    .split('.')
+    .map(Number);
+
+  for (let i = 0; i < Math.max(currentParts.length, latestParts.length); i++) {
+    const currentPart = currentParts[i] || 0;
+    const latestPart = latestParts[i] || 0;
+
+    if (latestPart > currentPart) return 1;
+    if (latestPart < currentPart) return -1;
+  }
+
+  return 0;
+}
 function getUpdate() {
   if (getUpdateErrorCount > 5 || !getUpdateErrorCount) return
   axios.get('https://api.github.com/repos/minhduc290613/cloud-mail/releases/latest').then(({data}) => {
-    hasUpdate.value = data.name !== currentVersion
+    const latest = data.tag_name || data.name || ''
+    latestVersion.value = latest
+    latestReleaseUrl.value =
+      data.html_url ||
+      'https://github.com/minhduc290613/cloud-mail/releases/latest'
+    
+    hasUpdate.value =
+      compareVersions(currentVersion, latestVersion.value) < 0
     getUpdateErrorCount = 0
   }).catch(e => {
     getUpdateErrorCount++
