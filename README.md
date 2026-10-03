@@ -1,5 +1,5 @@
 <p align="center">
-    <img src="doc/demo/logo.png" width="80px" />
+    <img src="doc/image/logo.png" width="80px" />
     <h1 align="center">Cloud Mail</h1>
     <p align="center">Dịch vụ email đơn giản, responsive dựa trên Cloudflare, hỗ trợ gửi email và gửi/nhận tệp đính kèm 🎉</p> 
     <p align="center">
@@ -35,9 +35,9 @@ Dự án hỗ trợ triển khai trên Cloudflare Workers, giúp giảm chi phí
 * [Demo trực tuyến](https://mail.protechvn.io.vn)<br>
 * [Tài liệu triển khai](https://doc.skymail.ink)<br>
 
-| ![](/doc/demo/demo1.png) | ![](/doc/demo/demo2.png) |
+| ![](/doc/image/demo1.png) | ![](/doc/image/demo2.png) |
 | ------------------------ | ------------------------ |
-| ![](/doc/demo/demo3.png) | ![](/doc/demo/demo4.png) |
+| ![](/doc/image/demo3.png) | ![](/doc/image/demo4.png) |
 
 ## Các tính năng
 
@@ -133,4 +133,8 @@ cloud-mail
 ## Giấy phép
 
 Dự án này được phát hành theo giấy phép [MIT](LICENSE).
+
+## Thanks
+This project is a remake based on the original development by maillab. I would like to thank maillab and the contributors who have contributed to this project.
+Original repositories: [Repo](https://github.com/maillab/cloud-mail)
 
