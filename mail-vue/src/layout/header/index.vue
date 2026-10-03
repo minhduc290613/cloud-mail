@@ -19,15 +19,15 @@
       <div class="notice icon-item" @click="openNotice">
         <Icon icon="streamline-plump:announcement-megaphone"/>
       </div>
-      <el-dropdown ref="userinfoRef" @visible-change="e => userInfoShow = e" :teleported="false" popper-class="detail-dropdown">
-        <div class="avatar" @click="userInfoHide" >
+      <div ref="userinfoRef" class="user-menu">
+        <div class="avatar" @click.stop="userInfoHide" >
           <div class="avatar-text">
             <div>{{ formatName(userStore.user.email) }}</div>
           </div>
           <Icon class="setting-icon" icon="mingcute:down-small-fill" width="24" height="24"/>
         </div>
-        <template #dropdown>
-          <div class="user-details">
+        <Transition name="profile-popover">
+          <div v-if="userInfoShow" class="user-details profile-popover" @click.stop>
             <div class="details-avatar">
               {{ formatName(userStore.user.email) }}
             </div>
@@ -66,8 +66,8 @@
               <el-button type="primary" :loading="logoutLoading" @click="clickLogout">{{ $t('logOut') }}</el-button>
             </div>
           </div>
-        </template>
-      </el-dropdown>
+        </Transition>
+      </div>
     </div>
   </div>
 </template>
@@ -80,7 +80,7 @@ import {Icon} from "@iconify/vue";
 import {useUiStore} from "@/store/ui.js";
 import {useUserStore} from "@/store/user.js";
 import {useRoute} from "vue-router";
-import {computed, ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import {useSettingStore} from "@/store/setting.js";
 import {hasPerm} from "@/perm/perm.js"
 import {useI18n} from "vue-i18n";
@@ -93,7 +93,7 @@ const userStore = useUserStore();
 const uiStore = useUiStore();
 const logoutLoading = ref(false)
 const userInfoShow = ref(false)
-const userinfoRef = ref({})
+const userinfoRef = ref(null)
 
 const accountCount = computed(() => {
   return userStore.user.role.accountCount
@@ -156,12 +156,14 @@ const sendCount = computed(() => {
   return userStore.user.sendCount + '/' + userStore.user.role.sendCount
 })
 
-function userInfoHide(e) {
-    if (userInfoShow.value) {
-        userinfoRef.value.handleClose()
-    } else {
-        userinfoRef.value.handleOpen()
-    }
+function userInfoHide() {
+  userInfoShow.value = !userInfoShow.value
+}
+
+function closeUserInfo(event) {
+  if (userinfoRef.value && !userinfoRef.value.contains(event.target)) {
+    userInfoShow.value = false
+  }
 }
 
 async function copyEmail(email) {
@@ -249,6 +251,9 @@ function clickLogout() {
     logoutLoading.value = false
   })
 }
+
+onMounted(() => document.addEventListener('click', closeUserInfo))
+onUnmounted(() => document.removeEventListener('click', closeUserInfo))
 
 function formatName(email) {
   return email[0]?.toUpperCase() || ''
@@ -544,4 +549,17 @@ function formatName(email) {
 .detail-dropdown .action-info .el-tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .detail-dropdown .logout { box-sizing: border-box; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
 @media (max-width: 767px) { .detail-dropdown { top: 72px !important; right: 12px !important; width: calc(100vw - 24px) !important; } .detail-dropdown .user-details { padding: 16px !important; } }
+</style>
+
+
+<style lang="scss">
+.user-menu { position: relative; display: flex; align-items: center; }
+.profile-popover { position: fixed; top: 72px; right: 24px; z-index: 4000; box-sizing: border-box; width: 300px; max-width: calc(100vw - 24px); max-height: calc(100vh - 92px); overflow: auto; padding: 18px; color: var(--el-text-color-primary); background: var(--el-bg-color-overlay, var(--el-bg-color)); border: 1px solid var(--el-border-color-light); border-radius: 18px; box-shadow: 0 22px 60px rgba(0,0,0,.32); }
+.profile-popover .user-name, .profile-popover .detail-email { box-sizing: border-box; width: 100%; padding-left: 0; padding-right: 0; }
+.profile-popover .action-info { box-sizing: border-box; width: 100%; grid-template-columns: 1fr 1fr; gap: 10px; }
+.profile-popover .action-info > div:last-child { text-align: left; }
+.profile-popover .logout { box-sizing: border-box; width: 100%; padding-left: 0; padding-right: 0; }
+.profile-popover-enter-active, .profile-popover-leave-active { transition: opacity .18s ease, transform .18s ease; }
+.profile-popover-enter-from, .profile-popover-leave-to { opacity: 0; transform: translateY(-8px) scale(.98); }
+@media (max-width: 767px) { .profile-popover { top: 72px; right: 12px; width: calc(100vw - 24px); padding: 16px; } }
 </style>
