@@ -35,7 +35,7 @@ Dự án hỗ trợ triển khai trên Cloudflare Workers, giúp giảm chi phí
 * [Demo trực tuyến](https://mail.protechvn.io.vn)<br>
 * [Tài liệu triển khai](https://doc.skymail.ink)<br>
 
-| ![](/doc/image/demo1.png) | ![](/doc/image/demo2.png) |
+| ![](/doc/image/demo.png) | ![](/doc/image/demo2.png) |
 | ------------------------ | ------------------------ |
 | ![](/doc/image/demo3.png) | ![](/doc/image/demo4.png) |
 
