@@ -27,45 +27,48 @@
           <Icon class="setting-icon" icon="mingcute:down-small-fill" width="24" height="24"/>
         </div>
         <template #dropdown>
-          <div class="user-details">
-            <div class="details-avatar">
-              {{ formatName(userStore.user.email) }}
-            </div>
-            <div class="user-name">
-              {{ userStore.user.name }}
-            </div>
-            <div class="detail-email" @click="copyEmail(userStore.user.email)">
-              {{ userStore.user.email }}
-            </div>
-            <div class="detail-user-type">
-              <el-tag>{{ userStore.user.role.name }}</el-tag>
-            </div>
-            <div class="action-info">
-              <div>
-                <span style="margin-right: 10px">{{ $t('sendCount') }}</span>
-                <span style="margin-right: 10px">{{ $t('accountCount') }}</span>
+          <!-- Bổ sung el-dropdown-menu để Element Plus nhận diện đúng cấu trúc Card Popup -->
+          <el-dropdown-menu>
+            <div class="user-details">
+              <div class="details-avatar">
+                {{ formatName(userStore.user.email) }}
               </div>
-              <div>
+              <div class="user-name">
+                {{ userStore.user.name }}
+              </div>
+              <div class="detail-email" @click="copyEmail(userStore.user.email)">
+                {{ userStore.user.email }}
+              </div>
+              <div class="detail-user-type">
+                <el-tag>{{ userStore.user.role.name }}</el-tag>
+              </div>
+              <div class="action-info">
                 <div>
-                  <span v-if="sendCount" style="margin-right: 5px">{{ sendCount }}</span>
-                  <el-tag v-if="!hasPerm('email:send')">{{ sendType }}</el-tag>
-                  <el-tag v-else>{{ sendType }}</el-tag>
+                  <span style="margin-right: 10px">{{ $t('sendCount') }}</span>
+                  <span style="margin-right: 10px">{{ $t('accountCount') }}</span>
                 </div>
                 <div>
-                  <el-tag v-if="settingStore.settings.manyEmail || settingStore.settings.addEmail">
-                    {{ $t('disabled') }}
-                  </el-tag>
-                  <span v-else-if="accountCount && hasPerm('account:add')"
-                        style="margin-right: 5px">{{ $t('totalUserAccount', {msg: accountCount}) }}</span>
-                  <el-tag v-else-if="!accountCount && hasPerm('account:add')">{{ $t('unlimited') }}</el-tag>
-                  <el-tag v-else-if="!hasPerm('account:add')">{{ $t('unauthorized') }}</el-tag>
+                  <div>
+                    <span v-if="sendCount" style="margin-right: 5px">{{ sendCount }}</span>
+                    <el-tag v-if="!hasPerm('email:send')">{{ sendType }}</el-tag>
+                    <el-tag v-else>{{ sendType }}</el-tag>
+                  </div>
+                  <div>
+                    <el-tag v-if="settingStore.settings.manyEmail || settingStore.settings.addEmail">
+                      {{ $t('disabled') }}
+                    </el-tag>
+                    <span v-else-if="accountCount && hasPerm('account:add')"
+                          style="margin-right: 5px">{{ $t('totalUserAccount', {msg: accountCount}) }}</span>
+                    <el-tag v-else-if="!accountCount && hasPerm('account:add')">{{ $t('unlimited') }}</el-tag>
+                    <el-tag v-else-if="!hasPerm('account:add')">{{ $t('unauthorized') }}</el-tag>
+                  </div>
                 </div>
               </div>
+              <div class="logout">
+                <el-button type="primary" :loading="logoutLoading" @click="clickLogout">{{ $t('logOut') }}</el-button>
+              </div>
             </div>
-            <div class="logout">
-              <el-button type="primary" :loading="logoutLoading" @click="clickLogout">{{ $t('logOut') }}</el-button>
-            </div>
-          </div>
+          </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
@@ -131,7 +134,6 @@ const sendType = computed(() => {
 })
 
 const sendCount = computed(() => {
-
 
   if (!hasPerm('email:send')) {
     return null
@@ -208,7 +210,6 @@ function openDark(e) {
   const maxY = Math.max(y, window.innerHeight - y)
   const endRadius = Math.hypot(maxX, maxY)
 
-  // 标记切换 bright，供 CSS 选择器 sử dụng
   root.setAttribute('data-theme-to', nextIsDark ? 'dark' : 'light')
   root.style.setProperty('--vt-x', `${x}px`)
   root.style.setProperty('--vt-y', `${y}px`)
@@ -219,7 +220,6 @@ function openDark(e) {
   })
 
   transition.finished.finally(() => {
-    // 清理标记
     root.removeAttribute('data-theme-to')
   })
 }
@@ -253,21 +253,29 @@ function clickLogout() {
 function formatName(email) {
   return email[0]?.toUpperCase() || ''
 }
-
 </script>
 
 <style>
-/* Sửa lỗi trong suốt cho Popup Dropdown */
-.detail-dropdown {
-  color: var(--el-text-color-primary) !important;
+/* Đảm bảo thẻ chứa popper của Element Plus có màu nền đục, không bị xuyên thấu */
+.el-dropdown__popper.detail-dropdown,
+.detail-dropdown.el-popper {
   background-color: var(--el-bg-color-overlay, #ffffff) !important;
   border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
   box-shadow: var(--el-box-shadow-light) !important;
+  border-radius: 8px !important;
 }
 
+/* Sửa màu nền đục cho mũi tên chỉ hướng tam giác phía trên */
 .detail-dropdown .el-popper__arrow::before {
   background-color: var(--el-bg-color-overlay, #ffffff) !important;
   border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
+}
+
+/* Loại bỏ viền trùng lặp của el-dropdown-menu bên trong */
+.detail-dropdown .el-dropdown-menu {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
 }
 </style>
 
@@ -283,10 +291,10 @@ function formatName(email) {
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
-  /* Thêm màu nền đệm để đảm bảo không lọt khung hình */
   background-color: var(--el-bg-color-overlay, #ffffff);
-  border-radius: 6px;
-  padding-bottom: 5px;
+  border-radius: 8px;
+  padding: 10px 0;
+  box-sizing: border-box;
 
   .user-name {
     font-weight: bold;
@@ -294,6 +302,7 @@ function formatName(email) {
     padding-left: 20px;
     padding-right: 20px;
     width: 250px;
+    box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -309,6 +318,8 @@ function formatName(email) {
     display: grid;
     grid-template-columns: auto auto;
     margin-top: 10px;
+    padding: 0 10px;
+    box-sizing: border-box;
 
     > div:first-child {
       display: grid;
@@ -332,6 +343,7 @@ function formatName(email) {
     padding-left: 20px;
     padding-right: 20px;
     width: 250px;
+    box-sizing: border-box;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -346,6 +358,7 @@ function formatName(email) {
     padding-left: 10px;
     padding-right: 10px;
     padding-bottom: 10px;
+    box-sizing: border-box;
 
     .el-button {
       border-radius: 6px;
@@ -368,7 +381,6 @@ function formatName(email) {
     border-radius: 10px;
   }
 }
-
 
 .header {
   text-align: right;
@@ -485,7 +497,6 @@ function formatName(email) {
       bottom: 10px;
     }
   }
-
 }
 
 .el-tooltip__trigger:first-child:focus-visible {
