@@ -1,13 +1,9 @@
 <template>
-  <div id="login-box" :class="{'has-background': !!background}" v-loading="oauthLoading" :element-loading-text="$t('loginBtn') + '…'">
-    <div id="background-wrap" v-if="!settingStore.settings.background">
-      <div class="x1 cloud"></div>
-      <div class="x2 cloud"></div>
-      <div class="x3 cloud"></div>
-      <div class="x4 cloud"></div>
-      <div class="x5 cloud"></div>
-    </div>
-    <div v-else class="login-background" :style="background"></div>
+  <div id="login-box" class="has-background" v-loading="oauthLoading" :element-loading-text="$t('loginBtn') + '…'">
+    
+    <!-- Đã thay thế mây động bằng background ảnh mặc định -->
+    <div class="login-background" :style="background"></div>
+    
     <section class="brand-panel">
       <div class="brand-mark"><Icon icon="mdi:email-fast-outline" width="30" height="30" /></div>
       <div class="brand-eyebrow">CLOUD MAIL · PRIVATE WORKSPACE</div>
@@ -21,6 +17,7 @@
       <div class="brand-orbit orbit-one"></div>
       <div class="brand-orbit orbit-two"></div>
     </section>
+    
     <div class="form-wrapper">
       <div class="container">
         <div class="mobile-brand-mark"><Icon icon="mdi:email-fast-outline" width="24" height="24" /></div>
@@ -28,14 +25,16 @@
         <span class="form-title">{{ settingStore.settings.title }}</span>
         <span class="form-desc" v-if="show === 'login'">{{ $t('loginTitle') }}</span>
         <span class="form-desc" v-else>{{ $t('regTitle') }}</span>
+        
         <div v-show="show === 'login'">
           <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="form.email"
                     type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="submit">
             <template #append v-if="!hideLoginDomain">
-              <div @click.stop="openSelect">
+              <!-- Sửa: Truyền 'login' vào openSelect -->
+              <div @click.stop="openSelect('login')">
                 <el-select
                     v-if="show === 'login'"
-                    ref="mySelect"
+                    ref="loginSelect"
                     popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
@@ -55,25 +54,25 @@
               </div>
             </template>
           </el-input>
-          <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off" @keyup.enter="submit">
-          </el-input>
-          <el-button class="btn" type="primary" @click="submit" :loading="loginLoading"
-          >{{ $t('loginBtn') }}
-          </el-button>
+          <el-input v-model="form.password" :placeholder="$t('password')" type="password" autocomplete="off" @keyup.enter="submit"></el-input>
+          <el-button class="btn" type="primary" @click="submit" :loading="loginLoading">{{ $t('loginBtn') }}</el-button>
+          
           <el-button v-for="p in oauthProviders" :key="p.key" class="btn" style="margin-top: 10px" @click="oauthLogin(p.key)">
             <el-avatar v-if="p.iconType === 'image'" :src="p.icon" :size="18" style="margin-right: 10px" />
             <Icon v-else :icon="p.icon" width="18" height="18" style="margin-right: 10px" />
             {{ p.label }}
           </el-button>
         </div>
+        
         <div v-show="show !== 'login'">
           <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')"
                     autocomplete="off" @keyup.enter="submitRegister">
             <template #append v-if="!hideLoginDomain">
-              <div @click.stop="openSelect">
+              <!-- Sửa: Truyền 'register' vào openSelect -->
+              <div @click.stop="openSelect('register')">
                 <el-select
                     v-if="show !== 'login'"
-                    ref="mySelect"
+                    ref="registerSelect"
                     popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
@@ -110,30 +109,32 @@
           >
             <span style="font-size: 12px;color: #F56C6C" v-if="botJsError">{{ $t('verifyModuleFailed') }}</span>
           </div>
-          <el-button class="btn" style="margin: 0" type="primary" @click="submitRegister" :loading="registerLoading"
-          >{{ $t('regBtn') }}
-          </el-button>
+          <el-button class="btn" style="margin: 0" type="primary" @click="submitRegister" :loading="registerLoading">{{ $t('regBtn') }}</el-button>
+          
           <el-button v-for="p in oauthProviders" :key="p.key" class="btn" style="margin-top: 10px" @click="oauthLogin(p.key)">
             <el-avatar v-if="p.iconType === 'image'" :src="p.icon" :size="18" style="margin-right: 10px" />
             <Icon v-else :icon="p.icon" width="18" height="18" style="margin-right: 10px" />
             {{ p.label }}
           </el-button>
         </div>
+        
         <template v-if="settingStore.settings.register === 0">
           <div class="switch" @click="show = 'register'" v-if="show === 'login'">{{ $t('noAccount') }}
             <span>{{ $t('regSwitch') }}</span></div>
-          <div class="switch" @click="show = 'login'" v-else>{{ $t('hasAccount') }} <span>{{ $t('loginSwitch') }}</span>
+          <div class="switch" @click="show = 'login'" v-else>{{ $t('hasAccount') }} <span>{{$t('loginSwitch') }}</span>
           </div>
         </template>
       </div>
     </div>
+    
     <el-dialog class="bind-dialog" v-model="showBindForm"  :title="$t('emailAccount')" >
       <div class="bind-container">
         <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="bindForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="bind">
           <template #append v-if="!hideLoginDomain">
-            <div @click.stop="openSelect">
+            <!-- Sửa: Truyền 'bind' vào openSelect -->
+            <div @click.stop="openSelect('bind')">
               <el-select
-                  ref="mySelect"
+                  ref="bindSelect"
                   popper-class="login-domain-popper"
                   v-model="suffix"
                   :placeholder="$t('select')"
@@ -157,11 +158,10 @@
                   type="text" autocomplete="off" @keyup.enter="bind"/>
         <el-input v-if="settingStore.settings.regKey === 2" v-model="bindForm.code"
                   :placeholder="$t('regKeyOptional')" type="text" autocomplete="off" @keyup.enter="bind"/>
-        <el-button class="btn" type="primary" @click="bind" :loading="bindLoading"
-        >{{ $t('confirm') }}
-        </el-button>
+        <el-button class="btn" type="primary" @click="bind" :loading="bindLoading">{{ $t('confirm') }}</el-button>
       </div>
     </el-dialog>
+    
     <a v-show="settingStore.settings.projectLink" class="github" href="https://github.com/minhduc290613/cloud-mail">
       <Icon icon="mingcute:github-line" color="#1890ff" width="20" height="20" />
     </a>
@@ -226,9 +226,13 @@ const bindForm = reactive({
 const form = reactive({
   email: '',
   password: '',
-
 });
-const mySelect = ref()
+
+/* Sửa: Khai báo các ref riêng biệt thay cho một ref mySelect chung */
+const loginSelect = ref();
+const registerSelect = ref();
+const bindSelect = ref();
+
 const suffix = ref('')
 const registerForm = reactive({
   email: '',
@@ -281,18 +285,25 @@ const loginOpacity = computed(() => {
 
 const hideLoginDomain = computed(() => settingStore.settings.loginDomain === 1)
 
+/* Sửa: Cập nhật background mặc định bằng hình ảnh của bạn */
 const background = computed(() => {
-
-  return settingStore.settings.background ? {
-    'background-image': `url(${cvtR2Url(settingStore.settings.background)})`,
+  const bgUrl = settingStore.settings.background 
+    ? cvtR2Url(settingStore.settings.background)
+    : '/image_1784194177893.jpg'; // Đường dẫn tới file ảnh trong thư mục public
+    
+  return {
+    'background-image': `url(${bgUrl})`,
     'background-repeat': 'no-repeat',
     'background-size': 'cover',
     'background-position': 'center'
-  } : ''
+  }
 })
 
-const openSelect = () => {
-  mySelect.value.toggleMenu()
+/* Sửa: Hàm openSelect nay nhận diện form đang mở để trigger đúng phần tử */
+const openSelect = (formType) => {
+  if (formType === 'login' && loginSelect.value) loginSelect.value.toggleMenu();
+  if (formType === 'register' && registerSelect.value) registerSelect.value.toggleMenu();
+  if (formType === 'bind' && bindSelect.value) bindSelect.value.toggleMenu();
 }
 
 const getFullEmail = (email) => {
@@ -324,7 +335,6 @@ const loginFns = {
 oauthGetUser();
 
 async function oauthGetUser() {
-
   const params = new URLSearchParams(window.location.search)
   const code = params.get('code')
   if (!code || !oauthProvider.value) return
@@ -335,9 +345,7 @@ async function oauthGetUser() {
   window.history.replaceState({}, '', window.location.origin + window.location.pathname)
 
   loginFns[provider](code, window.location.origin + '/login').then(data => {
-
     bindForm.oauthUserId = data.userInfo.oauthUserId;
-
     if (!data.token) {
       showBindForm.value = true
       oauthLoading.value = false
@@ -349,7 +357,6 @@ async function oauthGetUser() {
       })
       return;
     }
-
     saveToken(data.token);
   }).catch(() => {
     oauthLoading.value = false
@@ -357,56 +364,27 @@ async function oauthGetUser() {
 }
 
 function bind() {
-
   if (bindLoading.value) return
-
   if (!bindForm.email) {
-    ElMessage({
-      message: t('emptyEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('emptyEmailMsg'), type: 'error', plain: true })
     return
   }
-
-
   if (getEmailName(bindForm.email).length < settingStore.settings.minEmailPrefix) {
-    ElMessage({
-      message: t('minEmailPrefix', {msg: settingStore.settings.minEmailPrefix}),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('minEmailPrefix', {msg: settingStore.settings.minEmailPrefix}), type: 'error', plain: true })
     return
   }
-
   let email = getFullEmail(bindForm.email);
-
-
   if (!isEmail(email)) {
-    ElMessage({
-      message: t('notEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true })
     return
   }
-
   if (settingStore.settings.regKey === 0) {
-
     if (!bindForm.code) {
-
-      ElMessage({
-        message: t('emptyRegKeyMsg'),
-        type: 'error',
-        plain: true,
-      })
+      ElMessage({ message: t('emptyRegKeyMsg'), type: 'error', plain: true })
       return
     }
-
   }
-
   const form = {email, oauthUserId: bindForm.oauthUserId, code: bindForm.code}
-
   bindLoading.value = true
   oauthBindUser(form).then(data => {
     saveToken(data.token)
@@ -416,38 +394,20 @@ function bind() {
 }
 
 const submit = () => {
-
   if (loginLoading.value) return
-
   if (!form.email) {
-    ElMessage({
-      message: t('emptyEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('emptyEmailMsg'), type: 'error', plain: true })
     return
   }
-
   let email = getFullEmail(form.email);
-
   if (!isEmail(email)) {
-    ElMessage({
-      message: t('notEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true })
     return
   }
-
   if (!form.password) {
-    ElMessage({
-      message: t('emptyPwdMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('emptyPwdMsg'), type: 'error', plain: true })
     return
   }
-
   loginLoading.value = true
   login(email, form.password).then(async data => {
     await saveToken(data.token)
@@ -486,84 +446,39 @@ function refreshWebsiteConfig() {
   })
 }
 
-
 function submitRegister() {
-
   if (registerLoading.value) return
-
   if (!registerForm.email) {
-    ElMessage({
-      message: t('emptyEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('emptyEmailMsg'), type: 'error', plain: true })
     return
   }
-
-  console.log(registerForm.email)
-
   if (getEmailName(registerForm.email).length < settingStore.settings.minEmailPrefix) {
-    ElMessage({
-      message: t('minEmailPrefix', {msg: settingStore.settings.minEmailPrefix}),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('minEmailPrefix', {msg: settingStore.settings.minEmailPrefix}), type: 'error', plain: true })
     return
   }
-
   const email = getFullEmail(registerForm.email);
-
   if (!isEmail(email)) {
-    ElMessage({
-      message: t('notEmailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('notEmailMsg'), type: 'error', plain: true })
     return
   }
-
   if (!registerForm.password) {
-    ElMessage({
-      message: t('emptyPwdMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('emptyPwdMsg'), type: 'error', plain: true })
     return
   }
-
   if (registerForm.password.length < 6) {
-    ElMessage({
-      message: t('pwdLengthMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('pwdLengthMsg'), type: 'error', plain: true })
     return
   }
-
   if (registerForm.password !== registerForm.confirmPassword) {
-
-    ElMessage({
-      message: t('confirmPwdFailMsg'),
-      type: 'error',
-      plain: true,
-    })
+    ElMessage({ message: t('confirmPwdFailMsg'), type: 'error', plain: true })
     return
   }
-
   if (settingStore.settings.regKey === 0) {
-
     if (!registerForm.code) {
-
-      ElMessage({
-        message: t('emptyRegKeyMsg'),
-        type: 'error',
-        plain: true,
-      })
+      ElMessage({ message: t('emptyRegKeyMsg'), type: 'error', plain: true })
       return
     }
-
   }
-
   if (!verifyToken && (settingStore.settings.registerVerify === 0 || (settingStore.settings.registerVerify === 2 && settingStore.settings.regVerifyOpen))) {
     if (!verifyShow.value) {
       verifyShow.value = true
@@ -580,24 +495,17 @@ function submitRegister() {
         }
       })
     } else if (!botJsError.value) {
-      ElMessage({
-        message: t('botVerifyMsg'),
-        type: "error",
-        plain: true
-      })
+      ElMessage({ message: t('botVerifyMsg'), type: "error", plain: true })
     }
     return;
   }
-
   registerLoading.value = true
-
   const form = {
     email,
     password: registerForm.password,
     token: verifyToken,
     code: registerForm.code
   }
-
   register(form).then(({regVerifyOpen}) => {
     show.value = 'login'
     registerForm.email = ''
@@ -608,15 +516,9 @@ function submitRegister() {
     verifyToken = ''
     settingStore.settings.regVerifyOpen = regVerifyOpen
     verifyShow.value = false
-    ElMessage({
-      message: t('regSuccessMsg'),
-      type: 'success',
-      plain: true,
-    })
+    ElMessage({ message: t('regSuccessMsg'), type: 'success', plain: true })
   }).catch(res => {
-
     registerLoading.value = false
-
     if (res.code === 400) {
       verifyToken = ''
       settingStore.settings.regVerifyOpen = true
@@ -628,30 +530,19 @@ function submitRegister() {
         })
       }
       verifyShow.value = true
-
     }
   });
 }
-
 </script>
 
-
 <style>
-.el-select-dropdown__item {
-  padding: 0 15px;
-}
-
-.no-autofill-pwd {
-  .el-input__inner {
-    -webkit-text-security: disc !important;
-  }
-}
+.el-select-dropdown__item { padding: 0 15px; }
+.no-autofill-pwd .el-input__inner { -webkit-text-security: disc !important; }
 </style>
 
 <style lang="scss" scoped>
-#login-box {
-  background: radial-gradient(circle at 15% 15%, rgba(109,93,252,.22), transparent 32%), radial-gradient(circle at 85% 80%, rgba(36,200,181,.18), transparent 30%);
-}
+/* Xóa gradient màu xanh cũ vì đã dùng ảnh tĩnh */
+#login-box { font: 100% Arial, sans-serif; height: 100%; margin: 0; padding: 0; overflow-x: hidden; display: grid; grid-template-columns: 1fr; }
 .form-wrapper { animation: cm-login-in .7s cubic-bezier(.2,.8,.2,1) both; }
 .container { border-radius: 24px; box-shadow: 0 24px 70px rgba(27, 32, 69, .16); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.38); }
 .form-title { letter-spacing: -.03em; }
@@ -659,273 +550,33 @@ function submitRegister() {
 .btn:hover { transform: translateY(-2px); }
 @keyframes cm-login-in { from { opacity: 0; transform: translateY(22px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 
-.form-wrapper {
-  position: fixed;
-  right: 0;
-  height: 100%;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  @media (max-width: 767px) {
-    width: 100%;
-  }
+.form-wrapper { position: fixed; right: 0; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; @media (max-width: 767px) { width: 100%; } }
+.container { background: v-bind(loginOpacity); padding-left: 40px; padding-right: 40px; display: flex; flex-direction: column; justify-content: center; width: 450px; height: 100%; border-left: 1px solid var(--login-border); box-shadow: var(--el-box-shadow-light); @media (max-width: 1024px) { padding: 20px 18px; width: 384px; margin-left: 18px; } @media (max-width: 767px) { border: 1px solid var(--login-border); padding: 20px 18px; border-radius: 6px; height: fit-content; width: 100%; margin-right: 18px; margin-left: 18px; }
+  .btn { height: 36px; width: 100%; border-radius: 6px; }
+  .form-desc { margin-top: 5px; margin-bottom: 18px; color: var(--form-desc-color); }
+  .form-title { font-weight: bold; font-size: 22px !important; }
+  .switch { margin-top: 20px; text-align: center; span { color: var(--login-switch-color); cursor: pointer; } }
+  :deep(.el-input__wrapper) { border-radius: 6px; background: var(--el-bg-color); }
+  .email-input :deep(.el-input__wrapper) { border-radius: 6px 0 0 6px; background: var(--el-bg-color); }
+  .el-input { height: 38px; width: 100%; margin-bottom: 18px; :deep(.el-input__inner) { height: 36px; } }
 }
 
-.container {
-  background: v-bind(loginOpacity);
-  padding-left: 40px;
-  padding-right: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 450px;
-  height: 100%;
-  border-left: 1px solid var(--login-border);
-  box-shadow: var(--el-box-shadow-light);
-  @media (max-width: 1024px) {
-    padding: 20px 18px;
-    width: 384px;
-    margin-left: 18px;
-  }
-  @media (max-width: 767px) {
-    border: 1px solid var(--login-border);
-    padding: 20px 18px;
-    border-radius: 6px;
-    height: fit-content;
-    width: 100%;
-    margin-right: 18px;
-    margin-left: 18px;
-  }
-
-  .btn {
-    height: 36px;
-    width: 100%;
-    border-radius: 6px;
-  }
-
-  .form-desc {
-    margin-top: 5px;
-    margin-bottom: 18px;
-    color: var(--form-desc-color);
-  }
-
-  .form-title {
-    font-weight: bold;
-    font-size: 22px !important;
-  }
-
-  .switch {
-    margin-top: 20px;
-    text-align: center;
-
-    span {
-      color: var(--login-switch-color);
-      cursor: pointer;
-    }
-  }
-
-  :deep(.el-input__wrapper) {
-    border-radius: 6px;
-    background: var(--el-bg-color);
-  }
-
-  .email-input :deep(.el-input__wrapper) {
-    border-radius: 6px 0 0 6px;
-    background: var(--el-bg-color);
-  }
-
-  .el-input {
-    height: 38px;
-    width: 100%;
-    margin-bottom: 18px;
-
-    :deep(.el-input__inner) {
-      height: 36px;
-    }
-  }
-}
-
-:deep(.el-select-dropdown__item) {
-  padding: 0 10px;
-}
-
-:deep(.bind-dialog) {
-  width: 400px !important;
-  @media (max-width: 440px) {
-    width: calc(100% - 40px) !important;
-    margin-right: 20px !important;
-    margin-left: 20px !important;
-  }
-}
-
-.bind-container {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
-}
-
-.setting-icon {
-  position: relative;
-  top: 6px;
-}
-
-.github {
-  position: fixed;
-  width: 35px;
-  height: 35px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 50%;
-  background: var(--el-bg-color);
-  bottom: 10px;
-  right: 10px;
-  z-index: 1000;
-  border: 1px solid var(--el-border-color-light);
-  box-shadow: var(--el-box-shadow-light);
-  cursor: pointer;
-}
-
-:deep(.el-input-group__append) {
-  padding: 0 !important;
-  padding-left: 8px !important;
-  padding-right: 4px !important;
-  background: var(--el-bg-color);
-  border-radius: 0 8px 8px 0;
-}
-
-:deep(.el-button+.el-button) {
-  margin: 0;
-}
-
-.register-turnstile {
-  margin-bottom: 18px;
-}
-
-.select {
-  position: absolute;
-  right: 30px;
-  width: 100px;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
-.custom-style {
-  margin-bottom: 10px;
-}
-
-.custom-style .el-segmented {
-  --el-border-radius-base: 6px;
-  width: 180px;
-}
-
-
-#login-box {
-  background: linear-gradient(to bottom, #2980b9, #6dd5fa, #fff);
-  font: 100% Arial, sans-serif;
-  height: 100%;
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  display: grid;
-  grid-template-columns: 1fr;
-}
-
-
-#background-wrap {
-  height: 100%;
-  z-index: 0;
-}
-
-@keyframes animateCloud {
-  0% {
-    margin-left: -500px;
-  }
-
-  100% {
-    margin-left: 100%;
-  }
-}
-
-.x1 {
-  animation: animateCloud 30s linear infinite;
-  transform: scale(0.65);
-}
-
-.x2 {
-  animation: animateCloud 15s linear infinite;
-  transform: scale(0.3);
-}
-
-.x3 {
-  animation: animateCloud 25s linear infinite;
-  transform: scale(0.5);
-}
-
-.x4 {
-  animation: animateCloud 13s linear infinite;
-  transform: scale(0.4);
-}
-
-.x5 {
-  animation: animateCloud 20s linear infinite;
-  transform: scale(0.55);
-}
-
-.cloud {
-  background: linear-gradient(to bottom, #fff 5%, #f1f1f1 100%);
-  border-radius: 100px;
-  box-shadow: 0 8px 5px rgba(0, 0, 0, 0.1);
-  height: 120px;
-  width: 350px;
-  position: relative;
-}
-
-.cloud:after,
-.cloud:before {
-  content: "";
-  position: absolute;
-  background: #fff;
-  z-index: -1;
-}
-
-.cloud:after {
-  border-radius: 100px;
-  height: 100px;
-  left: 50px;
-  top: -50px;
-  width: 100px;
-}
-
-.cloud:before {
-  border-radius: 200px;
-  height: 180px;
-  width: 180px;
-  right: 50px;
-  top: -90px;
-}
-
+:deep(.el-select-dropdown__item) { padding: 0 10px; }
+:deep(.bind-dialog) { width: 400px !important; @media (max-width: 440px) { width: calc(100% - 40px) !important; margin-right: 20px !important; margin-left: 20px !important; } }
+.bind-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
+.setting-icon { position: relative; top: 6px; }
+.github { position: fixed; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: var(--el-bg-color); bottom: 10px; right: 10px; z-index: 1000; border: 1px solid var(--el-border-color-light); box-shadow: var(--el-box-shadow-light); cursor: pointer; }
+:deep(.el-input-group__append) { padding: 0 !important; padding-left: 8px !important; padding-right: 4px !important; background: var(--el-bg-color); border-radius: 0 8px 8px 0; }
+:deep(.el-button+.el-button) { margin: 0; }
+.register-turnstile { margin-bottom: 18px; }
+.select { position: absolute; right: 30px; width: 100px; opacity: 0; pointer-events: none; visibility: hidden; }
+.custom-style { margin-bottom: 10px; }
+.custom-style .el-segmented { --el-border-radius-base: 6px; width: 180px; }
+/* Đã xóa toàn bộ CSS liên quan tới animation cloud */
 </style>
 
-
 <style lang="scss" scoped>
-/* Override cuối file: giữ thiết kế mới ở thứ tự ưu tiên cao hơn CSS legacy bên trên. */
-#login-box {
-  background: radial-gradient(circle at 16% 22%, rgba(115, 99, 255, .35), transparent 34%), linear-gradient(135deg, #242650, #6e5bda 52%, #43c8b2) !important;
-}
-.brand-panel {
-  position: fixed;
-  inset: 0 auto 0 0;
-  width: min(58vw, 760px);
-  padding: clamp(38px, 8vw, 120px) clamp(28px, 8vw, 120px);
-  color: #fff;
-  z-index: 2;
-  overflow: hidden;
-  background: linear-gradient(135deg, rgba(19, 20, 48, .97), rgba(39, 32, 101, .91) 58%, rgba(24, 150, 145, .82));
-  clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
-}
+.brand-panel { position: fixed; inset: 0 auto 0 0; width: min(58vw, 760px); padding: clamp(38px, 8vw, 120px) clamp(28px, 8vw, 120px); color: #fff; z-index: 2; overflow: hidden; background: linear-gradient(135deg, rgba(19, 20, 48, .90), rgba(39, 32, 101, .85) 58%, rgba(24, 150, 145, .82)); clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%); }
 .brand-mark, .mobile-brand-mark { display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #8174ff, #2ed9bd); box-shadow: 0 12px 30px rgba(75, 69, 190, .38); }
 .brand-mark { width: 58px; height: 58px; border-radius: 18px; margin-bottom: 32px; animation: cm-mark-pulse 4s ease-in-out infinite; }
 .brand-eyebrow, .form-kicker { font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .72; }
@@ -940,18 +591,7 @@ function submitRegister() {
 .orbit-two { width: 740px; height: 740px; right: -360px; top: -2%; opacity: .55; animation: cm-orbit 24s linear infinite reverse; }
 .mobile-brand-mark { display: none; }
 .form-wrapper { width: min(48vw, 660px); }
-.container {
-  width: min(420px, calc(100vw - 48px)) !important;
-  height: auto !important;
-  min-height: 520px;
-  margin: 0 auto !important;
-  padding: 42px 42px 34px !important;
-  border: 1px solid rgba(255,255,255,.55) !important;
-  border-radius: 28px !important;
-  background: rgba(255,255,255,.88) !important;
-  box-shadow: 0 28px 80px rgba(18, 19, 58, .3) !important;
-  backdrop-filter: blur(24px);
-}
+.container { width: min(420px, calc(100vw - 48px)) !important; height: auto !important; min-height: 520px; margin: 0 auto !important; padding: 42px 42px 34px !important; border: 1px solid rgba(255,255,255,.55) !important; border-radius: 28px !important; background: rgba(255,255,255,.88) !important; box-shadow: 0 28px 80px rgba(18, 19, 58, .3) !important; backdrop-filter: blur(24px); }
 .container .form-kicker { display: block; color: #6d5dfc; margin-bottom: 8px; }
 .container .form-title { color: #17182d; font-size: 30px !important; }
 .container .form-desc { line-height: 1.6; }
@@ -963,7 +603,6 @@ function submitRegister() {
 @media (max-width: 1024px) { .brand-panel { width: 50vw; padding: 52px 34px; } .brand-panel h1 { font-size: 42px; } .form-wrapper { width: 56vw; } }
 @media (max-width: 767px) { .brand-panel { display: none; } .form-wrapper { width: 100%; } .container { min-height: 0; padding: 32px 24px 26px !important; margin: 18px !important; width: calc(100% - 36px) !important; } .mobile-brand-mark { display: grid; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 22px; } }
 </style>
-
 
 <style lang="scss">
 .login-domain-popper { max-width: calc(100vw - 32px) !important; border-radius: 14px !important; overflow: hidden; }
@@ -982,7 +621,6 @@ function submitRegister() {
   #login-box .btn { min-height: 44px; }
 }
 </style>
-
 
 <style lang="scss">
 #login-box.has-background { background: transparent !important; }
