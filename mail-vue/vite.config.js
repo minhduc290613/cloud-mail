@@ -11,6 +11,7 @@ export default defineConfig(({mode}) => {
     return {
         server: {
             host: true,
+            allowedHosts: true,
             port: 3001,
             hmr: true,
         },

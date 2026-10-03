@@ -10,6 +10,19 @@
           <span class="sender-name">{{ form.name }}</span>
           <span class="send-email"><{{ form.sendEmail }}></span>
         </div>
+        <el-dropdown v-if="!form.sendType" class="template-picker" trigger="click">
+          <el-button class="template-button" plain>
+            <Icon icon="solar:document-add-bold-duotone" width="18" height="18" />
+            {{ $t('emailTemplate') }}
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item v-for="item in mailTemplates" :key="item.id" @click="applyTemplate(item)">
+                <div class="template-option"><strong>{{ item.title }}</strong><span>{{ item.description }}</span></div>
+              </el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
         <div @click="close" style="cursor: pointer;">
           <Icon icon="material-symbols-light:close-rounded" width="22" height="22"/>
         </div>
@@ -158,6 +171,37 @@ const form = reactive({
   attachments: [],
   draftId: null,
 })
+
+const mailTemplates = [
+  {
+    id: 'welcome',
+    title: 'Lời chào chuyên nghiệp',
+    description: 'Mở đầu một email lịch sự',
+    subject: 'Xin chào bạn,',
+    content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Cảm ơn bạn đã dành thời gian đọc email này. Tôi liên hệ để trao đổi với bạn về <strong>[chủ đề cần trao đổi]</strong>.</p><p>Mong nhận được phản hồi của bạn.</p><p>Trân trọng,<br>[Tên của bạn]</p>'
+  },
+  {
+    id: 'meeting',
+    title: 'Xác nhận lịch hẹn',
+    description: 'Gửi lời mời hoặc xác nhận cuộc họp',
+    subject: 'Xác nhận lịch hẹn — [Ngày / giờ]',
+    content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Tôi xin xác nhận lịch hẹn của chúng ta vào <strong>[ngày, giờ]</strong> tại <strong>[địa điểm / liên kết]</strong>.</p><p>Nếu cần thay đổi lịch, bạn hãy phản hồi email này giúp tôi.</p><p>Trân trọng,<br>[Tên của bạn]</p>'
+  },
+  {
+    id: 'thanks',
+    title: 'Cảm ơn và phản hồi',
+    description: 'Một mẫu trả lời ngắn gọn',
+    subject: 'Cảm ơn bạn đã liên hệ',
+    content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Cảm ơn bạn đã gửi thông tin. Tôi đã nhận được email và sẽ phản hồi bạn trước <strong>[thời gian dự kiến]</strong>.</p><p>Chúc bạn một ngày tốt lành!</p><p>Thân mến,<br>[Tên của bạn]</p>'
+  }
+]
+
+function applyTemplate(template) {
+  form.subject = template.subject
+  form.content = template.content
+  defValue.value = template.content
+  nextTick(() => editor.value?.focus())
+}
 
 const selectRecipientList = ref([])
 
@@ -785,4 +829,14 @@ function close() {
 .icon {
   cursor: pointer;
 }
+</style>
+
+
+<style scoped lang="scss">
+.template-picker { margin-left: auto; margin-right: 12px; }
+.template-button { display: inline-flex; align-items: center; gap: 7px; border-radius: 10px; color: var(--el-color-primary); }
+.template-option { display: grid; gap: 3px; min-width: 190px; }
+.template-option strong { font-size: 13px; }
+.template-option span { color: var(--regular-text-color); font-size: 11px; }
+@media (max-width: 767px) { .template-picker { margin-right: 6px; } .template-button { padding: 7px; font-size: 0; } }
 </style>

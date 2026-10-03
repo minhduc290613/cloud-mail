@@ -1,6 +1,19 @@
 <template>
   <div class="box">
-    <div class="container">
+    <section class="profile-hero">
+      <div class="profile-avatar">{{ profileInitial }}</div>
+      <div class="profile-hero-copy">
+        <span class="profile-eyebrow">{{ $t('profile') }}</span>
+        <h1>{{ userStore.user.name || userStore.user.email }}</h1>
+        <p>{{ userStore.user.email }}</p>
+      </div>
+      <div class="profile-status"><span></span>{{ $t('active') }}</div>
+    </section>
+    <div class="profile-stats">
+      <div><strong>{{ userStore.user.role?.name || $t('normal') }}</strong><span>{{ $t('role') }}</span></div>
+      <div><strong>{{ userStore.user.account?.email || userStore.user.email }}</strong><span>{{ $t('account') }}</span></div>
+    </div>
+    <div class="container profile-section">
       <div class="title">{{$t('profile')}}</div>
       <div class="item">
         <div>{{$t('username')}}</div>
@@ -62,7 +75,7 @@
   </div>
 </template>
 <script setup>
-import {reactive, ref, defineOptions} from 'vue'
+import {computed, reactive, ref, defineOptions} from 'vue'
 import {resetPassword, userDelete} from "@/request/my.js";
 import {useUserStore} from "@/store/user.js";
 import router from "@/router/index.js";
@@ -79,6 +92,7 @@ const setPwdLoading = ref(false)
 const setNameShow = ref(false)
 const accountName = ref(null)
 const langSelect = ref(settingStore.lang)
+const profileInitial = computed(() => (userStore.user.name || userStore.user.email || '?').slice(0, 1).toUpperCase())
 
 defineOptions({
   name: 'setting'
@@ -296,4 +310,23 @@ function submitPwd() {
     gap: 20px;
   }
 }
+</style>
+
+
+<style scoped lang="scss">
+.profile-hero { position: relative; display: flex; align-items: center; gap: 18px; overflow: hidden; padding: 28px 30px; border-radius: 24px; color: #fff; background: linear-gradient(135deg, #242650, #6d5dfc 58%, #24c8b5); box-shadow: 0 18px 45px rgba(59,54,150,.2); animation: profile-in .55s ease both; }
+.profile-avatar { display: grid; place-items: center; width: 68px; height: 68px; flex: 0 0 auto; border-radius: 22px; color: #25264e; background: #fff; font-size: 30px; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,.16); }
+.profile-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .16em; opacity: .72; }
+.profile-hero h1 { margin: 5px 0 3px; font-size: 25px; letter-spacing: -.03em; }
+.profile-hero p { margin: 0; opacity: .75; }
+.profile-status { margin-left: auto; align-self: flex-start; display: flex; align-items: center; gap: 7px; padding: 7px 11px; border-radius: 99px; background: rgba(255,255,255,.16); font-size: 12px; }
+.profile-status span { width: 7px; height: 7px; border-radius: 50%; background: #83e9d8; box-shadow: 0 0 0 4px rgba(131,233,216,.18); }
+.profile-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin: 16px 0 28px; }
+.profile-stats > div { padding: 16px 18px; border: 1px solid var(--el-border-color-light); border-radius: 16px; background: var(--el-bg-color); box-shadow: 0 8px 24px rgba(30,32,70,.05); }
+.profile-stats strong, .profile-stats span { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.profile-stats strong { font-size: 14px; }
+.profile-stats span { margin-top: 5px; color: var(--regular-text-color); font-size: 12px; }
+.profile-section { padding: 22px !important; border: 1px solid var(--el-border-color-light); border-radius: 20px; background: color-mix(in srgb, var(--el-bg-color) 88%, transparent); }
+@keyframes profile-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 767px) { .profile-hero { padding: 22px 18px; } .profile-avatar { width: 54px; height: 54px; border-radius: 17px; font-size: 24px; } .profile-hero h1 { font-size: 20px; } .profile-status { position: absolute; right: 16px; top: 16px; font-size: 0; padding: 5px; } .profile-stats { grid-template-columns: 1fr; } }
 </style>

@@ -8,8 +8,23 @@
       <div class="x5 cloud"></div>
     </div>
     <div v-else :style="background"></div>
+    <section class="brand-panel">
+      <div class="brand-mark"><Icon icon="mdi:email-fast-outline" width="30" height="30" /></div>
+      <div class="brand-eyebrow">CLOUD MAIL · PRIVATE WORKSPACE</div>
+      <h1>Hộp thư riêng,<br><span>nhẹ nhàng hơn.</span></h1>
+      <p class="brand-copy">Một không gian email nhanh, riêng tư và được xây dựng để bạn tập trung vào những điều quan trọng.</p>
+      <div class="feature-list">
+        <div class="feature-item"><Icon icon="solar:shield-check-bold-duotone" width="22" height="22" /><span>Bảo mật trên nền Cloudflare</span></div>
+        <div class="feature-item"><Icon icon="solar:bolt-bold-duotone" width="22" height="22" /><span>Gửi và nhận email tức thì</span></div>
+        <div class="feature-item"><Icon icon="solar:stars-bold-duotone" width="22" height="22" /><span>Trải nghiệm gọn gàng, hiện đại</span></div>
+      </div>
+      <div class="brand-orbit orbit-one"></div>
+      <div class="brand-orbit orbit-two"></div>
+    </section>
     <div class="form-wrapper">
       <div class="container">
+        <div class="mobile-brand-mark"><Icon icon="mdi:email-fast-outline" width="24" height="24" /></div>
+        <span class="form-kicker">{{ show === 'login' ? 'CHÀO MỪNG TRỞ LẠI' : 'BẮT ĐẦU NGAY' }}</span>
         <span class="form-title">{{ settingStore.settings.title }}</span>
         <span class="form-desc" v-if="show === 'login'">{{ $t('loginTitle') }}</span>
         <span class="form-desc" v-else>{{ $t('regTitle') }}</span>
@@ -889,4 +904,59 @@ function submitRegister() {
   top: -90px;
 }
 
+</style>
+
+
+<style lang="scss" scoped>
+/* Override cuối file: giữ thiết kế mới ở thứ tự ưu tiên cao hơn CSS legacy bên trên. */
+#login-box {
+  background: radial-gradient(circle at 16% 22%, rgba(115, 99, 255, .35), transparent 34%), linear-gradient(135deg, #242650, #6e5bda 52%, #43c8b2) !important;
+}
+.brand-panel {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: min(58vw, 760px);
+  padding: clamp(38px, 8vw, 120px) clamp(28px, 8vw, 120px);
+  color: #fff;
+  z-index: 2;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(19, 20, 48, .97), rgba(39, 32, 101, .91) 58%, rgba(24, 150, 145, .82));
+  clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%);
+}
+.brand-mark, .mobile-brand-mark { display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #8174ff, #2ed9bd); box-shadow: 0 12px 30px rgba(75, 69, 190, .38); }
+.brand-mark { width: 58px; height: 58px; border-radius: 18px; margin-bottom: 32px; animation: cm-mark-pulse 4s ease-in-out infinite; }
+.brand-eyebrow, .form-kicker { font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .72; }
+.brand-panel h1 { margin: 18px 0 22px; font-size: clamp(38px, 5vw, 72px); line-height: .98; letter-spacing: -.06em; }
+.brand-panel h1 span { color: #83e9d8; }
+.brand-copy { max-width: 430px; color: rgba(255,255,255,.72); font-size: 16px; line-height: 1.75; }
+.feature-list { display: grid; gap: 15px; margin-top: 42px; }
+.feature-item { display: flex; align-items: center; gap: 12px; font-size: 14px; color: rgba(255,255,255,.86); }
+.feature-item :deep(svg) { color: #83e9d8; flex: 0 0 auto; }
+.brand-orbit { position: absolute; border: 1px solid rgba(255,255,255,.13); border-radius: 50%; pointer-events: none; }
+.orbit-one { width: 520px; height: 520px; right: -250px; top: 8%; animation: cm-orbit 16s linear infinite; }
+.orbit-two { width: 740px; height: 740px; right: -360px; top: -2%; opacity: .55; animation: cm-orbit 24s linear infinite reverse; }
+.mobile-brand-mark { display: none; }
+.form-wrapper { width: min(48vw, 660px); }
+.container {
+  width: min(420px, calc(100vw - 48px)) !important;
+  height: auto !important;
+  min-height: 520px;
+  margin: 0 auto !important;
+  padding: 42px 42px 34px !important;
+  border: 1px solid rgba(255,255,255,.55) !important;
+  border-radius: 28px !important;
+  background: rgba(255,255,255,.88) !important;
+  box-shadow: 0 28px 80px rgba(18, 19, 58, .3) !important;
+  backdrop-filter: blur(24px);
+}
+.container .form-kicker { display: block; color: #6d5dfc; margin-bottom: 8px; }
+.container .form-title { color: #17182d; font-size: 30px !important; }
+.container .form-desc { line-height: 1.6; }
+.container .btn { height: 44px !important; border-radius: 12px !important; }
+.container :deep(.el-input__wrapper) { min-height: 44px; border-radius: 12px !important; background: rgba(255,255,255,.82); }
+.container .switch { font-size: 13px; }
+@keyframes cm-mark-pulse { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(3deg); } }
+@keyframes cm-orbit { from { transform: rotate(0) translateX(12px); } to { transform: rotate(360deg) translateX(12px); } }
+@media (max-width: 1024px) { .brand-panel { width: 50vw; padding: 52px 34px; } .brand-panel h1 { font-size: 42px; } .form-wrapper { width: 56vw; } }
+@media (max-width: 767px) { .brand-panel { display: none; } .form-wrapper { width: 100%; } .container { min-height: 0; padding: 32px 24px 26px !important; margin: 18px !important; width: calc(100% - 36px) !important; } .mobile-brand-mark { display: grid; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 22px; } }
 </style>
