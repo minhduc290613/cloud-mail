@@ -480,3 +480,68 @@ function formatName(email) {
   outline: unset;
 }
 </style>
+
+
+<style lang="scss">
+@media (max-width: 767px) {
+  .detail-dropdown {
+    position: fixed !important;
+    top: 72px !important;
+    right: 12px !important;
+    left: auto !important;
+    width: min(320px, calc(100vw - 24px)) !important;
+    max-width: calc(100vw - 24px) !important;
+    min-width: 0 !important;
+    margin: 0 !important;
+    transform: none !important;
+    z-index: 3000 !important;
+    border-radius: 18px !important;
+    overflow: hidden;
+  }
+  .detail-dropdown .user-details {
+    box-sizing: border-box;
+    width: 100% !important;
+    padding: 16px !important;
+    gap: 0;
+  }
+  .detail-dropdown .details-avatar { margin-top: 0 !important; width: 48px !important; height: 48px !important; border-radius: 15px !important; }
+  .detail-dropdown .user-name, .detail-dropdown .detail-email { box-sizing: border-box; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+  .detail-dropdown .user-name { margin-top: 8px !important; }
+  .detail-dropdown .detail-user-type { margin-top: 8px !important; }
+  .detail-dropdown .action-info { box-sizing: border-box; width: 100% !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; margin-top: 14px !important; padding: 12px 0; border-top: 1px solid var(--el-border-color-light); border-bottom: 1px solid var(--el-border-color-light); }
+  .detail-dropdown .action-info > div:first-child, .detail-dropdown .action-info > div:last-child { gap: 8px !important; min-width: 0; }
+  .detail-dropdown .action-info > div:first-child span { margin-right: 0 !important; font-size: 11px; color: var(--regular-text-color); }
+  .detail-dropdown .action-info > div:last-child { text-align: left !important; }
+  .detail-dropdown .action-info .el-tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+  .detail-dropdown .logout { box-sizing: border-box; width: 100% !important; margin-top: 14px !important; padding: 0 !important; }
+  .detail-dropdown .logout .el-button { height: 40px !important; border-radius: 11px !important; }
+}
+</style>
+
+
+<style lang="scss">
+/* Profile popover dùng cùng một card ổn định trên mọi kích thước màn hình. */
+.detail-dropdown {
+  position: fixed !important;
+  top: 72px !important;
+  right: 24px !important;
+  left: auto !important;
+  width: 300px !important;
+  min-width: 0 !important;
+  max-width: calc(100vw - 24px) !important;
+  max-height: calc(100vh - 92px) !important;
+  margin: 0 !important;
+  transform: none !important;
+  overflow: auto !important;
+  border-radius: 18px !important;
+  z-index: 3000 !important;
+}
+.detail-dropdown .user-details { box-sizing: border-box; width: 100% !important; padding: 18px !important; }
+.detail-dropdown .user-name, .detail-dropdown .detail-email { box-sizing: border-box; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+.detail-dropdown .action-info { box-sizing: border-box; width: 100% !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+.detail-dropdown .action-info > div:first-child, .detail-dropdown .action-info > div:last-child { min-width: 0; }
+.detail-dropdown .action-info > div:last-child { text-align: left !important; }
+.detail-dropdown .action-info .el-tag { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
+.detail-dropdown .logout { box-sizing: border-box; width: 100% !important; padding-left: 0 !important; padding-right: 0 !important; }
+@media (max-width: 767px) { .detail-dropdown { top: 72px !important; right: 12px !important; width: calc(100vw - 24px) !important; } .detail-dropdown .user-details { padding: 16px !important; } }
+</style>
