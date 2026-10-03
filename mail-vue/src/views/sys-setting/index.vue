@@ -936,7 +936,7 @@ import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
-import packageJson from '@/mail-vue/package.json';
+import packageJson from '@/../mail-vue/package.json';
 defineOptions({
   name: 'sys-setting'
 })
