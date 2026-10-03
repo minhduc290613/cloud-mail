@@ -19,7 +19,7 @@
       <div class="notice icon-item" @click="openNotice">
         <Icon icon="streamline-plump:announcement-megaphone"/>
       </div>
-      <el-dropdown ref="userinfoRef" @visible-change="e => userInfoShow = e" :teleported="false" popper-class="detail-dropdown">
+      <el-dropdown ref="userinfoRef" @visible-change="e => userInfoShow = e" :teleported="true" popper-class="detail-dropdown">
         <div class="avatar" @click="userInfoHide" >
           <div class="avatar-text">
             <div>{{ formatName(userStore.user.email) }}</div>
@@ -256,6 +256,30 @@ function formatName(email) {
 </script>
 
 <style>
+
+  <style>
+/* Đảm bảo thẻ chứa popper nổi lên trên tất cả các lớp khác */
+.el-dropdown__popper.detail-dropdown,
+.detail-dropdown.el-popper {
+  z-index: 9999 !important; /* Thêm dòng này để làm nổi popup lên */
+  background-color: var(--el-bg-color-overlay, #ffffff) !important;
+  border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
+  box-shadow: var(--el-box-shadow-light) !important;
+  border-radius: 8px !important;
+}
+
+/* Sửa mũi tên */
+.detail-dropdown .el-popper__arrow::before {
+  background-color: var(--el-bg-color-overlay, #ffffff) !important;
+  border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
+}
+
+.detail-dropdown .el-dropdown-menu {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+}
+</style>
 /* Đảm bảo thẻ chứa popper của Element Plus có màu nền đục, không bị xuyên thấu */
 .el-dropdown__popper.detail-dropdown,
 .detail-dropdown.el-popper {
