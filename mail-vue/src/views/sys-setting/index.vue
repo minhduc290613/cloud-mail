@@ -448,7 +448,7 @@
                 <span>{{ $t('version') }} :</span>
                 <el-badge is-dot :hidden="!hasUpdate">
                   <el-button @click="jump('https://github.com/minhduc290613/cloud-mail/releases')">
-                    v1.0.0     
+                    {{ currentVersion }}
                     <template #icon>
                       <Icon icon="qlementine-icons:version-control-16" style="font-size: 20px" color="#1890FF"/>
                     </template>
@@ -473,12 +473,9 @@
                 </div>
               </div>
               <div class="concerning-item">
-                <span>{{ $t('support') }} : </span>
+                <span>{{ $t('website') }} : </span>
                 <el-button @click="jump('https://protechvn.io.vn')">
-                  Website
-                  <template #icon>
-                    <Icon color="#79D6B5" icon="simple-icons:website" width="20" height="20"/>
-                  </template>
+                   My Website
                 </el-button>
               </div>
             </div>
@@ -939,12 +936,17 @@ import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
+import packageJson from '@/mail-vue/package.json';
 defineOptions({
   name: 'sys-setting'
 })
 
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
+
+// Lấy phiên bản trực tiếp từ package.json
+const currentVersion = `v${packageJson.version}`;
+const hasUpdate = ref(false);
 const firstLoading = ref(true)
 const settingReady = ref(false)
 const backgroundImage = ref('')
