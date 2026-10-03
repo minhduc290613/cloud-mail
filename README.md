@@ -6,19 +6,19 @@
         Tiếng Việt | <a href="/README-en.md" style="margin-left: 5px">English </a>
     </p>
     <p align="center">
-        <a href="https://github.com/maillab/cloud-mail/tree/main?tab=MIT-1-ov-file" target="_blank" >
+        <a href="https://github.com/minhduc290613/cloud-mail/tree/main?tab=MIT-1-ov-file" target="_blank" >
             <img src="https://img.shields.io/badge/license-MIT-green" />
         </a>    
-        <a href="https://github.com/maillab/cloud-mail/releases" target="_blank" >
+        <a href="https://github.com/minhduc290613/cloud-mail/releases" target="_blank" >
             <img src="https://img.shields.io/github/v/release/minhduc290613/cloud-mail" alt="releases" />
         </a>  
-        <a href="https://github.com/maillab/cloud-mail/issues" >
+        <a href="https://github.com/minhduc290613/cloud-mail/issues" >
             <img src="https://img.shields.io/github/issues/minhduc290613/cloud-mail" alt="issues" />
         </a>  
-        <a href="https://github.com/maillab/cloud-mail/stargazers" target="_blank">
+        <a href="https://github.com/minhduc290613/cloud-mail/stargazers" target="_blank">
             <img src="https://img.shields.io/github/stars/minhduc290613/cloud-mail" alt="stargazers" />
         </a>  
-        <a href="https://github.com/maillab/cloud-mail/forks" target="_blank" >
+        <a href="https://github.com/minhduc290613/cloud-mail/forks" target="_blank" >
             <img src="https://img.shields.io/github/forks/minhduc290613/cloud-mail" alt="forks" />
         </a>
     </p>
