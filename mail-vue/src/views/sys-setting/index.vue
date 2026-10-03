@@ -936,7 +936,6 @@ import {getTextWidth} from "@/utils/text.js";
 import {fileToBase64} from "@/utils/file-utils.js"
 import {useI18n} from 'vue-i18n';
 import axios from "axios";
-import packageJson from '@/../mail-vue/package.json';
 defineOptions({
   name: 'sys-setting'
 })
@@ -944,8 +943,7 @@ defineOptions({
 let getUpdateErrorCount = 1;
 const {t, locale} = useI18n();
 
-// Lấy phiên bản trực tiếp từ package.json
-const currentVersion = `v${packageJson.version}`;
+const currentVersion = `v${__APP_VERSION__}`;
 const hasUpdate = ref(false);
 const firstLoading = ref(true)
 const settingReady = ref(false)
