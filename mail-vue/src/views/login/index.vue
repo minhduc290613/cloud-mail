@@ -1,5 +1,5 @@
 <template>
-  <div id="login-box" :style=" background ? 'background: var(--el-bg-color)' : ''" v-loading="oauthLoading" :element-loading-text="$t('loginBtn') + '…'">
+  <div id="login-box" :class="{'has-background': !!background}" v-loading="oauthLoading" :element-loading-text="$t('loginBtn') + '…'">
     <div id="background-wrap" v-if="!settingStore.settings.background">
       <div class="x1 cloud"></div>
       <div class="x2 cloud"></div>
@@ -7,7 +7,7 @@
       <div class="x4 cloud"></div>
       <div class="x5 cloud"></div>
     </div>
-    <div v-else :style="background"></div>
+    <div v-else class="login-background" :style="background"></div>
     <section class="brand-panel">
       <div class="brand-mark"><Icon icon="mdi:email-fast-outline" width="30" height="30" /></div>
       <div class="brand-eyebrow">CLOUD MAIL · PRIVATE WORKSPACE</div>
@@ -980,5 +980,19 @@ function submitRegister() {
   #login-box .el-input-group__append > div { max-width: 100%; overflow: hidden; }
   #login-box .el-input-group__append span { display: inline-block; max-width: calc(100vw * .34); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
   #login-box .btn { min-height: 44px; }
+}
+</style>
+
+
+<style lang="scss">
+#login-box.has-background { background: transparent !important; }
+#login-box .login-background { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; min-height: 100dvh; background-size: cover !important; background-position: center center !important; background-repeat: no-repeat !important; }
+#login-box.has-background::before { content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(135deg, rgba(18, 18, 42, .18), rgba(36, 200, 181, .08)); }
+#login-box.has-background .form-wrapper { z-index: 10; }
+@media (max-width: 767px) {
+  #login-box.has-background { background: transparent !important; }
+  #login-box.has-background .login-background { background-attachment: scroll !important; }
+  .login-domain-popper { position: fixed !important; left: 16px !important; right: 16px !important; top: 58% !important; bottom: auto !important; width: auto !important; max-width: none !important; transform: none !important; z-index: 2000 !important; }
+  .login-domain-popper .el-select-dropdown__list { max-height: 180px; overflow-y: auto; }
 }
 </style>
