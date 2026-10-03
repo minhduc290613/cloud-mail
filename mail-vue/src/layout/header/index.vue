@@ -208,7 +208,7 @@ function openDark(e) {
   const maxY = Math.max(y, window.innerHeight - y)
   const endRadius = Math.hypot(maxX, maxY)
 
-  // 标记切换目标，供 CSS 选择器使用
+  // 标记切换 bright，供 CSS 选择器 sử dụng
   root.setAttribute('data-theme-to', nextIsDark ? 'dark' : 'light')
   root.style.setProperty('--vt-x', `${x}px`)
   root.style.setProperty('--vt-y', `${y}px`)
@@ -255,11 +255,22 @@ function formatName(email) {
 }
 
 </script>
+
 <style>
+/* Sửa lỗi trong suốt cho Popup Dropdown */
 .detail-dropdown {
   color: var(--el-text-color-primary) !important;
+  background-color: var(--el-bg-color-overlay, #ffffff) !important;
+  border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
+  box-shadow: var(--el-box-shadow-light) !important;
+}
+
+.detail-dropdown .el-popper__arrow::before {
+  background-color: var(--el-bg-color-overlay, #ffffff) !important;
+  border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
 }
 </style>
+
 <style lang="scss" scoped>
 
 :deep(.el-popper.is-pure) {
@@ -272,6 +283,10 @@ function formatName(email) {
   display: grid;
   grid-template-columns: 1fr;
   justify-items: center;
+  /* Thêm màu nền đệm để đảm bảo không lọt khung hình */
+  background-color: var(--el-bg-color-overlay, #ffffff);
+  border-radius: 6px;
+  padding-bottom: 5px;
 
   .user-name {
     font-weight: bold;
