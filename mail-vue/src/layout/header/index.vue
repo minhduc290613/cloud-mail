@@ -257,17 +257,6 @@ function formatName(email) {
 
 <style>
 
-  <style>
-/* Đảm bảo thẻ chứa popper nổi lên trên tất cả các lớp khác */
-.el-dropdown__popper.detail-dropdown,
-.detail-dropdown.el-popper {
-  z-index: 9999 !important; /* Thêm dòng này để làm nổi popup lên */
-  background-color: var(--el-bg-color-overlay, #ffffff) !important;
-  border: 1px solid var(--el-border-color-light, #e4e7ed) !important;
-  box-shadow: var(--el-box-shadow-light) !important;
-  border-radius: 8px !important;
-}
-
 /* Sửa mũi tên */
 .detail-dropdown .el-popper__arrow::before {
   background-color: var(--el-bg-color-overlay, #ffffff) !important;
