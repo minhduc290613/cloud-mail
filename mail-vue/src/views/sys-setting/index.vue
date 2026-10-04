@@ -6,6 +6,28 @@
     <el-scrollbar class="scroll" v-if="!firstLoading">
       <div class="scroll-body">
         <div class="card-grid">
+          <div class="settings-card dashboard-customization-card">
+            <div class="card-title">{{ $t('dashboardCustomization') }}</div>
+            <div class="dashboard-customization-copy">{{ $t('dashboardBackgroundDesc') }}</div>
+            <div class="dashboard-presets">
+              <button v-for="preset in dashboardPresets" :key="preset.id" type="button"
+                      class="dashboard-preset" :class="{ active: settingStore.dashboard.background === preset.url }"
+                      :style="{ backgroundImage: `linear-gradient(rgba(0,0,0,.15), rgba(0,0,0,.25)), url(${preset.url})` }"
+                      @click="selectDashboardBackground(preset.url)">
+                <span>{{ preset.label }}</span>
+              </button>
+            </div>
+            <div class="dashboard-custom-row">
+              <el-input v-model="customDashboardUrl" :placeholder="$t('customBackgroundUrl')" clearable />
+              <el-button type="primary" @click="applyDashboardBackground">{{ $t('applyBackground') }}</el-button>
+              <el-button @click="clearDashboardBackground">{{ $t('clearBackground') }}</el-button>
+            </div>
+            <div class="dashboard-theme-row">
+              <span>{{ $t('customThemeColor') }}</span>
+              <el-color-picker v-model="dashboardAccent" @change="applyDashboardAccent" />
+            </div>
+            <div class="dashboard-note">{{ $t('hoangSaTruongSa') }}</div>
+          </div>
           <!-- Basic Settings Card -->
           <div class="settings-card">
             <div class="card-title">{{ $t('websiteSetting') }}</div>
@@ -971,6 +993,27 @@ const showResendList = ref(false)
 const settingStore = useSettingStore();
 const uiStore = useUiStore();
 const {settings: setting} = storeToRefs(settingStore);
+const dashboardPresets = [
+  { id: 'hoan-kiem', label: 'Hồ Hoàn Kiếm', url: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1800&q=85' },
+  { id: 'sea', label: 'Biển Việt Nam', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=85' },
+  { id: 'mountain', label: 'Núi và mây', url: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85' },
+]
+const customDashboardUrl = ref(settingStore.dashboard?.background || '')
+const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
+function selectDashboardBackground(url) {
+  settingStore.dashboard.background = url
+  customDashboardUrl.value = url
+}
+function applyDashboardBackground() {
+  settingStore.dashboard.background = customDashboardUrl.value?.trim() || ''
+}
+function clearDashboardBackground() {
+  customDashboardUrl.value = ''
+  settingStore.dashboard.background = ''
+}
+function applyDashboardAccent(value) {
+  if (value) settingStore.dashboard.accent = value
+}
 const editTitle = ref('')
 const settingLoading = ref(false)
 const clearS3Loading = ref(false)
@@ -2315,4 +2358,19 @@ form .el-button {
 <style>
 .el-popper.is-dark {
 }
+</style>
+
+
+<style lang="scss" scoped>
+.dashboard-customization-card { grid-column: 1 / -1; background: linear-gradient(135deg, color-mix(in srgb, var(--el-bg-color) 88%, var(--cm-accent)), var(--el-bg-color)); }
+.dashboard-customization-copy { color: var(--regular-text-color); font-size: 13px; margin: -4px 0 16px; }
+.dashboard-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.dashboard-preset { min-height: 112px; border: 2px solid transparent; border-radius: 14px; background-position: center; background-size: cover; color: #fff; cursor: pointer; display: flex; align-items: flex-end; padding: 12px; font-weight: 700; text-align: left; transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease; }
+.dashboard-preset:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.16); }
+.dashboard-preset.active { border-color: var(--cm-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cm-accent) 24%, transparent); }
+.dashboard-custom-row { display: flex; gap: 10px; margin-top: 14px; }
+.dashboard-custom-row .el-input { flex: 1; }
+.dashboard-theme-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--el-text-color-primary); }
+.dashboard-note { margin-top: 14px; font-size: 12px; color: var(--regular-text-color); }
+@media (max-width: 767px) { .dashboard-presets { grid-template-columns: 1fr; } .dashboard-preset { min-height: 82px; } .dashboard-custom-row { flex-wrap: wrap; } .dashboard-custom-row .el-input { flex-basis: 100%; } }
 </style>

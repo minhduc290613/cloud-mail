@@ -8,11 +8,16 @@ export const useSettingStore = defineStore('setting', {
             loginOpacity: 1.00,
         },
         lang: 'vi',
+        dashboard: {
+            background: '',
+            overlay: 0.08,
+            accent: '#6d5dfc'
+        },
     }),
     actions: {
 
     },
     persist: {
-        pick: ['lang'],
+        pick: ['lang', 'dashboard'],
     },
 })

@@ -9,7 +9,7 @@
         :class="(uiStore.asideShow && isMobile)? 'overlay-show':'overlay-hide'"
         @click="uiStore.asideShow = false"
     ></div>
-    <el-container class="main-container">
+    <el-container class="main-container" :style="dashboardStyle">
       <el-main>
         <el-header>
             <Header />
@@ -25,11 +25,26 @@
 import Aside from '@/layout/aside/index.vue'
 import Header from '@/layout/header/index.vue'
 import Main from '@/layout/main/index.vue'
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 import {useUiStore} from "@/store/ui.js";
+import {useSettingStore} from "@/store/setting.js";
 import writer from '@/layout/write/index.vue'
 
 const uiStore = useUiStore();
+const settingStore = useSettingStore();
+const dashboardStyle = computed(() => {
+  const dashboard = settingStore.dashboard || {}
+  return {
+    '--dashboard-accent': dashboard.accent || '#6d5dfc',
+    '--dashboard-overlay': dashboard.overlay ?? 0.08,
+    ...(dashboard.background ? {
+      backgroundImage: `linear-gradient(rgba(12, 16, 38, ${dashboard.overlay ?? 0.08}), rgba(12, 16, 38, ${dashboard.overlay ?? 0.08})), url(${dashboard.background})`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed'
+    } : {})
+  }
+})
 const writerRef = ref({})
 const isMobile = ref(window.innerWidth < 1025)
 const handleResize = () => {
