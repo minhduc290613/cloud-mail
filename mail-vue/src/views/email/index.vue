@@ -29,7 +29,7 @@ import {useSettingStore} from "@/store/setting.js";
 import emailScroll from "@/components/email-scroll/index.vue"
 import {emailList, emailDelete, emailLatest, emailRead} from "@/request/email.js";
 import {starAdd, starCancel} from "@/request/star.js";
-import {defineOptions, h, onMounted, reactive, ref, watch} from "vue";
+import {computed, defineOptions, h, onMounted, reactive, ref, watch} from "vue";
 import {sleep} from "@/utils/time-utils.js";
 import router from "@/router/index.js";
 import {Icon} from "@iconify/vue";
@@ -44,6 +44,7 @@ const emailStore = useEmailStore();
 const accountStore = useAccountStore();
 const settingStore = useSettingStore();
 const scroll = ref({})
+const folder = computed(() => ['inbox', 'archive', 'spam', 'deleted'].includes(route.query.folder) ? route.query.folder : 'inbox')
 const params = reactive({
   timeSort: 0,
 })
@@ -55,6 +56,10 @@ onMounted(() => {
 
 
 watch(() => accountStore.currentAccountId, () => {
+  scroll.value.refreshList();
+})
+
+watch(folder, () => {
   scroll.value.refreshList();
 })
 
@@ -80,7 +85,7 @@ async function latest() {
     let autoRefresh = settingStore.settings.autoRefresh;
     await sleep(autoRefresh > 1 ? autoRefresh * 1000 : 3000);
 
-    if (route.name !== 'email') {
+    if (route.name !== 'email' || folder.value !== 'inbox') {
       continue;
     }
 
@@ -143,7 +148,7 @@ function getEmailList(emailId, size) {
   const accountId =  accountStore.currentAccountId;
   const allReceive = accountStore.currentAccount.allReceive;
   return emailStore.fetchList(full =>
-    emailList(accountId, allReceive, emailId, params.timeSort, size, 0, full)
+        emailList(accountId, allReceive, emailId, params.timeSort, size, 0, full, folder.value)
   ).then(data => {
     data.latestEmail.reqAccountId = accountId;
     data.latestEmail.allReceive = allReceive;

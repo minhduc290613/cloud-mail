@@ -28,7 +28,7 @@ const emailService = {
 
 	async list(c, params, userId) {
 
-		let { emailId, type, accountId, size, timeSort, allReceive, full } = params;
+		let { emailId, type, accountId, size, timeSort, allReceive, full, folder } = params;
 
 		size = Number(size);
 		type = Number(type);
@@ -55,6 +55,7 @@ const emailService = {
 		}
 
 		full = full === 1;
+		folder = ['inbox', 'archive', 'spam', 'deleted'].includes(folder) ? folder : 'inbox';
 
 		if (size > 50) {
 			size = 50;
@@ -65,8 +66,8 @@ const emailService = {
 			allReceive = accountRow.allReceive;
 		}
 
-		const filters = this.emailListFilters({ userId, accountId, type, allReceive, emailId, timeSort });
-		const countFilters = this.emailListFilters({ userId, accountId, type, allReceive, withCursor: false });
+		const filters = this.emailListFilters({ userId, accountId, type, allReceive, emailId, timeSort, folder });
+		const countFilters = this.emailListFilters({ userId, accountId, type, allReceive, folder, withCursor: false });
 		const columns = full ? emailListColumns : emailBriefColumns;
 
 		const query = orm(c)
@@ -112,7 +113,8 @@ const emailService = {
 			and(
 				eq(email.userId, userId),
 				eq(email.type, type),
-				eq(email.isDel, isDel.NORMAL),
+				folder === 'deleted' ? eq(email.isDel, isDel.DELETE) : eq(email.isDel, isDel.NORMAL),
+				folder === 'deleted' ? undefined : eq(email.folder, folder),
 				allReceive ? undefined : eq(email.accountId, accountId)
 			))
 			.orderBy(desc(email.emailId)).limit(1).get();
@@ -155,11 +157,12 @@ const emailService = {
 		return list;
 	},
 
-	emailListFilters({ userId, accountId, type, allReceive, emailId, timeSort, withCursor = true }) {
+	emailListFilters({ userId, accountId, type, allReceive, emailId, timeSort, folder = 'inbox', withCursor = true }) {
 		const conditions = [
 			eq(email.userId, userId),
 			eq(email.type, type),
-			eq(email.isDel, isDel.NORMAL),
+			folder === 'deleted' ? eq(email.isDel, isDel.DELETE) : eq(email.isDel, isDel.NORMAL),
+			folder === 'deleted' ? undefined : eq(email.folder, folder),
 			eq(account.isDel, isDel.NORMAL),
 		];
 		if (!allReceive) {
@@ -218,7 +221,16 @@ const emailService = {
 		return conditions;
 	},
 
-	async delete(c, params, userId) {
+		async move(c, params, userId) {
+			const emailIdList = (params.emailIds || []).map(Number).filter(Boolean);
+			const folder = ['inbox', 'archive', 'spam'].includes(params.folder) ? params.folder : null;
+			if (!emailIdList.length || !folder) throw new BizError('Invalid email folder');
+			await orm(c).update(email).set({ folder }).where(
+				and(eq(email.userId, userId), eq(email.isDel, isDel.NORMAL), inArray(email.emailId, emailIdList))
+			).run();
+		},
+
+		async delete(c, params, userId) {
 		const { emailIds } = params;
 		const emailIdList = emailIds.split(',').map(Number);
 		const { syncDelete } = await settingService.query(c);

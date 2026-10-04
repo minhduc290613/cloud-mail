@@ -7,9 +7,24 @@
       </div>
       <el-menu :collapse="false" text-color="#fff" active-text-color="#fff" style="margin-top: 10px">
         <el-menu-item @click="router.push({name: 'email'})" index="email"
-                      :class="route.meta.name === 'email' ? 'choose-item' : ''">
+                      :class="route.meta.name === 'email' && !route.query.folder ? 'choose-item' : ''">
           <Icon icon="hugeicons:mailbox-01" width="20" height="20" />
           <span class="menu-name" style="margin-left: 16px">{{$t('inbox')}}</span>
+        </el-menu-item>
+        <el-menu-item @click="router.push({name: 'email', query: {folder: 'archive'}})" index="archive"
+                      :class="route.query.folder === 'archive' ? 'choose-item' : ''">
+          <Icon icon="solar:archive-down-minimalistic-line-duotone" width="20" height="20" />
+          <span class="menu-name" style="margin-left: 16px">{{$t('mailArchive')}}</span>
+        </el-menu-item>
+        <el-menu-item @click="router.push({name: 'email', query: {folder: 'spam'}})" index="spam"
+                      :class="route.query.folder === 'spam' ? 'choose-item' : ''">
+          <Icon icon="solar:shield-warning-line-duotone" width="20" height="20" />
+          <span class="menu-name" style="margin-left: 16px">{{$t('mailTrash')}}</span>
+        </el-menu-item>
+        <el-menu-item @click="router.push({name: 'email', query: {folder: 'deleted'}})" index="deleted"
+                      :class="route.query.folder === 'deleted' ? 'choose-item' : ''">
+          <Icon icon="solar:trash-bin-trash-line-duotone" width="20" height="20" />
+          <span class="menu-name" style="margin-left: 16px">{{$t('mailDeleted')}}</span>
         </el-menu-item>
         <el-menu-item @click="router.push({name: 'send'})" index="send" v-perm="'email:send'"
                       :class="route.meta.name === 'send' ? 'choose-item' : ''">
@@ -39,7 +54,7 @@
           <Icon icon="fluent:data-pie-20-regular" width="24" height="24" />
           <span class="menu-name" style="margin-left: 13px">{{$t('analytics')}}</span>
         </el-menu-item>
-        <el-menu-item @click="router.push({name: 'user'})" index="setting" v-perm="'user:query'"
+        <el-menu-item @click="router.push({name: 'user'})" index="user" v-perm="'user:query'"
                       :class="route.meta.name === 'user' ? 'choose-item' : ''">
           <Icon icon="si:user-alt-2-line" width="20" height="20" />
           <span class="menu-name" style="margin-left: 16px">{{$t('allUsers')}}</span>

@@ -19,6 +19,11 @@ app.delete('/email/delete', async (c) => {
 	return c.json(result.ok());
 });
 
+app.put('/email/folder', async (c) => {
+	await emailService.move(c, await c.req.json(), userContext.getUserId(c));
+	return c.json(result.ok());
+});
+
 app.get('/email/attList', async (c) => {
 	const attList = await attService.list(c, c.req.query(), userContext.getUserId(c));
 	return c.json(result.ok(attList));
@@ -33,4 +38,3 @@ app.put('/email/read', async (c) => {
 	await emailService.read(c, await c.req.json(), userContext.getUserId(c));
 	return c.json(result.ok());
 })
-

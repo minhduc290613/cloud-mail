@@ -634,3 +634,17 @@ function submitRegister() {
   .login-domain-popper .el-select-dropdown__list { max-height: 180px; overflow-y: auto; }
 }
 </style>
+
+
+<style lang="scss">
+/* Domain suffix selector: giữ ô chọn nằm gọn trong append, không đè lên ô email. */
+.email-input :deep(.el-input-group__append) { min-width: 0 !important; overflow: visible !important; }
+.email-input :deep(.el-input-group__append > div) { min-width: 0; max-width: 100%; display: flex; align-items: center; }
+.email-input :deep(.el-input-group__append > div > div:last-child) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; }
+.login-domain-popper { max-width: min(420px, calc(100vw - 24px)) !important; }
+@media (max-width: 767px) {
+  .email-input :deep(.el-input-group__append) { width: 42% !important; padding-left: 8px !important; }
+  .email-input :deep(.el-input-group__prepend), .email-input :deep(.el-input__wrapper) { min-width: 0; }
+  .login-domain-popper { position: fixed !important; left: 12px !important; right: 12px !important; top: auto !important; bottom: 22vh !important; width: auto !important; max-height: 42vh; overflow-y: auto; }
+}
+</style>

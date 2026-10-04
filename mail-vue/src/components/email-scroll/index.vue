@@ -18,6 +18,12 @@
         <Icon v-perm="'email:delete'" class="icon delete" icon="fluent:mail-read-20-regular" width="21" height="21"
               v-if="getSelectedMailsIds().length > 0 && showUnread"
               @click="handleRead"/>
+        <Icon class="icon folder-action" icon="solar:archive-down-minimalistic-line-duotone" width="20" height="20"
+              v-if="getSelectedMailsIds().length > 0 && props.type === 'email' && currentFolder !== 'archive'"
+              @click="moveSelected('archive')" />
+        <Icon class="icon folder-action" icon="solar:shield-warning-line-duotone" width="20" height="20"
+              v-if="getSelectedMailsIds().length > 0 && props.type === 'email' && currentFolder !== 'spam'"
+              @click="moveSelected('spam')" />
       </div>
 
       <div class="header-right">
@@ -247,6 +253,7 @@ import {useI18n} from "vue-i18n";
 import {EmailUnreadEnum} from "@/enums/email-enum.js";
 import { UseVirtualList } from '@vueuse/components'
 import { useScroll } from '@vueuse/core'
+import {emailMove} from '@/request/email.js'
 
 const props = defineProps({
   getEmailList: Function,
@@ -298,6 +305,7 @@ const props = defineProps({
   }
 })
 
+const currentFolder = computed(() => new URLSearchParams(location.search).get('folder') || 'inbox')
 const emit = defineEmits(['jump', 'refresh-before', 'delete-draft', 'right-search'])
 const {t} = useI18n()
 const settingStore = useSettingStore()
@@ -683,6 +691,14 @@ function handleDelete() {
       })
       emailStore.deleteIds = emailIds;
     })
+  })
+}
+
+function moveSelected(targetFolder) {
+  const emailIds = getSelectedMailsIds()
+  emailMove(emailIds, targetFolder).then(() => {
+    ElMessage({ message: t(targetFolder === 'archive' ? 'moveToArchive' : 'moveToSpam') + ' thành công', type: 'success', plain: true })
+    deleteEmail(emailIds)
   })
 }
 

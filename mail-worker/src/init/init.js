@@ -32,8 +32,20 @@ const dbInit = {
 		await this.v3_1DB(c);
 		await this.v3_2DB(c);
 		await this.v3_3DB(c);
+		await this.v3_4DB(c);
 		await settingService.refresh(c);
 		return c.text('success');
+	},
+
+	async v3_4DB(c) {
+		try {
+			await c.env.db.batch([
+				c.env.db.prepare(`ALTER TABLE email ADD COLUMN folder TEXT NOT NULL DEFAULT 'inbox';`),
+				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_email_folder_user ON email(user_id, folder, is_del, email_id)`)
+			]);
+		} catch (e) {
+			console.warn(`skip folder migration: ${e.message}`);
+		}
 	},
 
 	async v3_3DB(c) {

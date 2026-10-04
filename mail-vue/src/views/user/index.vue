@@ -10,7 +10,7 @@
         >
         </el-input>
       </div>
-      <el-select v-model="params.status" placeholder="Select" class="status-select"
+      <el-select v-model="params.status" :placeholder="$t('select')" class="status-select"
                  :style="`width: ${locale === 'en' ? 95 : 80 }px`">
         <el-option :key="-1" :label="$t('all')" :value="-1"/>
         <el-option :key="0" :label="$t('active')" :value="0"/>
