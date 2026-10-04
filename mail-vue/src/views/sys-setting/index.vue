@@ -997,6 +997,8 @@ const dashboardPresets = [
   { id: 'hoan-kiem', label: 'Hồ Hoàn Kiếm', url: 'https://images.unsplash.com/photo-1528127269322-539801943592?auto=format&fit=crop&w=1800&q=85' },
   { id: 'sea', label: 'Biển Việt Nam', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=85' },
   { id: 'mountain', label: 'Núi và mây', url: 'https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1800&q=85' },
+  { id: 'halong-bay', label: 'Vịnh Hạ Long', url: '/image/backgrounds/halong-bay.jpg' },
+  { id: 'mu-cang-chai', label: 'Ruộng bậc thang Mù Cang Chải', url: '/image/backgrounds/mu-cang-chai.jpg' },
 ]
 const customDashboardUrl = ref(settingStore.dashboard?.background || '')
 const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
