@@ -31,10 +31,10 @@
                     type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="submit">
             <template #append v-if="!hideLoginDomain">
               <!-- Sửa: Truyền 'login' vào openSelect -->
-              <div @click.stop="openSelect('login')">
+              <div @click.stop="openSelect">
                 <el-select
                     v-if="show === 'login'"
-                    ref="loginSelect"
+                    ref="mySelect"
                     popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
@@ -69,10 +69,10 @@
                     autocomplete="off" @keyup.enter="submitRegister">
             <template #append v-if="!hideLoginDomain">
               <!-- Sửa: Truyền 'register' vào openSelect -->
-              <div @click.stop="openSelect('register')">
+              <div @click.stop="openSelect">
                 <el-select
                     v-if="show !== 'login'"
-                    ref="registerSelect"
+                    ref="mySelect"
                     popper-class="login-domain-popper"
                     v-model="suffix"
                     :placeholder="$t('select')"
@@ -132,9 +132,9 @@
         <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="bindForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="bind">
           <template #append v-if="!hideLoginDomain">
             <!-- Sửa: Truyền 'bind' vào openSelect -->
-            <div @click.stop="openSelect('bind')">
+            <div @click.stop="openSelect">
               <el-select
-                  ref="bindSelect"
+                  ref="mySelect"
                   popper-class="login-domain-popper"
                   v-model="suffix"
                   :placeholder="$t('select')"
@@ -228,10 +228,7 @@ const form = reactive({
   password: '',
 });
 
-/* Sửa: Khai báo các ref riêng biệt thay cho một ref mySelect chung */
-const loginSelect = ref();
-const registerSelect = ref();
-const bindSelect = ref();
+const mySelect = ref()
 
 const suffix = ref('')
 const registerForm = reactive({
@@ -299,11 +296,8 @@ const background = computed(() => {
   }
 })
 
-/* Sửa: Hàm openSelect nay nhận diện form đang mở để trigger đúng phần tử */
-const openSelect = (formType) => {
-  if (formType === 'login' && loginSelect.value) loginSelect.value.toggleMenu();
-  if (formType === 'register' && registerSelect.value) registerSelect.value.toggleMenu();
-  if (formType === 'bind' && bindSelect.value) bindSelect.value.toggleMenu();
+const openSelect = () => {
+  mySelect.value?.toggleMenu()
 }
 
 const getFullEmail = (email) => {

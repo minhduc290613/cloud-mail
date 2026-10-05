@@ -28,9 +28,9 @@
             </div>
             <div class="dashboard-opacity-row">
               <span>{{ $t('dashboardOverlayOpacity') }}</span>
-              <strong>{{ Math.round((1 - dashboardSurfaceOpacity) * 100) }}%</strong>
+              <strong>{{ dashboardTransparency }}%</strong>
             </div>
-            <el-slider v-model="dashboardSurfaceOpacity" :min="0.12" :max="0.92" :step="0.01" @change="applyDashboardSurfaceOpacity" />
+            <el-slider v-model="dashboardTransparency" :min="1" :max="100" :step="1" @change="applyDashboardTransparency" />
             <div class="dashboard-note">{{ $t('hoangSaTruongSa') }}</div>
           </div>
           <!-- Basic Settings Card -->
@@ -1012,6 +1012,7 @@ const dashboardPresets = [
 const customDashboardUrl = ref(settingStore.dashboard?.background || '')
 const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
 const dashboardSurfaceOpacity = ref(settingStore.dashboard?.surfaceOpacity ?? 0.58)
+const dashboardTransparency = ref(Math.min(100, Math.max(1, Math.round((1 - dashboardSurfaceOpacity.value) * 100))))
 function selectDashboardBackground(url) {
   settingStore.dashboard.background = url
   customDashboardUrl.value = url
@@ -1026,8 +1027,10 @@ function clearDashboardBackground() {
 function applyDashboardAccent(value) {
   if (value) settingStore.dashboard.accent = value
 }
-function applyDashboardSurfaceOpacity(value) {
-  settingStore.dashboard.surfaceOpacity = Number(value ?? 0.58)
+function applyDashboardTransparency(value) {
+  dashboardTransparency.value = Math.min(100, Math.max(1, Number(value ?? 42)))
+  dashboardSurfaceOpacity.value = 1 - dashboardTransparency.value / 100
+  settingStore.dashboard.surfaceOpacity = dashboardSurfaceOpacity.value
 }
 const editTitle = ref('')
 const settingLoading = ref(false)
