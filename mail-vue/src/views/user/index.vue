@@ -11,7 +11,7 @@
         </el-input>
       </div>
       <el-select v-model="params.status" :placeholder="$t('select')" class="status-select"
-                 :style="`width: ${locale === 'en' ? 95 : 80 }px`">
+                 :style="`width: ${locale === 'en' ? 100 : 95 }px`">
         <el-option :key="-1" :label="$t('all')" :value="-1"/>
         <el-option :key="0" :label="$t('active')" :value="0"/>
         <el-option :key="1" :label="$t('banned')" :value="1"/>
