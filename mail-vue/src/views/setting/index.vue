@@ -3,7 +3,10 @@
     <section class="profile-hero">
       <div class="profile-avatar">{{ profileInitial }}</div>
       <div class="profile-hero-copy">
-        <span class="profile-eyebrow">{{ $t('profile') }}</span>
+        <div class="profile-identity">
+          <span class="vn-flag" aria-label="Cờ Việt Nam">★</span>
+          <span class="profile-eyebrow">{{ $t('profile') }}</span>
+        </div>
         <h1>{{ userStore.user.name || userStore.user.email }}</h1>
         <p>{{ userStore.user.email }}</p>
       </div>
@@ -329,4 +332,10 @@ function submitPwd() {
 .profile-section { padding: 22px !important; border: 1px solid var(--el-border-color-light); border-radius: 20px; background: color-mix(in srgb, var(--el-bg-color) 88%, transparent); }
 @keyframes profile-in { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 767px) { .profile-hero { padding: 22px 18px; } .profile-avatar { width: 54px; height: 54px; border-radius: 17px; font-size: 24px; } .profile-hero h1 { font-size: 20px; } .profile-status { position: absolute; right: 16px; top: 16px; font-size: 0; padding: 5px; } .profile-stats { grid-template-columns: 1fr; } }
+</style>
+
+
+<style lang="scss" scoped>
+.profile-identity { display: flex; align-items: center; gap: 9px; }
+.vn-flag { width: 30px; height: 20px; display: inline-flex; align-items: center; justify-content: center; background: #da251d; color: #ffde00; border-radius: 3px; font-size: 14px; line-height: 1; box-shadow: 0 3px 10px rgba(218, 37, 29, .3); }
 </style>

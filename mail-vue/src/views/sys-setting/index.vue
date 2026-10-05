@@ -26,6 +26,11 @@
               <span>{{ $t('customThemeColor') }}</span>
               <el-color-picker v-model="dashboardAccent" @change="applyDashboardAccent" />
             </div>
+            <div class="dashboard-opacity-row">
+              <span>{{ $t('dashboardOverlayOpacity') }}</span>
+              <strong>{{ Math.round((1 - dashboardSurfaceOpacity) * 100) }}%</strong>
+            </div>
+            <el-slider v-model="dashboardSurfaceOpacity" :min="0.12" :max="0.92" :step="0.01" @change="applyDashboardSurfaceOpacity" />
             <div class="dashboard-note">{{ $t('hoangSaTruongSa') }}</div>
           </div>
           <!-- Basic Settings Card -->
@@ -499,6 +504,10 @@
                 <el-button @click="jump('https://protechvn.io.vn')">
                    My Website
                 </el-button>
+              </div>
+              <div class="vietnam-statement">
+                <span class="vn-flag" aria-label="Cờ Việt Nam">★</span>
+                <strong>{{ $t('hoangSaTruongSa') }}</strong>
               </div>
             </div>
           </div>
@@ -1002,6 +1011,7 @@ const dashboardPresets = [
 ]
 const customDashboardUrl = ref(settingStore.dashboard?.background || '')
 const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
+const dashboardSurfaceOpacity = ref(settingStore.dashboard?.surfaceOpacity ?? 0.58)
 function selectDashboardBackground(url) {
   settingStore.dashboard.background = url
   customDashboardUrl.value = url
@@ -1015,6 +1025,9 @@ function clearDashboardBackground() {
 }
 function applyDashboardAccent(value) {
   if (value) settingStore.dashboard.accent = value
+}
+function applyDashboardSurfaceOpacity(value) {
+  settingStore.dashboard.surfaceOpacity = Number(value ?? 0.58)
 }
 const editTitle = ref('')
 const settingLoading = ref(false)
@@ -2375,4 +2388,12 @@ form .el-button {
 .dashboard-theme-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--el-text-color-primary); }
 .dashboard-note { margin-top: 14px; font-size: 12px; color: var(--regular-text-color); }
 @media (max-width: 767px) { .dashboard-presets { grid-template-columns: 1fr; } .dashboard-preset { min-height: 82px; } .dashboard-custom-row { flex-wrap: wrap; } .dashboard-custom-row .el-input { flex-basis: 100%; } }
+</style>
+
+
+<style lang="scss" scoped>
+.dashboard-opacity-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--el-text-color-primary); }
+.dashboard-opacity-row strong { color: var(--dashboard-accent, #6d5dfc); }
+.vietnam-statement { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 14px; border: 1px solid rgba(218, 37, 29, .22); border-radius: 12px; background: rgba(218, 37, 29, .06); color: var(--el-text-color-primary); }
+.vn-flag { width: 30px; height: 20px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; background: #da251d; color: #ffde00; border-radius: 3px; font-size: 14px; line-height: 1; box-shadow: 0 3px 10px rgba(218, 37, 29, .3); }
 </style>

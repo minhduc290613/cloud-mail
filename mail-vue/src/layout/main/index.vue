@@ -1,5 +1,5 @@
 <template>
-  <div :class="accountShow && hasPerm('account:query') ? 'main-box-show' : 'main-box-hide'">
+  <div :class="[accountShow && hasPerm('account:query') ? 'main-box-show' : 'main-box-hide', { 'dashboard-content-transparent': settingStore.dashboard?.background }]">
     <div :class="accountShow && hasPerm('account:query') ? 'block-show' : 'block-hide'" @click="uiStore.accountShow = false"></div>
     <account  :class="accountShow && hasPerm('account:query') ? 'show' : 'hide'" />
     <router-view class="main-view" v-slot="{ Component,route }">
@@ -163,6 +163,8 @@ const handleResize = () => {
 .main-view {
   background: var(--el-bg-color);
 }
+
+.dashboard-content-transparent .main-view { background: color-mix(in srgb, var(--el-bg-color) var(--dashboard-surface-opacity), transparent); backdrop-filter: blur(8px); }
 
 
 .navigation {

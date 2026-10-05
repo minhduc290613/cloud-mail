@@ -9,7 +9,7 @@
         :class="(uiStore.asideShow && isMobile)? 'overlay-show':'overlay-hide'"
         @click="uiStore.asideShow = false"
     ></div>
-    <el-container class="main-container" :style="dashboardStyle">
+    <el-container class="main-container" :class="{ 'dashboard-has-background': settingStore.dashboard?.background }" :style="dashboardStyle">
       <el-main>
         <el-header>
             <Header />
@@ -37,6 +37,7 @@ const dashboardStyle = computed(() => {
   return {
     '--dashboard-accent': dashboard.accent || '#6d5dfc',
     '--dashboard-overlay': dashboard.overlay ?? 0.08,
+    '--dashboard-surface-opacity': `${Math.round((dashboard.surfaceOpacity ?? 0.58) * 100)}%`,
     ...(dashboard.background ? {
       backgroundImage: `linear-gradient(rgba(12, 16, 38, ${dashboard.overlay ?? 0.08}), rgba(12, 16, 38, ${dashboard.overlay ?? 0.08})), url(${dashboard.background})`,
       backgroundSize: 'cover',
@@ -111,6 +112,8 @@ onBeforeUnmount(() => {
   -webkit-overflow-scrolling: touch;
 }
 
+.dashboard-has-background { background-color: transparent; }
+
 .el-main {
   padding: 0;
 }
@@ -120,6 +123,8 @@ onBeforeUnmount(() => {
   border-bottom: solid 1px var(--el-border-color);
   padding: 0 0 0 0;
 }
+
+.dashboard-has-background .el-header { background: color-mix(in srgb, var(--el-bg-color) var(--dashboard-surface-opacity), transparent); backdrop-filter: blur(14px); }
 
 .overlay-show {
   position: fixed;

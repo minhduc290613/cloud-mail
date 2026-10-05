@@ -11,6 +11,7 @@ export const useSettingStore = defineStore('setting', {
         dashboard: {
             background: '',
             overlay: 0.08,
+            surfaceOpacity: 0.58,
             accent: '#6d5dfc'
         },
     }),

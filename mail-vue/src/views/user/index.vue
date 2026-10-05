@@ -1330,3 +1330,23 @@ function adjustWidth() {
   align-items: start;
 }
 </style>
+
+
+<style lang="scss" scoped>
+/* Bảng người dùng: giữ cột thao tác, cho phép cuộn ngang thay vì ép chữ chồng lên nhau. */
+.user-box { min-width: 0; }
+.header-actions { position: relative; z-index: 2; }
+.scrollbar { overflow-x: auto !important; }
+:deep(.el-table) { min-width: 920px; }
+:deep(.el-table .cell) { line-height: 1.45; }
+:deep(.el-table th.el-table__cell), :deep(.el-table td.el-table__cell) { padding: 10px 0; }
+:deep(.el-table .el-button) { white-space: nowrap; }
+@media (max-width: 767px) {
+  .header-actions { gap: 8px; padding: 8px 10px; }
+  .header-actions .search { flex: 1 1 170px; min-width: 150px; }
+  .header-actions .search-input { width: 100%; }
+  .status-select { width: 88px !important; }
+  .scrollbar { height: calc(100% - 104px); }
+  :deep(.el-table) { min-width: 860px; }
+}
+</style>
