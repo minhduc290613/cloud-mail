@@ -30,8 +30,7 @@
           <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="form.email"
                     type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="submit">
             <template #append v-if="!hideLoginDomain">
-              <!-- Sửa: Truyền 'login' vào openSelect -->
-              <div @click.stop="openSelect">
+              <div @click.stop="openSelect" style="cursor: pointer; display: flex; align-items: center;">
                 <el-select
                     v-if="show === 'login'"
                     ref="mySelect"
@@ -47,7 +46,7 @@
                       :value="item"
                   />
                 </el-select>
-                <div style="color: var(--el-text-color-primary)">
+                <div style="color: var(--el-text-color-primary); display: flex; align-items: center; gap: 2px;">
                   <span>{{ suffix }}</span>
                   <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
                 </div>
@@ -68,8 +67,7 @@
           <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="registerForm.email" type="text" :placeholder="$t('emailAccount')"
                     autocomplete="off" @keyup.enter="submitRegister">
             <template #append v-if="!hideLoginDomain">
-              <!-- Sửa: Truyền 'register' vào openSelect -->
-              <div @click.stop="openSelect">
+              <div @click.stop="openSelect" style="cursor: pointer; display: flex; align-items: center;">
                 <el-select
                     v-if="show !== 'login'"
                     ref="mySelect"
@@ -85,7 +83,7 @@
                       :value="item"
                   />
                 </el-select>
-                <div>
+                <div style="display: flex; align-items: center; gap: 2px;">
                   <span>{{ suffix }}</span>
                   <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
                 </div>
@@ -127,12 +125,11 @@
       </div>
     </div>
     
-    <el-dialog class="bind-dialog" v-model="showBindForm"  :title="$t('emailAccount')" >
+    <el-dialog class="bind-dialog" v-model="showBindForm" :title="$t('emailAccount')">
       <div class="bind-container">
         <el-input :class="!hideLoginDomain ? 'email-input' : ''" v-model="bindForm.email" type="text" :placeholder="$t('emailAccount')" autocomplete="off" @keyup.enter="bind">
           <template #append v-if="!hideLoginDomain">
-            <!-- Sửa: Truyền 'bind' vào openSelect -->
-            <div @click.stop="openSelect">
+            <div @click.stop="openSelect" style="cursor: pointer; display: flex; align-items: center;">
               <el-select
                   ref="mySelect"
                   popper-class="login-domain-popper"
@@ -147,7 +144,7 @@
                     :value="item"
                 />
               </el-select>
-              <div>
+              <div style="display: flex; align-items: center; gap: 2px;">
                 <span>{{ suffix }}</span>
                 <Icon class="setting-icon" icon="mingcute:down-small-fill" width="20" height="20"/>
               </div>
@@ -172,8 +169,7 @@
 import router from "@/router";
 import {useRoute} from "vue-router";
 import {computed, nextTick, reactive, ref} from "vue";
-import {login} from "@/request/login.js";
-import {register} from "@/request/login.js";
+import {login, register} from "@/request/login.js";
 import {websiteConfig} from "@/request/setting.js";
 import {isEmail} from "@/utils/verify-utils.js";
 import {useSettingStore} from "@/store/setting.js";
@@ -251,9 +247,7 @@ window.onTurnstileSuccess = (token) => {
 };
 
 window.onTurnstileError = (e) => {
-  if (verifyErrorCount >= 4) {
-    return
-  }
+  if (verifyErrorCount >= 4) return;
   verifyErrorCount++
   console.warn('人机验加载失败', e)
   setTimeout(() => {
@@ -267,13 +261,8 @@ window.onTurnstileError = (e) => {
   }, 1500)
 };
 
-window.loadAfter = (e) => {
-  console.log('loadAfter')
-}
-
-window.loadBefore = (e) => {
-  console.log('loadBefore')
-}
+window.loadAfter = (e) => { console.log('loadAfter') }
+window.loadBefore = (e) => { console.log('loadBefore') }
 
 const loginOpacity = computed(() => {
   const opacity = settingStore.settings.loginOpacity
@@ -282,11 +271,10 @@ const loginOpacity = computed(() => {
 
 const hideLoginDomain = computed(() => settingStore.settings.loginDomain === 1)
 
-/* Sửa: Cập nhật background mặc định bằng hình ảnh của bạn */
 const background = computed(() => {
   const bgUrl = settingStore.settings.background 
     ? cvtR2Url(settingStore.settings.background)
-    : 'https://github.com/minhduc290613/cloud-mail/blob/4c7c1b1a0e827a455c671e071c2fc5d907146a81/mail-vue/public/image/background.jpeg?raw=true'; // <-- THAY TÊN FILE ẢNH CỦA BẠN TẠI ĐÂY
+    : 'https://github.com/minhduc290613/cloud-mail/blob/4c7c1b1a0e827a455c671e071c2fc5d907146a81/mail-vue/public/image/background.jpeg?raw=true';
     
   return {
     'background-image': `url(${bgUrl})`,
@@ -529,51 +517,64 @@ function submitRegister() {
 }
 </script>
 
-<style>
-.el-select-dropdown__item { padding: 0 15px; }
-.no-autofill-pwd .el-input__inner { -webkit-text-security: disc !important; }
-</style>
-
 <style lang="scss" scoped>
-/* Xóa gradient màu xanh cũ vì đã dùng ảnh tĩnh */
 #login-box { font: 100% Arial, sans-serif; height: 100%; margin: 0; padding: 0; overflow-x: hidden; display: grid; grid-template-columns: 1fr; }
-.form-wrapper { animation: cm-login-in .7s cubic-bezier(.2,.8,.2,1) both; }
-.container { border-radius: 24px; box-shadow: 0 24px 70px rgba(27, 32, 69, .16); backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,.38); }
-.form-title { letter-spacing: -.03em; }
-.btn { border-radius: 12px; transition: transform .22s ease, box-shadow .22s ease; }
-.btn:hover { transform: translateY(-2px); }
-@keyframes cm-login-in { from { opacity: 0; transform: translateY(22px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.form-wrapper { animation: cm-login-in .7s cubic-bezier(.2,.8,.2,1) both; position: fixed; right: 0; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; width: min(48vw, 660px); }
 
-.form-wrapper { position: fixed; right: 0; height: 100%; z-index: 10; display: flex; align-items: center; justify-content: center; @media (max-width: 767px) { width: 100%; } }
-.container { background: v-bind(loginOpacity); padding-left: 40px; padding-right: 40px; display: flex; flex-direction: column; justify-content: center; width: 450px; height: 100%; border-left: 1px solid var(--login-border); box-shadow: var(--el-box-shadow-light); @media (max-width: 1024px) { padding: 20px 18px; width: 384px; margin-left: 18px; } @media (max-width: 767px) { border: 1px solid var(--login-border); padding: 20px 18px; border-radius: 6px; height: fit-content; width: 100%; margin-right: 18px; margin-left: 18px; }
-  .btn { height: 36px; width: 100%; border-radius: 6px; }
-  .form-desc { margin-top: 5px; margin-bottom: 18px; color: var(--form-desc-color); }
-  .form-title { font-weight: bold; font-size: 22px !important; }
-  .switch { margin-top: 20px; text-align: center; span { color: var(--login-switch-color); cursor: pointer; } }
-  :deep(.el-input__wrapper) { border-radius: 6px; background: var(--el-bg-color); }
-  .email-input :deep(.el-input__wrapper) { border-radius: 6px 0 0 6px; background: var(--el-bg-color); }
-  .el-input { height: 38px; width: 100%; margin-bottom: 18px; :deep(.el-input__inner) { height: 36px; } }
+.container { 
+  background: v-bind(loginOpacity); 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: center; 
+  width: min(420px, calc(100vw - 48px)) !important; 
+  height: auto !important; 
+  min-height: 520px; 
+  margin: 0 auto !important; 
+  padding: 42px 42px 34px !important; 
+  border: 1px solid rgba(255,255,255,.55) !important; 
+  border-radius: 28px !important; 
+  box-shadow: 0 28px 80px rgba(18, 19, 58, .3) !important; 
+  backdrop-filter: blur(24px);
+
+  .btn { height: 44px !important; width: 100%; border-radius: 12px !important; transition: transform .22s ease, box-shadow .22s ease; }
+  .btn:hover { transform: translateY(-2px); }
+  .form-desc { margin-top: 5px; margin-bottom: 18px; color: var(--form-desc-color); line-height: 1.6; }
+  .form-title { font-weight: bold; font-size: 30px !important; color: #17182d; letter-spacing: -.03em; }
+  .form-kicker { display: block; color: #6d5dfc; margin-bottom: 8px; font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .72; }
+  .switch { margin-top: 20px; text-align: center; font-size: 13px; span { color: var(--login-switch-color); cursor: pointer; } }
+  
+  .el-input { height: 44px; width: 100%; margin-bottom: 18px; }
+  
+  /* Cấu hình chung cho khung input */
+  :deep(.el-input__wrapper) { 
+    min-height: 44px; 
+    border-radius: 12px !important; 
+    background: rgba(255,255,255,.82); 
+  }
+
+  /* Sửa lỗi đứt đoạn ô nhập Email và đuôi tên miền */
+  .email-input {
+    :deep(.el-input__wrapper) { 
+      border-top-right-radius: 0 !important; 
+      border-bottom-right-radius: 0 !important; 
+      box-shadow: 1px 0 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 1px 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 -1px 0 0 var(--el-input-border-color, #dcdfe6) inset !important;
+    }
+    :deep(.el-input-group__append) { 
+      border-top-left-radius: 0 !important; 
+      border-bottom-left-radius: 0 !important; 
+      border-top-right-radius: 12px !important; 
+      border-bottom-right-radius: 12px !important; 
+      background: rgba(255,255,255,.82) !important;
+      padding: 0 12px !important;
+      box-shadow: -1px 0 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 1px 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 -1px 0 0 var(--el-input-border-color, #dcdfe6) inset !important;
+    }
+  }
 }
 
-:deep(.el-select-dropdown__item) { padding: 0 10px; }
-:deep(.bind-dialog) { width: 400px !important; @media (max-width: 440px) { width: calc(100% - 40px) !important; margin-right: 20px !important; margin-left: 20px !important; } }
-.bind-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
-.setting-icon { position: relative; top: 6px; }
-.github { position: fixed; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: var(--el-bg-color); bottom: 10px; right: 10px; z-index: 1000; border: 1px solid var(--el-border-color-light); box-shadow: var(--el-box-shadow-light); cursor: pointer; }
-:deep(.el-input-group__append) { padding: 0 !important; padding-left: 8px !important; padding-right: 4px !important; background: var(--el-bg-color); border-radius: 0 8px 8px 0; }
-:deep(.el-button+.el-button) { margin: 0; }
-.register-turnstile { margin-bottom: 18px; }
-.select { position: absolute; right: 30px; width: 100px; opacity: 0; pointer-events: none; visibility: hidden; }
-.custom-style { margin-bottom: 10px; }
-.custom-style .el-segmented { --el-border-radius-base: 6px; width: 180px; }
-/* Đã xóa toàn bộ CSS liên quan tới animation cloud */
-</style>
-
-<style lang="scss" scoped>
 .brand-panel { position: fixed; inset: 0 auto 0 0; width: min(58vw, 760px); padding: clamp(38px, 8vw, 120px) clamp(28px, 8vw, 120px); color: #fff; z-index: 2; overflow: hidden; background: linear-gradient(135deg, rgba(19, 20, 48, .90), rgba(39, 32, 101, .85) 58%, rgba(24, 150, 145, .82)); clip-path: polygon(0 0, 100% 0, 88% 100%, 0 100%); }
 .brand-mark, .mobile-brand-mark { display: grid; place-items: center; color: #fff; background: linear-gradient(135deg, #8174ff, #2ed9bd); box-shadow: 0 12px 30px rgba(75, 69, 190, .38); }
 .brand-mark { width: 58px; height: 58px; border-radius: 18px; margin-bottom: 32px; animation: cm-mark-pulse 4s ease-in-out infinite; }
-.brand-eyebrow, .form-kicker { font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .72; }
+.brand-eyebrow { font-size: 11px; font-weight: 800; letter-spacing: .18em; opacity: .72; }
 .brand-panel h1 { margin: 18px 0 22px; font-size: clamp(38px, 5vw, 72px); line-height: .98; letter-spacing: -.06em; }
 .brand-panel h1 span { color: #83e9d8; }
 .brand-copy { max-width: 430px; color: rgba(255,255,255,.72); font-size: 16px; line-height: 1.75; }
@@ -584,61 +585,72 @@ function submitRegister() {
 .orbit-one { width: 520px; height: 520px; right: -250px; top: 8%; animation: cm-orbit 16s linear infinite; }
 .orbit-two { width: 740px; height: 740px; right: -360px; top: -2%; opacity: .55; animation: cm-orbit 24s linear infinite reverse; }
 .mobile-brand-mark { display: none; }
-.form-wrapper { width: min(48vw, 660px); }
-.container { width: min(420px, calc(100vw - 48px)) !important; height: auto !important; min-height: 520px; margin: 0 auto !important; padding: 42px 42px 34px !important; border: 1px solid rgba(255,255,255,.55) !important; border-radius: 28px !important; background: rgba(255,255,255,.88) !important; box-shadow: 0 28px 80px rgba(18, 19, 58, .3) !important; backdrop-filter: blur(24px); }
-.container .form-kicker { display: block; color: #6d5dfc; margin-bottom: 8px; }
-.container .form-title { color: #17182d; font-size: 30px !important; }
-.container .form-desc { line-height: 1.6; }
-.container .btn { height: 44px !important; border-radius: 12px !important; }
-.container :deep(.el-input__wrapper) { min-height: 44px; border-radius: 12px !important; background: rgba(255,255,255,.82); }
-.container .switch { font-size: 13px; }
+
+.bind-container { display: grid; grid-template-columns: 1fr; gap: 15px; }
+.setting-icon { margin-left: 2px; }
+.github { position: fixed; width: 35px; height: 35px; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: var(--el-bg-color); bottom: 10px; right: 10px; z-index: 1000; border: 1px solid var(--el-border-color-light); box-shadow: var(--el-box-shadow-light); cursor: pointer; }
+.register-turnstile { margin-bottom: 18px; }
+.select { position: absolute; opacity: 0; pointer-events: none; visibility: hidden; width: 0; height: 0; }
+
+@keyframes cm-login-in { from { opacity: 0; transform: translateY(22px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
 @keyframes cm-mark-pulse { 0%,100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-5px) rotate(3deg); } }
 @keyframes cm-orbit { from { transform: rotate(0) translateX(12px); } to { transform: rotate(360deg) translateX(12px); } }
-@media (max-width: 1024px) { .brand-panel { width: 50vw; padding: 52px 34px; } .brand-panel h1 { font-size: 42px; } .form-wrapper { width: 56vw; } }
-@media (max-width: 767px) { .brand-panel { display: none; } .form-wrapper { width: 100%; } .container { min-height: 0; padding: 32px 24px 26px !important; margin: 18px !important; width: calc(100% - 36px) !important; } .mobile-brand-mark { display: grid; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 22px; } }
+
+@media (max-width: 1024px) { 
+  .brand-panel { width: 50vw; padding: 52px 34px; } 
+  .brand-panel h1 { font-size: 42px; } 
+  .form-wrapper { width: 56vw; } 
+}
+@media (max-width: 767px) { 
+  .brand-panel { display: none; } 
+  .form-wrapper { width: 100%; position: relative; right: auto; min-height: calc(100dvh - 36px); padding: 0 12px; box-sizing: border-box; } 
+  .container { min-height: 0; padding: 32px 24px 26px !important; margin: 18px !important; width: calc(100% - 36px) !important; } 
+  .mobile-brand-mark { display: grid; width: 48px; height: 48px; border-radius: 15px; margin-bottom: 22px; } 
+}
 </style>
 
 <style lang="scss">
-.login-domain-popper { max-width: calc(100vw - 32px) !important; border-radius: 14px !important; overflow: hidden; }
-.login-domain-popper .el-select-dropdown__item { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Style Toàn cục (Global) cho Popper Dropdown chọn domain */
+.login-domain-popper { 
+  max-width: min(320px, calc(100vw - 32px)) !important; 
+  border-radius: 12px !important; 
+  overflow: hidden; 
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
+}
+.login-domain-popper .el-select-dropdown__item { 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  padding: 0 16px;
+}
+
+#login-box.has-background { background: transparent !important; }
+#login-box .login-background { 
+  position: fixed; 
+  inset: 0; 
+  z-index: 0; 
+  width: 100%; 
+  height: 100%; 
+  min-height: 100dvh; 
+  background-size: cover !important; 
+  background-position: center center !important; 
+  background-repeat: no-repeat !important; 
+}
+#login-box.has-background::before { 
+  content: ''; 
+  position: fixed; 
+  inset: 0; 
+  z-index: 1; 
+  pointer-events: none; 
+  background: linear-gradient(135deg, rgba(18, 18, 42, .18), rgba(36, 200, 181, .08)); 
+}
+#login-box.has-background .form-wrapper { z-index: 10; }
+
 @media (max-width: 767px) {
   body { overflow-x: hidden; }
   #login-box { min-height: 100dvh; padding: 18px 0; box-sizing: border-box; }
-  #login-box .form-wrapper { position: relative; right: auto; min-height: calc(100dvh - 36px); padding: 0 12px; box-sizing: border-box; }
-  #login-box .container { box-sizing: border-box; width: 100% !important; max-width: 430px; margin: 0 auto !important; padding: 28px 20px 24px !important; border-radius: 24px !important; }
   #login-box .form-title { display: block; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 28px !important; }
   #login-box .form-desc { display: block; margin-bottom: 20px; font-size: 14px; }
   #login-box .el-input { width: 100%; }
-  #login-box .el-input-group__append { max-width: 46%; overflow: hidden; }
-  #login-box .el-input-group__append > div { max-width: 100%; overflow: hidden; }
-  #login-box .el-input-group__append span { display: inline-block; max-width: calc(100vw * .34); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; vertical-align: middle; }
-  #login-box .btn { min-height: 44px; }
-}
-</style>
-
-<style lang="scss">
-#login-box.has-background { background: transparent !important; }
-#login-box .login-background { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; min-height: 100dvh; background-size: cover !important; background-position: center center !important; background-repeat: no-repeat !important; }
-#login-box.has-background::before { content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(135deg, rgba(18, 18, 42, .18), rgba(36, 200, 181, .08)); }
-#login-box.has-background .form-wrapper { z-index: 10; }
-@media (max-width: 767px) {
-  #login-box.has-background { background: transparent !important; }
-  #login-box.has-background .login-background { background-attachment: scroll !important; }
-  .login-domain-popper { position: fixed !important; left: 16px !important; right: 16px !important; top: 58% !important; bottom: auto !important; width: auto !important; max-width: none !important; transform: none !important; z-index: 2000 !important; }
-  .login-domain-popper .el-select-dropdown__list { max-height: 180px; overflow-y: auto; }
-}
-</style>
-
-
-<style lang="scss">
-/* Domain suffix selector: giữ ô chọn nằm gọn trong append, không đè lên ô email. */
-.email-input :deep(.el-input-group__append) { min-width: 0 !important; overflow: visible !important; }
-.email-input :deep(.el-input-group__append > div) { min-width: 0; max-width: 100%; display: flex; align-items: center; }
-.email-input :deep(.el-input-group__append > div > div:last-child) { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: flex; align-items: center; }
-.login-domain-popper { max-width: min(420px, calc(100vw - 24px)) !important; }
-@media (max-width: 767px) {
-  .email-input :deep(.el-input-group__append) { width: 42% !important; padding-left: 8px !important; }
-  .email-input :deep(.el-input-group__prepend), .email-input :deep(.el-input__wrapper) { min-width: 0; }
-  .login-domain-popper { position: fixed !important; left: 12px !important; right: 12px !important; top: auto !important; bottom: 22vh !important; width: auto !important; max-height: 42vh; overflow-y: auto; }
 }
 </style>
