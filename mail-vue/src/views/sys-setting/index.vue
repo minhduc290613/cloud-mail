@@ -2394,6 +2394,11 @@ form .el-button {
 <style lang="scss" scoped>
 .dashboard-opacity-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--el-text-color-primary); }
 .dashboard-opacity-row strong { color: var(--dashboard-accent, #6d5dfc); }
+.dashboard-customization-card :deep(.el-slider) { padding: 10px 8px 2px; }
+.dashboard-customization-card :deep(.el-slider__runway) { height: 8px; margin: 10px 0; background: rgba(109, 93, 252, .18); border-radius: 99px; }
+.dashboard-customization-card :deep(.el-slider__bar) { height: 8px; border-radius: 99px; background: linear-gradient(90deg, #6d5dfc, #24c8b5); }
+.dashboard-customization-card :deep(.el-slider__button-wrapper) { top: -16px; width: 40px; height: 40px; }
+.dashboard-customization-card :deep(.el-slider__button) { width: 20px; height: 20px; border: 4px solid #6d5dfc; background: #fff; box-shadow: 0 2px 10px rgba(109, 93, 252, .45); }
 .vietnam-statement { display: flex; align-items: center; gap: 10px; margin-top: 18px; padding: 12px 14px; border: 1px solid rgba(218, 37, 29, .22); border-radius: 12px; background: rgba(218, 37, 29, .06); color: var(--el-text-color-primary); }
 .vn-flag { width: 30px; height: 20px; display: inline-flex; align-items: center; justify-content: center; flex: 0 0 auto; background: #da251d; color: #ffde00; border-radius: 3px; font-size: 14px; line-height: 1; box-shadow: 0 3px 10px rgba(218, 37, 29, .3); }
 </style>

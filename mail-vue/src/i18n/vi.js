@@ -14,7 +14,7 @@ const vi = {
   profile: 'Hồ sơ', change: 'Thay đổi', changePwdBtn: 'Đổi mật khẩu', username: 'Tên người dùng', trustLevel: 'Cấp độ', password: 'Mật khẩu',
   delAccount: 'Xóa tài khoản', delAccountMsg: 'Thao tác này sẽ xóa vĩnh viễn tài khoản và toàn bộ dữ liệu, không thể khôi phục.',
   totalReceived: 'Tổng thư nhận', totalSent: 'Tổng thư gửi', totalMailboxes: 'Tổng địa chỉ email', totalUsers: 'Tổng người dùng',
-  deleted: 'Đã xóa', selectDeleted: 'Đã xóa', active: 'Đang hoạt động', emailSource: 'Nguồn email', userGrowth: 'Tăng trưởng người dùng', emailGrowth: 'Tăng trưởng email',
+  deleted: 'Đã xóa', archive: 'Thư lưu trữ', trash: 'Thư rác', selectDeleted: 'Đã xóa', active: 'Đang hoạt động', emailSource: 'Nguồn email', userGrowth: 'Tăng trưởng người dùng', emailGrowth: 'Tăng trưởng email',
   emailSent: 'Đã gửi', emailReceived: 'Đã nhận', sentToday: 'Gửi hôm nay', total: 'Tổng số', growthTotalUsers: 'Tổng người dùng',
   searchByEmail: 'Nhập email để tìm kiếm', tabEmailAddress: 'Email', tabReceived: 'Đã nhận', tabSent: 'Đã gửi', tabMailboxes: 'Địa chỉ',
   tabRegisteredAt: 'Ngày đăng ký', tabStatus: 'Trạng thái', tabRole: 'Vai trò', roleName: 'Tên', role: 'Vai trò', all: 'Tất cả', normal: 'Bình thường', banned: 'Đã khóa', reset: 'Đặt lại', restore: 'Khôi phục',
