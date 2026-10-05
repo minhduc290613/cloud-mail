@@ -554,19 +554,18 @@ function submitRegister() {
 
   /* Sửa lỗi đứt đoạn ô nhập Email và đuôi tên miền */
   .email-input {
-    :deep(.el-input__wrapper) { 
-      border-top-right-radius: 0 !important; 
-      border-bottom-right-radius: 0 !important; 
-      box-shadow: 1px 0 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 1px 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 -1px 0 0 var(--el-input-border-color, #dcdfe6) inset !important;
+    /* Triệt tiêu bo góc bên phải của ô nhập email */
+    :deep(.el-input__wrapper) {
+      border-top-right-radius: 0 !important;
+      border-bottom-right-radius: 0 !important;
     }
-    :deep(.el-input-group__append) { 
-      border-top-left-radius: 0 !important; 
-      border-bottom-left-radius: 0 !important; 
-      border-top-right-radius: 12px !important; 
-      border-bottom-right-radius: 12px !important; 
-      background: rgba(255,255,255,.82) !important;
-      padding: 0 12px !important;
-      box-shadow: -1px 0 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 1px 0 0 var(--el-input-border-color, #dcdfe6) inset, 0 -1px 0 0 var(--el-input-border-color, #dcdfe6) inset !important;
+    
+    /* Triệt tiêu bo góc bên trái của ô đuôi domain */
+    :deep(.el-input-group__append) {
+      border-top-left-radius: 0 !important;
+      border-bottom-left-radius: 0 !important;
+      border-top-right-radius: 12px !important;
+      border-bottom-right-radius: 12px !important;
     }
   }
 }
@@ -610,11 +609,10 @@ function submitRegister() {
 </style>
 
 <style lang="scss">
-/* Style Toàn cục (Global) cho Popper Dropdown chọn domain */
-.login-domain-popper { 
-  max-width: min(320px, calc(100vw - 32px)) !important; 
-  border-radius: 12px !important; 
-  overflow: hidden; 
+/* Bỏ định vị thủ công, chỉ giữ lại style kích thước/bo góc cho popper */
+.login-domain-popper {
+  /* Bỏ: position: fixed !important; top: ... !important; */
+  border-radius: 12px !important;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15) !important;
 }
 .login-domain-popper .el-select-dropdown__item { 
