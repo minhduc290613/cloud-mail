@@ -77,7 +77,7 @@
               {{ tzDayjs(props.row.createTime).format('YYYY-MM-DD HH:mm') }}
             </template>
           </el-table-column>
-          <el-table-column v-if="statusShow" min-width="60px" :label="$t('tabStatus')" prop="status">
+          <el-table-column v-if="statusShow" min-width="95px" :label="$t('tabStatus')" prop="status">
             <template #default="props">
               <el-tag disable-transitions v-if="props.row.isDel === 1" type="info">{{ $t('deleted') }}</el-tag>
               <el-tag disable-transitions v-else-if="props.row.status === 0" type="primary">{{ $t('active') }}</el-tag>
