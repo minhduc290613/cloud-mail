@@ -1347,15 +1347,15 @@ function adjustWidth() {
   .header-actions .search-input { width: 100%; }
   .status-select { width: 88px !important; }
   .scrollbar { height: calc(100% - 104px); }
-  :deep(.el-table) { min-width: 100%; table-layout: fixed; }
+  :deep(.el-table) { width: 100% !important; min-width: 100%; table-layout: fixed; }
   :deep(.el-table th:nth-child(3)), :deep(.el-table td:nth-child(3)),
   :deep(.el-table th:nth-child(4)), :deep(.el-table td:nth-child(4)),
   :deep(.el-table th:nth-child(5)), :deep(.el-table td:nth-child(5)),
   :deep(.el-table th:nth-child(6)), :deep(.el-table td:nth-child(6)),
   :deep(.el-table th:nth-child(8)), :deep(.el-table td:nth-child(8)) { display: none; }
-  :deep(.el-table th:nth-child(2)), :deep(.el-table td:nth-child(2)) { width: 45%; }
-  :deep(.el-table th:nth-child(7)), :deep(.el-table td:nth-child(7)) { width: 27%; }
-  :deep(.el-table th:nth-child(9)), :deep(.el-table td:nth-child(9)) { width: 28%; }
+  :deep(.el-table th:nth-child(2)), :deep(.el-table td:nth-child(2)) { width: 48% !important; }
+  :deep(.el-table th:nth-child(7)), :deep(.el-table td:nth-child(7)) { width: 25% !important; }
+  :deep(.el-table th:nth-child(9)), :deep(.el-table td:nth-child(9)) { width: 27% !important; }
   :deep(.el-table .cell) { padding: 0 7px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 }
 </style>

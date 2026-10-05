@@ -125,6 +125,16 @@ onBeforeUnmount(() => {
 }
 
 .dashboard-has-background .el-header { background: color-mix(in srgb, var(--el-bg-color) var(--dashboard-surface-opacity), transparent); backdrop-filter: blur(14px); }
+.dashboard-has-background :deep(.settings-card),
+.dashboard-has-background :deep(.user-box),
+.dashboard-has-background :deep(.el-table),
+.dashboard-has-background :deep(.el-table__inner-wrapper),
+.dashboard-has-background :deep(.el-table tr),
+.dashboard-has-background :deep(.el-table th.el-table__cell),
+.dashboard-has-background :deep(.el-table td.el-table__cell) {
+  background: color-mix(in srgb, var(--el-bg-color) var(--dashboard-surface-opacity), transparent) !important;
+  backdrop-filter: blur(8px);
+}
 
 .overlay-show {
   position: fixed;
