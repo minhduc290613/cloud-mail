@@ -358,6 +358,7 @@ const en = {
     oauthSetting: 'OAuth',
     clientId: 'Client ID',
     clientSecret: 'Client Secret',
+    hoangSaTruongSa: 'The Paracel and Spratly Islands belong to Vietnam',
     notOwner: 'Base email does not belong to you',
 }
 
