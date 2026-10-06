@@ -129,6 +129,11 @@ cloud-mail
 │   ├── package.json			# Các thư viện/phụ thuộc của dự án
 └── └── env.release				# Cấu hình dự án
 ```
+## Donate me
+minhduc290613:
+[![Donate Me](https://img.shields.io/badge/Donate-Me-ff69b4?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://donate.protechvn.io.vn) <br/>
+Maillab: [donate](https://doc.skymail.ink/en/support.html)
+
 
 ## Giấy phép
 
