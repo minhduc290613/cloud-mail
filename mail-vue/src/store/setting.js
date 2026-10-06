@@ -11,14 +11,17 @@ export const useSettingStore = defineStore('setting', {
         dashboard: {
             background: '',
             overlay: 0.08,
-            surfaceOpacity: 0.58,
+            transparency: 50,
+            surfaceOpacity: 0.5,
             accent: '#6d5dfc'
         },
+        mailTemplates: [],
+        defaultMailTemplateId: 'welcome',
     }),
     actions: {
 
     },
     persist: {
-        pick: ['lang', 'dashboard'],
+        pick: ['lang', 'dashboard', 'mailTemplates', 'defaultMailTemplateId'],
     },
 })

@@ -1016,8 +1016,8 @@ const dashboardPresets = [
 const customDashboardUrl = ref(settingStore.dashboard?.background || '')
 const dashboardFileInput = ref(null)
 const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
-const dashboardSurfaceOpacity = ref(settingStore.dashboard?.surfaceOpacity ?? 0.58)
-const dashboardTransparency = ref(Math.min(100, Math.max(1, Math.round((1 - dashboardSurfaceOpacity.value) * 100))))
+const dashboardTransparency = ref(Math.min(100, Math.max(1, Number(settingStore.dashboard?.transparency ?? 50))))
+const dashboardSurfaceOpacity = ref(1 - dashboardTransparency.value / 100)
 function selectDashboardBackground(url) {
   settingStore.dashboard.background = url
   customDashboardUrl.value = url
@@ -1074,6 +1074,7 @@ function applyDashboardAccent(value) {
 function applyDashboardTransparency(value) {
   dashboardTransparency.value = Math.min(100, Math.max(1, Number(value ?? 42)))
   dashboardSurfaceOpacity.value = 1 - dashboardTransparency.value / 100
+  settingStore.dashboard.transparency = dashboardTransparency.value
   settingStore.dashboard.surfaceOpacity = dashboardSurfaceOpacity.value
 }
 const editTitle = ref('')

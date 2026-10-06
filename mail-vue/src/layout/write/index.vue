@@ -18,8 +18,9 @@
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item v-for="item in mailTemplates" :key="item.id" @click="applyTemplate(item)">
-                <div class="template-option"><strong>{{ item.title }}</strong><span>{{ item.description }}</span></div>
+                <div class="template-option"><strong>{{ item.title }} <small v-if="item.id === settingStore.defaultMailTemplateId">{{ $t('defaultTemplate') }}</small></strong><span>{{ item.description }}</span></div>
               </el-dropdown-item>
+              <el-dropdown-item divided @click="templateManagerShow = true"><Icon icon="solar:settings-bold-duotone" width="16" /> {{ $t('manageTemplates') }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -103,6 +104,27 @@
         <el-button type="primary" @click="chooseContact">{{t('selectContacts')}}</el-button>
       </div>
     </el-dialog>
+    <el-dialog v-model="templateManagerShow" :title="$t('manageTemplates')" width="min(680px, 92vw)">
+      <div class="template-manager">
+        <div class="template-manager-head"><span>{{ $t('templateDefaultHint') }}</span><el-button type="primary" plain @click="startNewTemplate">{{ $t('newTemplate') }}</el-button></div>
+        <div v-for="item in mailTemplates" :key="item.id" class="template-manager-item">
+          <div><strong>{{ item.title }}</strong><span>{{ item.description }}</span></div>
+          <div class="template-manager-actions">
+            <el-tag v-if="item.id === settingStore.defaultMailTemplateId" type="success">{{ $t('defaultTemplate') }}</el-tag>
+            <el-button v-else size="small" @click="setDefaultTemplate(item.id)">{{ $t('setAsDefault') }}</el-button>
+            <el-button size="small" @click="editTemplate(item)">{{ $t('editTemplate') }}</el-button>
+            <el-button v-if="item.custom" size="small" type="danger" plain @click="removeTemplate(item.id)">{{ $t('deleteTemplate') }}</el-button>
+          </div>
+        </div>
+        <div v-if="templateEditorShow" class="template-editor-form">
+          <el-input v-model="templateDraft.title" :placeholder="$t('templateName')" />
+          <el-input v-model="templateDraft.description" :placeholder="$t('templateDescription')" />
+          <el-input v-model="templateDraft.subject" :placeholder="$t('templateSubject')" />
+          <el-input v-model="templateDraft.content" type="textarea" :rows="7" :placeholder="$t('templateContent')" />
+          <div class="template-editor-actions"><el-button @click="templateEditorShow = false">{{ $t('cancel') }}</el-button><el-button type="primary" @click="saveTemplate">{{ $t('save') }}</el-button></div>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 <script setup>
@@ -126,7 +148,7 @@ import db from "@/db/db.js";
 import dayjs from "dayjs";
 import {useI18n} from "vue-i18n";
 import router from "@/router/index.js";
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 defineExpose({
   open,
@@ -172,7 +194,7 @@ const form = reactive({
   draftId: null,
 })
 
-const mailTemplates = [
+const builtInMailTemplates = [
   {
     id: 'welcome',
     title: 'Lời chào chuyên nghiệp',
@@ -193,14 +215,51 @@ const mailTemplates = [
     description: 'Một mẫu trả lời ngắn gọn',
     subject: 'Cảm ơn bạn đã liên hệ',
     content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Cảm ơn bạn đã gửi thông tin. Tôi đã nhận được email và sẽ phản hồi bạn trước <strong>[thời gian dự kiến]</strong>.</p><p>Chúc bạn một ngày tốt lành!</p><p>Thân mến,<br>[Tên của bạn]</p>'
-  }
+  },
+  { id: 'project-update', title: 'Cập nhật tiến độ dự án', description: 'Báo cáo tiến độ rõ ràng và chuyên nghiệp', subject: 'Cập nhật tiến độ — [Tên dự án]', content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Dưới đây là cập nhật mới nhất về <strong>[Tên dự án]</strong>:</p><ul><li>Đã hoàn thành: [Hạng mục]</li><li>Đang thực hiện: [Hạng mục]</li><li>Bước tiếp theo: [Hạng mục]</li></ul><p>Trân trọng,<br>[Tên của bạn]</p>' },
+  { id: 'follow-up', title: 'Theo dõi sau cuộc trao đổi', description: 'Nhắc việc nhẹ nhàng, lịch sự', subject: 'Theo dõi nội dung đã trao đổi', content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Tôi xin phép theo dõi lại nội dung chúng ta đã trao đổi vào <strong>[ngày]</strong>.</p><p>Bạn có thể cho tôi biết tình hình cập nhật không?</p><p>Cảm ơn bạn,<br>[Tên của bạn]</p>' },
+  { id: 'announcement', title: 'Thông báo quan trọng', description: 'Mẫu thông báo nổi bật đến nhóm', subject: '[Thông báo] [Nội dung chính]', content: '<div style="padding:16px;border-left:4px solid #6d5dfc;background:#f5f3ff"><h2>[Tiêu đề thông báo]</h2><p>Xin chào mọi người,</p><p>Chúng tôi muốn thông báo rằng <strong>[nội dung chính]</strong>.</p><p>Thời gian áp dụng: <strong>[thời gian]</strong></p></div><p>Trân trọng,<br>[Tên / Bộ phận]</p>' },
+  { id: 'thank-you', title: 'Lời cảm ơn trang trọng', description: 'Cảm ơn khách hàng hoặc đối tác', subject: 'Cảm ơn bạn đã đồng hành', content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Chân thành cảm ơn bạn đã tin tưởng và đồng hành cùng chúng tôi.</p><p>Hy vọng chúng ta sẽ tiếp tục có những hợp tác tuyệt vời.</p><p>Thân ái,<br>[Tên của bạn]</p>' }
 ]
+const mailTemplates = computed(() => [...builtInMailTemplates, ...(settingStore.mailTemplates || [])])
+const templateManagerShow = ref(false)
+const templateEditorShow = ref(false)
+const templateDraft = reactive({ id: '', title: '', description: '', subject: '', content: '' })
 
 function applyTemplate(template) {
   form.subject = template.subject
   form.content = template.content
   defValue.value = template.content
   nextTick(() => editor.value?.focus())
+}
+
+function startNewTemplate() {
+  Object.assign(templateDraft, { id: `custom-${Date.now()}`, title: '', description: '', subject: '', content: '' })
+  templateEditorShow.value = true
+}
+function editTemplate(template) {
+  Object.assign(templateDraft, template)
+  templateEditorShow.value = true
+}
+function saveTemplate() {
+  if (!templateDraft.title.trim() || !templateDraft.subject.trim() || !templateDraft.content.trim()) {
+    ElMessage({ message: t('templateRequired'), type: 'warning', plain: true })
+    return
+  }
+  const next = { ...toRaw(templateDraft), custom: true, description: templateDraft.description || t('customTemplate') }
+  const index = settingStore.mailTemplates.findIndex(item => item.id === next.id)
+  if (index >= 0) settingStore.mailTemplates.splice(index, 1, next)
+  else settingStore.mailTemplates.push(next)
+  templateEditorShow.value = false
+  ElMessage({ message: t('templateSaved'), type: 'success', plain: true })
+}
+function setDefaultTemplate(id) {
+  settingStore.defaultMailTemplateId = id
+  ElMessage({ message: t('defaultTemplateSaved'), type: 'success', plain: true })
+}
+function removeTemplate(id) {
+  settingStore.mailTemplates = settingStore.mailTemplates.filter(item => item.id !== id)
+  if (settingStore.defaultMailTemplateId === id) settingStore.defaultMailTemplateId = 'welcome'
 }
 
 const selectRecipientList = ref([])
@@ -560,6 +619,10 @@ function open() {
     form.accountId = accountStore.currentAccount.accountId;
     form.name = accountStore.currentAccount.name;
   }
+  if (!form.sendType && !form.content && settingStore.defaultMailTemplateId) {
+    const template = mailTemplates.value.find(item => item.id === settingStore.defaultMailTemplateId)
+    if (template) applyTemplate(template)
+  }
   show.value = true;
   editor.value.focus()
 }
@@ -837,6 +900,18 @@ function close() {
 .template-button { display: inline-flex; align-items: center; gap: 7px; border-radius: 10px; color: var(--el-color-primary); }
 .template-option { display: grid; gap: 3px; min-width: 190px; }
 .template-option strong { font-size: 13px; }
+.template-option small { color: var(--el-color-success); font-weight: 600; }
 .template-option span { color: var(--regular-text-color); font-size: 11px; }
+.template-manager { display: grid; gap: 12px; }
+.template-manager-head, .template-manager-item { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.template-manager-head { padding: 10px 12px; border-radius: 12px; background: color-mix(in srgb, var(--el-color-primary) 8%, transparent); color: var(--regular-text-color); font-size: 13px; }
+.template-manager-item { padding: 12px; border: 1px solid var(--el-border-color-light); border-radius: 12px; transition: .2s ease; }
+.template-manager-item:hover { border-color: var(--el-color-primary); transform: translateY(-1px); }
+.template-manager-item > div:first-child { display: grid; gap: 4px; }
+.template-manager-item span { color: var(--regular-text-color); font-size: 12px; }
+.template-manager-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.template-editor-form { display: grid; gap: 10px; padding: 14px; border-radius: 14px; background: var(--el-fill-color-light); }
+.template-editor-actions { display: flex; justify-content: flex-end; gap: 8px; }
 @media (max-width: 767px) { .template-picker { margin-right: 6px; } .template-button { padding: 7px; font-size: 0; } }
+@media (max-width: 767px) { .template-manager-item { align-items: flex-start; flex-direction: column; } .template-manager-actions { justify-content: flex-start; } .template-manager-head { align-items: flex-start; flex-direction: column; } }
 </style>
