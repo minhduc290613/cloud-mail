@@ -22,6 +22,11 @@
               <el-button type="primary" @click="applyDashboardBackground">{{ $t('applyBackground') }}</el-button>
               <el-button @click="clearDashboardBackground">{{ $t('clearBackground') }}</el-button>
             </div>
+            <div class="dashboard-upload-row">
+              <input ref="dashboardFileInput" class="dashboard-file-input" type="file" accept="image/png,image/jpeg,image/webp" @change="uploadDashboardBackground" />
+              <el-button class="dashboard-upload-button" @click="dashboardFileInput?.click()">{{ $t('uploadBackground') }}</el-button>
+              <span class="dashboard-upload-hint">{{ $t('uploadBackgroundHint') }}</span>
+            </div>
             <div class="dashboard-theme-row">
               <span>{{ $t('customThemeColor') }}</span>
               <el-color-picker v-model="dashboardAccent" @change="applyDashboardAccent" />
@@ -1009,6 +1014,7 @@ const dashboardPresets = [
   { id: 'mu-cang-chai', label: 'Ruộng bậc thang Mù Cang Chải', url: '/image/backgrounds/mu-cang-chai.jpg' },
 ]
 const customDashboardUrl = ref(settingStore.dashboard?.background || '')
+const dashboardFileInput = ref(null)
 const dashboardAccent = ref(settingStore.dashboard?.accent || '#6d5dfc')
 const dashboardSurfaceOpacity = ref(settingStore.dashboard?.surfaceOpacity ?? 0.58)
 const dashboardTransparency = ref(Math.min(100, Math.max(1, Math.round((1 - dashboardSurfaceOpacity.value) * 100))))
@@ -1018,6 +1024,45 @@ function selectDashboardBackground(url) {
 }
 function applyDashboardBackground() {
   settingStore.dashboard.background = customDashboardUrl.value?.trim() || ''
+}
+async function uploadDashboardBackground(event) {
+  const file = event.target.files?.[0]
+  event.target.value = ''
+  if (!file) return
+  if (!file.type.startsWith('image/')) {
+    ElMessage({ message: t('uploadBackgroundImageOnly'), type: 'warning', plain: true })
+    return
+  }
+  if (file.size > 12 * 1024 * 1024) {
+    ElMessage({ message: t('uploadBackgroundTooLarge'), type: 'warning', plain: true })
+    return
+  }
+  try {
+    const dataUrl = await new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        const image = new Image()
+        image.onload = () => {
+          const maxSide = 2200
+          const scale = Math.min(1, maxSide / Math.max(image.width, image.height))
+          const canvas = document.createElement('canvas')
+          canvas.width = Math.max(1, Math.round(image.width * scale))
+          canvas.height = Math.max(1, Math.round(image.height * scale))
+          canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height)
+          resolve(canvas.toDataURL('image/jpeg', 0.82))
+        }
+        image.onerror = reject
+        image.src = reader.result
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+    settingStore.dashboard.background = dataUrl
+    customDashboardUrl.value = dataUrl
+    ElMessage({ message: t('uploadBackgroundSuccess'), type: 'success', plain: true })
+  } catch (error) {
+    ElMessage({ message: t('uploadBackgroundFailed'), type: 'error', plain: true })
+  }
 }
 function clearDashboardBackground() {
   customDashboardUrl.value = ''
@@ -2387,9 +2432,13 @@ form .el-button {
 .dashboard-preset.active { border-color: var(--cm-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--cm-accent) 24%, transparent); }
 .dashboard-custom-row { display: flex; gap: 10px; margin-top: 14px; }
 .dashboard-custom-row .el-input { flex: 1; }
+.dashboard-upload-row { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.dashboard-file-input { display: none; }
+.dashboard-upload-button { border-color: color-mix(in srgb, var(--cm-accent) 42%, transparent); color: var(--cm-accent); }
+.dashboard-upload-hint { color: var(--regular-text-color); font-size: 12px; }
 .dashboard-theme-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; color: var(--el-text-color-primary); }
 .dashboard-note { margin-top: 14px; font-size: 12px; color: var(--regular-text-color); }
-@media (max-width: 767px) { .dashboard-presets { grid-template-columns: 1fr; } .dashboard-preset { min-height: 82px; } .dashboard-custom-row { flex-wrap: wrap; } .dashboard-custom-row .el-input { flex-basis: 100%; } }
+@media (max-width: 767px) { .dashboard-presets { grid-template-columns: 1fr; } .dashboard-preset { min-height: 82px; } .dashboard-custom-row { flex-wrap: wrap; } .dashboard-custom-row .el-input { flex-basis: 100%; } .dashboard-upload-hint { flex-basis: 100%; } }
 </style>
 
 
