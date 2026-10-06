@@ -238,7 +238,7 @@ function startNewTemplate() {
   templateEditorShow.value = true
 }
 function editTemplate(template) {
-  Object.assign(templateDraft, template)
+  Object.assign(templateDraft, { ...template, id: template.custom ? template.id : `custom-${template.id}-${Date.now()}` })
   templateEditorShow.value = true
 }
 function saveTemplate() {
