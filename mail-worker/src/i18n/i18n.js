@@ -1,6 +1,7 @@
 import i18next from 'i18next';
 import zh from './zh.js'
 import en from './en.js'
+import vi from './vi.js'
 import app from '../hono/hono';
 
 app.use('*', async (c, next) => {
@@ -17,6 +18,9 @@ const resources = {
 	},
 	zh: {
 		translation: zh,
+	},
+	vi: {
+		translation: vi,
 	},
 };
 

@@ -156,7 +156,7 @@
       <div class="dialog-box">
         <el-input disabled :model-value="$t('admin')" v-if="userForm.type === 0"/>
         <el-select v-else v-model="userForm.type" placeholder="Select">
-          <el-option v-for="item in roleList" :label="item.name" :value="item.roleId" :key="item.roleId"/>
+          <el-option v-for="item in roleList" :label="formatRoleName(item.name)" :value="item.roleId" :key="item.roleId"/>
         </el-select>
         <el-button :disabled="userForm.type === 0" class="btn" :loading="settingLoading" type="primary" @click="setType"
         >{{ $t('save') }}
@@ -192,7 +192,7 @@
         </el-input>
         <el-input type="password" v-model="addForm.password" :placeholder="$t('password')" @keyup.enter="submit"/>
         <el-select v-model="addForm.type" :placeholder="$t('perm')">
-          <el-option v-for="item in roleList" :label="item.name" :value="item.roleId" :key="item.roleId"/>
+          <el-option v-for="item in roleList" :label="formatRoleName(item.name)" :value="item.roleId" :key="item.roleId"/>
         </el-select>
         <el-button class="btn" type="primary" @click="submit" :loading="addLoading"
         >{{ $t('add') }}
@@ -803,6 +803,11 @@ function formatSendCount(user) {
   return count
 }
 
+function formatRoleName(name) {
+  if (name === '普通用户') return t('defaultRole')
+  return name
+}
+
 function toRoleName(type) {
 
   if (type === 0) {
@@ -811,7 +816,7 @@ function toRoleName(type) {
 
   const index = roleList.findIndex(role => role.roleId === type)
   if (index > -1) {
-    return roleList[index].name
+    return formatRoleName(roleList[index].name)
   }
   return ""
 }

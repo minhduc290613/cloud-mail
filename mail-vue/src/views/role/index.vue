@@ -18,7 +18,7 @@
         <el-table-column :label="$t('role')" prop="name" :min-width="roleWidth">
           <template #default="props">
             <div class="role-name">
-              <span>{{ props.row.name }}</span>
+              <span>{{ formatRoleName(props.row.name) }}</span>
               <span v-if="props.row.isDefault"><el-tag class="def-tag">{{ $t('default') }}</el-tag></span>
             </div>
           </template>
@@ -27,7 +27,7 @@
         <el-table-column v-if="desShow" :label="$t('description')" min-width="200" prop="description">
           <template #default="props">
             <div class="description">
-              <span>{{ props.row.description }}</span>
+              <span>{{ formatRoleDesc(props.row.description) }}</span>
             </div>
           </template>
         </el-table-column>
@@ -114,7 +114,7 @@
         >
           <template #default="{ node, data }">
             <div>
-              <span>{{ node.label }}</span>
+              <span>{{ formatPermName(data, node.label) }}</span>
               <span class="send-num" v-if="data.permKey === 'email:send'" @click.stop>
                 <el-input-number v-if="form.sendType === 'day' || form.sendType === 'count'" v-model="form.sendCount" controls-position="right" :min="0" :max="99999" size="small"
                                  :placeholder="$t('total')">
@@ -206,6 +206,120 @@ domainOptions = domainList.map(domain => {
   const cleanDomain = domain.replace(/^@/, '');
   return {label: cleanDomain, value: cleanDomain};
 });
+
+function formatRoleName(name) {
+  if (name === '普通用户') return t('defaultRole')
+  return name
+}
+
+function formatRoleDesc(desc) {
+  if (desc === '只有普通使用权限') return t('defaultRoleDesc')
+  return desc
+}
+
+function formatPermName(data, fallbackLabel) {
+  if (data?.permKey) {
+    const keyMap = {
+      'email:send': t('permEmailSend'),
+      'email:delete': t('permEmailDelete'),
+      'account:query': t('permAccountQuery'),
+      'account:add': t('permAccountAdd'),
+      'account:delete': t('permAccountDelete'),
+      'my:delete': t('permMyDelete'),
+      'analysis:query': t('permDataQuery'),
+      'user:query': t('permUserQuery'),
+      'user:add': t('permUserAdd'),
+      'user:set-pwd': t('permPwdModify'),
+      'user:set-status': t('permStatusModify'),
+      'user:set-type': t('permTypeModify'),
+      'user:delete': t('permUserDelete'),
+      'user:reset-send': t('permResetSend'),
+      'all-email:query': t('permAllEmailQuery'),
+      'all-email:delete': t('permAllEmailDelete'),
+      'role:query': t('permRoleQuery'),
+      'role:add': t('permRoleAdd'),
+      'role:set': t('permRoleSet'),
+      'role:delete': t('permRoleDelete'),
+      'reg-key:query': t('permKeyQuery'),
+      'reg-key:add': t('permKeyAdd'),
+      'reg-key:delete': t('permKeyDelete'),
+      'setting:query': t('permSettingQuery'),
+      'setting:set': t('permSettingSet'),
+    };
+    if (keyMap[data.permKey]) {
+      return keyMap[data.permKey];
+    }
+  }
+
+  const rawName = data?.name || fallbackLabel;
+  const nameMap = {
+    '邮件': t('permMail'),
+    'Emails': t('permMail'),
+    '邮箱侧栏': t('permMailboxSidebar'),
+    'Email Address': t('permMailboxSidebar'),
+    '个人设置': t('permPersonalSettings'),
+    'Settings': t('permPersonalSettings'),
+    '分析页': t('permAnalyticsPage'),
+    'Analytics': t('permAnalyticsPage'),
+    '用户信息': t('permUserList'),
+    '用户列表': t('permUserList'),
+    'All Users': t('permUserList'),
+    '邮件列表': t('permAllMail'),
+    '全部邮件': t('permAllMail'),
+    'All Mail': t('permAllMail'),
+    '权限控制': t('permRoleControl'),
+    'Role': t('permRoleControl'),
+    '注册密钥': t('permInviteCode'),
+    'Invite Code': t('permInviteCode'),
+    '系统设置': t('permSystemSettings'),
+    'System Settings': t('permSystemSettings'),
+    '邮件发送': t('permEmailSend'),
+    'Send Email': t('permEmailSend'),
+    '邮件删除': t('permEmailDelete'),
+    'Delete Email': t('permEmailDelete'),
+    '邮箱查看': t('permAccountQuery'),
+    'View Email': t('permAccountQuery'),
+    '邮箱添加': t('permAccountAdd'),
+    'Add Email': t('permAccountAdd'),
+    '邮箱删除': t('permAccountDelete'),
+    '用户注销': t('permMyDelete'),
+    'Delete User': t('permMyDelete'),
+    '数据查看': t('permDataQuery'),
+    'View Data': t('permDataQuery'),
+    '用户查看': t('permUserQuery'),
+    'View User': t('permUserQuery'),
+    '用户添加': t('permUserAdd'),
+    'Add User': t('permUserAdd'),
+    '密码修改': t('permPwdModify'),
+    'Change Password': t('permPwdModify'),
+    '状态修改': t('permStatusModify'),
+    'Change Status': t('permStatusModify'),
+    '权限修改': t('permTypeModify'),
+    'Change Role': t('permTypeModify'),
+    '用户删除': t('permUserDelete'),
+    '发件重置': t('permResetSend'),
+    'Reset Send Count': t('permResetSend'),
+    '身份查看': t('permRoleQuery'),
+    'View Role': t('permRoleQuery'),
+    '身份添加': t('permRoleAdd'),
+    'Add Role': t('permRoleAdd'),
+    '身份修改': t('permRoleSet'),
+    '身份删除': t('permRoleDelete'),
+    'Delete Role': t('permRoleDelete'),
+    '密钥查看': t('permKeyQuery'),
+    'View Code': t('permKeyQuery'),
+    '密钥添加': t('permKeyAdd'),
+    'Add Code': t('permKeyAdd'),
+    '密钥删除': t('permKeyDelete'),
+    'Delete Code': t('permKeyDelete'),
+    '设置查看': t('permSettingQuery'),
+    'View Settings': t('permSettingQuery'),
+    '设置修改': t('permSettingSet'),
+    'Change Settings': t('permSettingSet'),
+  };
+
+  return nameMap[rawName] || rawName || fallbackLabel;
+}
 
 
 function availDomainChange() {
