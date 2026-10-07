@@ -17,10 +17,10 @@
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
+              <el-dropdown-item v-if="isAdmin" style="margin-bottom: 4px" @click="templateManagerShow = true"><Icon icon="solar:settings-bold-duotone" width="16" /> {{ $t('manageTemplates') }}</el-dropdown-item>
               <el-dropdown-item v-for="item in mailTemplates" :key="item.id" @click="applyTemplate(item)">
                 <div class="template-option"><strong>{{ item.title }} <small v-if="item.id === settingStore.defaultMailTemplateId">{{ $t('defaultTemplate') }}</small></strong><span>{{ item.description }}</span></div>
               </el-dropdown-item>
-              <el-dropdown-item divided @click="templateManagerShow = true"><Icon icon="solar:settings-bold-duotone" width="16" /> {{ $t('manageTemplates') }}</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -222,6 +222,8 @@ const builtInMailTemplates = [
   { id: 'thank-you', title: 'Lời cảm ơn trang trọng', description: 'Cảm ơn khách hàng hoặc đối tác', subject: 'Cảm ơn bạn đã đồng hành', content: '<p>Xin chào <strong>[Tên người nhận]</strong>,</p><p>Chân thành cảm ơn bạn đã tin tưởng và đồng hành cùng chúng tôi.</p><p>Hy vọng chúng ta sẽ tiếp tục có những hợp tác tuyệt vời.</p><p>Thân ái,<br>[Tên của bạn]</p>' }
 ]
 const mailTemplates = computed(() => [...builtInMailTemplates, ...(settingStore.mailTemplates || [])])
+// Chỉ admin (role cao nhất: type 0 hoặc có quyền '*') mới được quản lý/tạo mẫu
+const isAdmin = computed(() => userStore.user?.type === 0 || userStore.user?.permKeys?.includes('*'))
 const templateManagerShow = ref(false)
 const templateEditorShow = ref(false)
 const templateDraft = reactive({ id: '', title: '', description: '', subject: '', content: '' })
@@ -234,14 +236,17 @@ function applyTemplate(template) {
 }
 
 function startNewTemplate() {
+  if (!isAdmin.value) return
   Object.assign(templateDraft, { id: `custom-${Date.now()}`, title: '', description: '', subject: '', content: '' })
   templateEditorShow.value = true
 }
 function editTemplate(template) {
+  if (!isAdmin.value) return
   Object.assign(templateDraft, { ...template, id: template.custom ? template.id : `custom-${template.id}-${Date.now()}` })
   templateEditorShow.value = true
 }
 function saveTemplate() {
+  if (!isAdmin.value) return
   if (!templateDraft.title.trim() || !templateDraft.subject.trim() || !templateDraft.content.trim()) {
     ElMessage({ message: t('templateRequired'), type: 'warning', plain: true })
     return
@@ -254,10 +259,12 @@ function saveTemplate() {
   ElMessage({ message: t('templateSaved'), type: 'success', plain: true })
 }
 function setDefaultTemplate(id) {
+  if (!isAdmin.value) return
   settingStore.defaultMailTemplateId = id
   ElMessage({ message: t('defaultTemplateSaved'), type: 'success', plain: true })
 }
 function removeTemplate(id) {
+  if (!isAdmin.value) return
   settingStore.mailTemplates = settingStore.mailTemplates.filter(item => item.id !== id)
   if (settingStore.defaultMailTemplateId === id) settingStore.defaultMailTemplateId = 'welcome'
 }

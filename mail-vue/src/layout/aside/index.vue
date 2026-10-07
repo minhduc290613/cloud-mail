@@ -11,21 +11,13 @@
           <Icon icon="hugeicons:mailbox-01" width="20" height="20" />
           <span class="menu-name" style="margin-left: 16px">{{$t('inbox')}}</span>
         </el-menu-item>
-        <el-menu-item @click="router.push({name: 'email', query: {folder: 'archive'}})" index="archive"
-                      :class="route.query.folder === 'archive' ? 'choose-item' : ''">
-          <Icon icon="solar:archive-down-minimalistic-line-duotone" width="20" height="20" />
-          <span class="menu-name" style="margin-left: 16px">{{$t('archive')}}</span>
-        </el-menu-item>
+
         <el-menu-item @click="router.push({name: 'email', query: {folder: 'spam'}})" index="spam"
                       :class="route.query.folder === 'spam' ? 'choose-item' : ''">
           <Icon icon="solar:shield-warning-line-duotone" width="20" height="20" />
           <span class="menu-name" style="margin-left: 16px">{{$t('trash')}}</span>
         </el-menu-item>
-        <el-menu-item @click="router.push({name: 'email', query: {folder: 'deleted'}})" index="deleted"
-                      :class="route.query.folder === 'deleted' ? 'choose-item' : ''">
-          <Icon icon="solar:trash-bin-trash-line-duotone" width="20" height="20" />
-          <span class="menu-name" style="margin-left: 16px">{{$t('deleted')}}</span>
-        </el-menu-item>
+
         <el-menu-item @click="router.push({name: 'send'})" index="send" v-perm="'email:send'"
                       :class="route.meta.name === 'send' ? 'choose-item' : ''">
           <Icon icon="cil:send" width="20" height="20" />
