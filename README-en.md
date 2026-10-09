@@ -28,8 +28,8 @@
 With only one domain, you can create multiple different email addresses, similar to major email platforms. This project can be deployed on Cloudflare Workers to reduce server costs and build your own email service.
 ## Project Showcase
 
-- [Live Demo](https://mail.protechvn.io.vn)<br>
-- [Deployment Guide](https://doc.skymail.ink/en/)<br>
+- [Live Demo](https://mail.vandekn.qzz.io)<br>
+- [Deployment Guide](https://doc.mail.vandekn.qzz.io/en/)<br>
 
 
 | ![](/doc/image/demo.png) | ![](/doc/image/demo2.png) |
