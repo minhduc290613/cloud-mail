@@ -136,8 +136,8 @@ This project is licensed under the [MIT](LICENSE) license.
 This project is a remake based on the original development by maillab. I would like to thank maillab and the contributors who have contributed to this project.
 Original repositories: [Repo](https://github.com/maillab/cloud-mail)
 
-## Donate me
+## sponsor me
 minhduc290613:
-[![Donate Me](https://img.shields.io/badge/Donate-Me-ff69b4?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://donate.protechvn.io.vn) <br/>
+[![Sponsor Me](https://img.shields.io/badge/Sponsor-Me-ff69b4?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://donate.protechvn.io.vn) <br/>
 Maillab: [donate](https://doc.skymail.ink/en/support.html)
 
