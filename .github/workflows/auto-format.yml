@@ -1,0 +1,100 @@
+name: Auto Code Formatter & Syntax Fixer Bot
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  format-and-fix:
+    name: Auto Format & Fix Syntax Errors
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout mã nguồn bằng BOT_PAT
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.BOT_PAT }}
+
+      # 2. Cài đặt Node.js và các công cụ Fix Cú pháp/Định dạng
+      - name: Set up Node.js & Install Linters & Formatters
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Global Packages
+        run: |
+          npm install -g prettier @prettier/plugin-php prettier-plugin-java eslint htmlhint
+
+      # 3. Cài đặt Clang-Format cho C/C++
+      - name: Install Clang-Format
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang-format
+
+      # 4. Cài đặt Go (đã tích hợp sẵn gofmt chuẩn)
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+
+      # 5. Cài đặt Rust (đã tích hợp sẵn rustfmt)
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt
+
+      # 4. Tự động sửa lỗi cú pháp JavaScript/TypeScript (Dùng npx eslint kèm cấu hình inline chuẩn)
+      - name: Run ESLint Auto-Fix
+        run: |
+          # Kiểm tra nếu chưa có eslint config thì tạo nhanh một file config tối giản
+          if [ ! -f ".eslintrc.json" ] && [ ! -f "eslint.config.js" ]; then
+            echo '{"env": {"es6": true, "node": true, "browser": true}, "parserOptions": {"ecmaVersion": 2020}, "rules": {"semi": ["error", "always"], "quotes": ["error", "single"]}}' > .eslintrc.json
+          fi
+          npx eslint --fix "**/*.{js,jsx,ts,tsx}" || true
+
+      # Định dạng code Go bằng gofmt
+      - name: Format Go files
+        run: |
+          if command -v go &> /dev/null; then
+            find . -name "*.go" -not -path "./vendor/*" -exec gofmt -w {} +
+          fi
+
+      # Định dạng code Rust bằng rustfmt
+      - name: Format Rust files
+        run: |
+          if command -v rustfmt &> /dev/null; then
+            find . -name "*.rs" -not -path "./target/*" -exec rustfmt {} +
+          fi
+
+      # 5. Chạy Prettier định dạng toàn bộ mã nguồn
+      - name: Run Prettier Formatter
+        run: |
+          npx prettier --write "**/*.{js,jsx,ts,tsx,html,css,scss,php,java,json,md,yml,yaml}" || true
+      # 6. Định dạng C/C++ với Clang-Format
+      - name: Run Clang-Format for C/C++
+        run: |
+          find . -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -not -path "./node_modules/*" -not -path "./vendor/*" | while read -r file; do
+            clang-format -i -style=Google "$file"
+          done
+
+      # 7. Kiểm tra các file đã thay đổi
+      - name: Check for changes
+        id: verify-changed-files
+        uses: tj-actions/changed-files@v44
+
+      # 8. Commit và Push các thay đổi bằng tài khoản phụ
+
+      - name: Commit and push changes
+        if: steps.verify-changed-files.outputs.any_changed == 'true'
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: '🤖 [Bot] Auto-format code & fix syntax errors [skip ci]'
+          commit_user_name: 'Protech BOT'
+          commit_user_email: '170188739+protech-bot@users.noreply.github.com'
