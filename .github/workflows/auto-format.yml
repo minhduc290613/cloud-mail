@@ -26,7 +26,7 @@ jobs:
       - name: Set up Node.js & Install Linters & Formatters
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install Global Packages
         run: |
@@ -42,7 +42,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
 
       # 5. Cài đặt Rust (đã tích hợp sẵn rustfmt)
       - name: Set up Rust
@@ -95,6 +95,6 @@ jobs:
         if: steps.verify-changed-files.outputs.any_changed == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: '🤖 [Bot] Auto-format code & fix syntax errors [skip ci]'
-          commit_user_name: 'Protech BOT'
-          commit_user_email: '170188739+protech-bot@users.noreply.github.com'
+          commit_message: "🤖 [Bot] Auto-format code & fix syntax errors [skip ci]"
+          commit_user_name: "Protech BOT"
+          commit_user_email: "170188739+protech-bot@users.noreply.github.com"

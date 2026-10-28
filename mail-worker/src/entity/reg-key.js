@@ -7,6 +7,8 @@ export const regKey = sqliteTable('reg_key', {
 	roleId: integer('role_id').notNull().default(0),
 	userId: integer('user_id').notNull().default(0),
 	expireTime: text('expire_time'),
-	createTime: text('create_time').notNull().default(sql`CURRENT_TIMESTAMP`)
+	createTime: text('create_time')
+		.notNull()
+		.default(sql`CURRENT_TIMESTAMP`),
 });
-export default regKey
+export default regKey;

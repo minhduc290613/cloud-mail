@@ -14,17 +14,15 @@ import roleService from './role-service';
 import emailUtils from '../utils/email-utils';
 import saltHashUtils from '../utils/crypto-utils';
 import constant from '../const/constant';
-import { t } from '../i18n/i18n'
+import { t } from '../i18n/i18n';
 import reqUtils from '../utils/req-utils';
-import {oauth} from "../entity/oauth";
-import oauthService from "./oauth-service";
+import { oauth } from '../entity/oauth';
+import oauthService from './oauth-service';
 import settingService from './setting-service';
 import starService from './star-service';
 
 const userService = {
-
 	async loginUserInfo(c, userId) {
-
 		const userRow = await userService.selectById(c, userId);
 
 		if (!userRow) {
@@ -34,7 +32,7 @@ const userService = {
 		const [account, roleRow, permKeys] = await Promise.all([
 			accountService.selectByEmailIncludeDel(c, userRow.email),
 			roleService.selectById(c, userRow.type),
-			userRow.email === c.env.admin ? Promise.resolve(['*']) : permService.userPermKeys(c, userId)
+			userRow.email === c.env.admin ? Promise.resolve(['*']) : permService.userPermKeys(c, userId),
 		]);
 
 		const user = {};
@@ -48,16 +46,14 @@ const userService = {
 		user.type = userRow.type;
 
 		if (c.env.admin === userRow.email) {
-			user.role = constant.ADMIN_ROLE
+			user.role = constant.ADMIN_ROLE;
 			user.type = 0;
 		}
 
 		return user;
 	},
 
-
 	async resetPassword(c, params, userId) {
-
 		const { password } = params;
 
 		if (password.length < 6) {
@@ -68,20 +64,28 @@ const userService = {
 	},
 
 	selectByEmail(c, email) {
-		return orm(c).select().from(user).where(
-			and(
-				sql`${user.email} COLLATE NOCASE = ${email}`,
-				eq(user.isDel, isDel.NORMAL)))
+		return orm(c)
+			.select()
+			.from(user)
+			.where(and(sql`${user.email} COLLATE NOCASE = ${email}`, eq(user.isDel, isDel.NORMAL)))
 			.get();
 	},
 
 	async insert(c, params) {
-		const { userId } = await orm(c).insert(user).values({ ...params }).returning().get();
+		const { userId } = await orm(c)
+			.insert(user)
+			.values({ ...params })
+			.returning()
+			.get();
 		return userId;
 	},
 
 	selectByEmailIncludeDel(c, email) {
-		return orm(c).select().from(user).where(sql`${user.email} COLLATE NOCASE = ${email}`).get();
+		return orm(c)
+			.select()
+			.from(user)
+			.where(sql`${user.email} COLLATE NOCASE = ${email}`)
+			.get();
 	},
 
 	selectByIdIncludeDel(c, userId) {
@@ -89,10 +93,10 @@ const userService = {
 	},
 
 	selectById(c, userId) {
-		return orm(c).select().from(user).where(
-			and(
-				eq(user.userId, userId),
-				eq(user.isDel, isDel.NORMAL)))
+		return orm(c)
+			.select()
+			.from(user)
+			.where(and(eq(user.userId, userId), eq(user.isDel, isDel.NORMAL)))
 			.get();
 	},
 
@@ -100,11 +104,11 @@ const userService = {
 		const { syncDelete } = await settingService.query(c);
 		if (syncDelete === settingConst.syncDelete.OPEN) {
 			await this.physicsDelete(c, { userIds: String(userId) });
-			await c.env.kv.delete(kvConst.AUTH_INFO + userId)
+			await c.env.kv.delete(kvConst.AUTH_INFO + userId);
 			return;
 		}
 		await orm(c).update(user).set({ isDel: isDel.DELETE }).where(eq(user.userId, userId)).run();
-		await c.env.kv.delete(kvConst.AUTH_INFO + userId)
+		await c.env.kv.delete(kvConst.AUTH_INFO + userId);
 	},
 
 	async physicsDelete(c, params) {
@@ -117,7 +121,6 @@ const userService = {
 	},
 
 	async list(c, params) {
-
 		let { num, size, email, timeSort, status } = params;
 
 		size = Number(size);
@@ -146,27 +149,26 @@ const userService = {
 			conditions.push(eq(user.isDel, isDel.NORMAL));
 		}
 
-
 		if (email) {
 			conditions.push(sql`${user.email} COLLATE NOCASE LIKE ${email + '%'}`);
 		}
-
 
 		if (params.isDel) {
 			conditions.push(eq(user.isDel, params.isDel));
 		}
 
-
-		const query = orm(c).select({
-			...user,
-			username: oauth.username,
-			trustLevel: oauth.trustLevel,
-			avatar: oauth.avatar,
-			name: oauth.name,
-			platform: oauth.platform
-		}).from(user).leftJoin(oauth, eq(oauth.userId, user.userId))
+		const query = orm(c)
+			.select({
+				...user,
+				username: oauth.username,
+				trustLevel: oauth.trustLevel,
+				avatar: oauth.avatar,
+				name: oauth.name,
+				platform: oauth.platform,
+			})
+			.from(user)
+			.leftJoin(oauth, eq(oauth.userId, user.userId))
 			.where(and(...conditions));
-
 
 		if (timeSort) {
 			query.orderBy(asc(user.userId));
@@ -179,10 +181,11 @@ const userService = {
 		const { total } = await orm(c)
 			.select({ total: count() })
 			.from(user)
-			.where(and(...conditions)).get();
-		const userIds = list.map(user => user.userId);
+			.where(and(...conditions))
+			.get();
+		const userIds = list.map((user) => user.userId);
 
-		const types = [...new Set(list.map(user => user.type))];
+		const types = [...new Set(list.map((user) => user.type))];
 
 		const [emailCounts, delEmailCounts, sendCounts, delSendCounts, accountCounts, delAccountCounts, roleList] = await Promise.all([
 			emailService.selectUserEmailCountList(c, userIds, emailConst.type.RECEIVE),
@@ -191,19 +194,18 @@ const userService = {
 			emailService.selectUserEmailCountList(c, userIds, emailConst.type.SEND, isDel.DELETE),
 			accountService.selectUserAccountCountList(c, userIds),
 			accountService.selectUserAccountCountList(c, userIds, isDel.DELETE),
-			roleService.selectByIdsHasPermKey(c, types,'email:send')
+			roleService.selectByIdsHasPermKey(c, types, 'email:send'),
 		]);
 
-		const receiveMap = Object.fromEntries(emailCounts.map(item => [item.userId, item.count]));
-		const sendMap = Object.fromEntries(sendCounts.map(item => [item.userId, item.count]));
-		const accountMap = Object.fromEntries(accountCounts.map(item => [item.userId, item.count]));
+		const receiveMap = Object.fromEntries(emailCounts.map((item) => [item.userId, item.count]));
+		const sendMap = Object.fromEntries(sendCounts.map((item) => [item.userId, item.count]));
+		const accountMap = Object.fromEntries(accountCounts.map((item) => [item.userId, item.count]));
 
-		const delReceiveMap = Object.fromEntries(delEmailCounts.map(item => [item.userId, item.count]));
-		const delSendMap = Object.fromEntries(delSendCounts.map(item => [item.userId, item.count]));
-		const delAccountMap = Object.fromEntries(delAccountCounts.map(item => [item.userId, item.count]));
+		const delReceiveMap = Object.fromEntries(delEmailCounts.map((item) => [item.userId, item.count]));
+		const delSendMap = Object.fromEntries(delSendCounts.map((item) => [item.userId, item.count]));
+		const delAccountMap = Object.fromEntries(delAccountCounts.map((item) => [item.userId, item.count]));
 
 		for (const user of list) {
-
 			const userId = user.userId;
 
 			user.receiveEmailCount = receiveMap[userId] || 0;
@@ -214,7 +216,7 @@ const userService = {
 			user.delSendEmailCount = delSendMap[userId] || 0;
 			user.delAccountCount = delAccountMap[userId] || 0;
 
-			const roleIndex = roleList.findIndex(roleRow => user.type === roleRow.roleId);
+			const roleIndex = roleList.findIndex((roleRow) => user.type === roleRow.roleId);
 			let sendAction = {};
 
 			if (roleIndex > -1) {
@@ -229,7 +231,7 @@ const userService = {
 				sendAction.sendType = constant.ADMIN_ROLE.sendType;
 				sendAction.sendCount = constant.ADMIN_ROLE.sendCount;
 				sendAction.hasPerm = true;
-				user.type = 0
+				user.type = 0;
 			}
 
 			user.sendAction = sendAction;
@@ -239,48 +241,35 @@ const userService = {
 	},
 
 	async updateUserInfo(c, userId, recordCreateIp = false) {
-
-
-
 		const activeIp = reqUtils.getIp(c);
 
-		const {os, browser, device} = reqUtils.getUserAgent(c);
+		const { os, browser, device } = reqUtils.getUserAgent(c);
 
 		const params = {
 			os,
 			browser,
 			device,
 			activeIp,
-			activeTime: dayjs().format('YYYY-MM-DD HH:mm:ss')
+			activeTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 		};
 
 		if (recordCreateIp) {
 			params.createIp = activeIp;
 		}
 
-		await orm(c)
-			.update(user)
-			.set(params)
-			.where(eq(user.userId, userId))
-			.run();
+		await orm(c).update(user).set(params).where(eq(user.userId, userId)).run();
 	},
 
 	async setPwd(c, params) {
-
 		const { password, userId } = params;
 		await this.resetPassword(c, { password }, userId);
 		await c.env.kv.delete(KvConst.AUTH_INFO + userId);
 	},
 
 	async setStatus(c, params) {
-
 		const { status, userId } = params;
 
-		await orm(c)
-			.update(user)
-			.set({ status })
-			.where(eq(user.userId, userId))
-			.run();
+		await orm(c).update(user).set({ status }).where(eq(user.userId, userId)).run();
 
 		if (status === userConst.status.BAN) {
 			await c.env.kv.delete(KvConst.AUTH_INFO + userId);
@@ -288,7 +277,6 @@ const userService = {
 	},
 
 	async setType(c, params) {
-
 		const { type, userId } = params;
 
 		const roleRow = await roleService.selectById(c, type);
@@ -297,32 +285,26 @@ const userService = {
 			throw new BizError(t('roleNotExist'));
 		}
 
-		await orm(c)
-			.update(user)
-			.set({ type })
-			.where(eq(user.userId, userId))
-			.run();
-
+		await orm(c).update(user).set({ type }).where(eq(user.userId, userId)).run();
 	},
 
 	async incrUserSendCount(c, quantity, userId) {
-		await orm(c).update(user).set({
-			sendCount: sql`${user.sendCount}
-	  +
-	  ${quantity}`
-		}).where(eq(user.userId, userId)).run();
-	},
-
-	async updateAllUserType(c, type, curType) {
 		await orm(c)
 			.update(user)
-			.set({ type })
-			.where(eq(user.type, curType))
+			.set({
+				sendCount: sql`${user.sendCount}
+	  +
+	  ${quantity}`,
+			})
+			.where(eq(user.userId, userId))
 			.run();
 	},
 
-	async add(c, params) {
+	async updateAllUserType(c, type, curType) {
+		await orm(c).update(user).set({ type }).where(eq(user.type, curType)).run();
+	},
 
+	async add(c, params) {
 		let { email, type, password } = params;
 
 		if (!c.env.domain.includes(emailUtils.getDomain(email))) {
@@ -370,7 +352,7 @@ const userService = {
 			return;
 		}
 		const roleList = await roleService.selectByIdsAndSendType(c, 'email:send', roleConst.sendType.DAY);
-		const roleIds = roleList.map(action => action.roleId);
+		const roleIds = roleList.map((action) => action.roleId);
 		await orm(c).update(user).set({ sendCount: 0 }).where(inArray(user.type, roleIds)).run();
 	},
 
@@ -379,12 +361,8 @@ const userService = {
 	},
 
 	async restore(c, params) {
-		const { userId, type } = params
-		await orm(c)
-			.update(user)
-			.set({ isDel: isDel.NORMAL })
-			.where(eq(user.userId, userId))
-			.run();
+		const { userId, type } = params;
+		await orm(c).update(user).set({ isDel: isDel.NORMAL }).where(eq(user.userId, userId)).run();
 		const userRow = await this.selectById(c, userId);
 		await accountService.restoreByEmail(c, userRow.email);
 
@@ -392,17 +370,16 @@ const userService = {
 			await emailService.restoreByUserId(c, userId);
 			await accountService.restoreByUserId(c, userId);
 		}
-
 	},
 
 	listByRegKeyId(c, regKeyId) {
 		return orm(c)
-			.select({email: user.email,createTime: user.createTime})
+			.select({ email: user.email, createTime: user.createTime })
 			.from(user)
 			.where(eq(user.regKeyId, regKeyId))
 			.orderBy(desc(user.userId))
 			.all();
-	}
+	},
 };
 
 export default userService;

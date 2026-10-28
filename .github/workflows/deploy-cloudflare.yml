@@ -2,7 +2,7 @@ name: 🚀 Deploy cloud-mail to Cloudflare Workers
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "mail-worker/**"
       - "mail-vue/**"
@@ -63,50 +63,50 @@ jobs:
         working-directory: ./mail-worker
         run: |
           echo "🔐 Starting environment setup..."
-          
+
           if [ -z "$JWT_SECRET" ] || grep -q '[?%#/\\]' <<< "$JWT_SECRET"; then
             echo "❌ JWT_SECRET variable is empty or contains invalid characters (?, %, #, /, \\)."
             exit 1
           fi
-          
+
           if ! jq -e 'type == "array"' <<< "$DOMAIN" >/dev/null 2>&1 ; then
             echo "❌ DOMAIN variable must be a JSON array (e.g., [\"example.com\"])."
             exit 1
           fi
-          
+
           if [ -z "$ADMIN" ]; then
             echo "❌ ADMIN variable cannot be empty."
             exit 1
           fi
-          
+
           if [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
             echo "❌ CLOUDFLARE_ACCOUNT_ID variable cannot be empty."
             exit 1
           fi
-          
+
           if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
             echo "❌ CLOUDFLARE_API_TOKEN variable cannot be empty."
             exit 1
           fi
-          
+
           if [ -z "$CUSTOM_DOMAIN" ]; then
             echo "::warning:: CUSTOM_DOMAIN variable is not set."
           fi
-          
+
           CONFIG_FILE="wrangler-action.toml"
-          
+
           if [ -z "$R2_BUCKET_NAME" ]; then
             sed -i '/\[\[r2_buckets\]\]/,/^$/d' "$CONFIG_FILE"
           fi
-          
+
           if [ -z "$PROJECT_LINK" ]; then
             sed -i '/^project_link = /d' "$CONFIG_FILE"
           fi
-          
+
           if [ -z "$CUSTOM_DOMAIN" ]; then
             sed -i '/\[\[routes\]\]/,/^$/d' "$CONFIG_FILE"
           fi
-          
+
           if [ "$(printf '%s' "$CLOUDFLARE_EMAIL" | tr '[:upper:]' '[:lower:]')" = "true" ]; then
             cat >> "$CONFIG_FILE" <<'EOF'
 
@@ -147,20 +147,20 @@ jobs:
         working-directory: ./mail-worker
         run: |
           CONFIG_FILE="wrangler-action.toml"
-          
+
           if [ -n "$KV_NAMESPACE_ID" ]; then
             sed -i "s|\${KV_NAMESPACE_ID}|${KV_NAMESPACE_ID}|g" "$CONFIG_FILE"
             echo "✅ Using the database from environment variables."
             exit 0
           fi
-          
+
           echo "🔍 Checking if the database exists..."
-          
+
           set +e
             KV_LIST=$(pnpm wrangler kv namespace list 2>&1)
             STATUS=$?
           set -e
-          
+
           if [ $STATUS -ne 0 ]; then
             echo "$KV_LIST"
             exit 1
@@ -176,7 +176,7 @@ jobs:
             KV_LIST=$(pnpm wrangler kv namespace list)
             KV_ID=$(echo "$KV_LIST" | jq -r ".[] | select(.title == \"$NAME\") | .id")
           fi
-          
+
           sed -i "s|\${KV_NAMESPACE_ID}|$KV_ID|g" "$CONFIG_FILE"
           echo "✅ Setup completed."
 
@@ -184,25 +184,25 @@ jobs:
         working-directory: ./mail-worker
         run: |
           CONFIG_FILE="wrangler-action.toml"
-          
+
           if [ -n "$D1_DATABASE_ID" ]; then
             sed -i "s|\${D1_DATABASE_ID}|${D1_DATABASE_ID}|g" "$CONFIG_FILE"
             echo "✅ Using the database from environment variables."
             exit 0
           fi
-          
+
           echo "🔍 Checking if the database exists..."
-          
+
           set +e
             DB_LIST=$(pnpm wrangler d1 list --json 2>&1)
             STATUS=$?
           set -e
-          
+
           if [ $STATUS -ne 0 ]; then
             echo "$DB_LIST"
             exit 1
           fi
-          
+
           if echo "$DB_LIST" | jq -e ".[] | select(.name == \"$NAME\")" >/dev/null; then
             echo "✅ Database $NAME already exists."
             D1_ID=$(echo "$DB_LIST" | jq -r ".[] | select(.name == \"$NAME\") | .uuid")
@@ -213,7 +213,7 @@ jobs:
             DB_LIST=$(pnpm wrangler d1 list --json)
             D1_ID=$(echo "$DB_LIST" | jq -r ".[] | select(.name == \"$NAME\") | .uuid")
           fi
-          
+
           sed -i "s|\${D1_DATABASE_ID}|$D1_ID|g" "$CONFIG_FILE"
           echo "✅ Setup completed."
 
@@ -227,18 +227,18 @@ jobs:
             | grep -v "https://.*\.workers\.dev" \
             | sed -E 's/env\.domain .*/env.domain (***)/' \
             || true
-          
+
           DEPLOY_EXIT_CODE=${PIPESTATUS[0]}
           if [ $DEPLOY_EXIT_CODE -ne 0 ]; then
             exit 1
           fi
-          
+
           WORKER_URL=$(grep -o "https://.*\.workers\.dev" deploy.log | head -n 1 || echo "")
-          
+
           if [ -n "$WORKER_URL" ]; then
             echo "::add-mask::$WORKER_URL"
           fi
-          
+
           echo "worker_url=$WORKER_URL" >> $GITHUB_OUTPUT
           echo "✅ Setup completed."
 
@@ -246,31 +246,31 @@ jobs:
         run: |
           echo "🛠️ Starting database initialization..."
           sleep 15
-    
+
           CLEAN_CUSTOM_DOMAIN=$(echo "$CUSTOM_DOMAIN" | sed -E 's#^https?://##')
           WORKER_URL="${CLEAN_CUSTOM_DOMAIN:+https://$CLEAN_CUSTOM_DOMAIN}"
           WORKER_URL="${WORKER_URL:-${{ steps.deploy.outputs.worker_url }}}"
-    
+
           if [ -z "$WORKER_URL" ]; then
             echo "❌ Preview URL not available. Please set CUSTOM_DOMAIN."
             exit 1
           fi
-    
+
           echo "📍 Attempting to initialize: $WORKER_URL/api/init/***"
-    
+
           MAX_RETRIES=3
           RETRY_COUNT=0
-    
+
           while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
             HTTP_CODE=$(curl -sL -w "%{http_code}" -o response.txt \
               -H "User-Agent: GitHub-Actions" \
               "$WORKER_URL/api/init/${JWT_SECRET}")
             RESPONSE_BODY=$(cat response.txt)
-      
+
             echo "Response Code: $HTTP_CODE"
             echo "Response Body: $RESPONSE_BODY" | head -c 200
             echo ""
-      
+
             if [ "$RESPONSE_BODY" = "success" ]; then
               echo "✅ Setup completed."
               exit 0
@@ -285,7 +285,7 @@ jobs:
             fi
             break
           done
-    
+
           echo "❌ Failed. HTTP: $HTTP_CODE"
           exit 1
 
@@ -294,5 +294,5 @@ jobs:
         continue-on-error: true
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          retain_days: '1'
-          keep_minimum_runs: '0'
+          retain_days: "1"
+          keep_minimum_runs: "0"

@@ -17,5 +17,3 @@ app.delete('/my/delete', async (c) => {
 	await userService.delete(c, userContext.getUserId(c));
 	return c.json(result.ok());
 });
-
-

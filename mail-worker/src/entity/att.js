@@ -1,7 +1,7 @@
 import { sqliteTable, integer, text } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 
-export const  att = sqliteTable('attachments', {
+export const att = sqliteTable('attachments', {
 	attId: integer('att_id').primaryKey({ autoIncrement: true }),
 	userId: integer('user_id').notNull(),
 	emailId: integer('email_id').notNull(),
@@ -16,6 +16,7 @@ export const  att = sqliteTable('attachments', {
 	related: text('related'),
 	contentId: text('content_id'),
 	encoding: text('encoding'),
-	createTime: text('create_time').default(sql`CURRENT_TIMESTAMP`).notNull(),
+	createTime: text('create_time')
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
 });
-

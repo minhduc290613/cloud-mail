@@ -6,10 +6,9 @@ import { and, desc, eq, lt, sql, inArray } from 'drizzle-orm';
 import email from '../entity/email';
 import { emailListColumns, emailBriefColumns } from '../lib/email-list-columns';
 import { isDel } from '../const/entity-const';
-import attService from "./att-service";
-import { t } from '../i18n/i18n'
+import attService from './att-service';
+import { t } from '../i18n/i18n';
 const starService = {
-
 	async add(c, params, userId) {
 		const { emailId } = params;
 		const email = await emailService.selectById(c, emailId);
@@ -19,14 +18,14 @@ const starService = {
 		if (email.userId !== userId) {
 			throw new BizError(t('starNotExistEmail'));
 		}
-		const exist = await orm(c).select().from(star).where(
-			and(
-				eq(star.userId, userId),
-				eq(star.emailId, emailId)))
-			.get()
+		const exist = await orm(c)
+			.select()
+			.from(star)
+			.where(and(eq(star.userId, userId), eq(star.emailId, emailId)))
+			.get();
 
 		if (exist) {
-			return
+			return;
 		}
 
 		await orm(c).insert(star).values({ userId, emailId }).run();
@@ -34,10 +33,9 @@ const starService = {
 
 	async cancel(c, params, userId) {
 		const { emailId } = params;
-		await orm(c).delete(star).where(
-			and(
-				eq(star.userId, userId),
-				eq(star.emailId, emailId)))
+		await orm(c)
+			.delete(star)
+			.where(and(eq(star.userId, userId), eq(star.emailId, emailId)))
 			.run();
 	},
 
@@ -48,29 +46,27 @@ const starService = {
 		full = Number(full) === 1;
 		const columns = full ? emailListColumns : emailBriefColumns;
 
-		const list = await orm(c).select({
-			isStar: sql`1`.as('isStar'),
-			starId: star.starId,
-			...columns
-		}).from(star)
+		const list = await orm(c)
+			.select({
+				isStar: sql`1`.as('isStar'),
+				starId: star.starId,
+				...columns,
+			})
+			.from(star)
 			.leftJoin(email, eq(email.emailId, star.emailId))
-			.where(
-				and(
-					eq(star.userId, userId),
-					eq(email.isDel, isDel.NORMAL),
-					emailId ? lt(star.emailId, emailId) : undefined))
+			.where(and(eq(star.userId, userId), eq(email.isDel, isDel.NORMAL), emailId ? lt(star.emailId, emailId) : undefined))
 			.orderBy(desc(star.emailId))
 			.limit(size)
 			.all();
 
 		if (full) {
-			const emailIds = list.map(item => item.emailId);
+			const emailIds = list.map((item) => item.emailId);
 			const attsList = await attService.selectByEmailIds(c, emailIds);
-			list.forEach(emailRow => {
-				emailRow.attList = attsList.filter(attsRow => attsRow.emailId === emailRow.emailId);
+			list.forEach((emailRow) => {
+				emailRow.attList = attsList.filter((attsRow) => attsRow.emailId === emailRow.emailId);
 			});
 		} else {
-			list.forEach(emailRow => {
+			list.forEach((emailRow) => {
 				emailRow.listText = emailService.toListText(emailRow);
 				delete emailRow.text;
 				delete emailRow.content;
@@ -85,7 +81,7 @@ const starService = {
 
 	async removeByUserIds(c, userIds) {
 		await orm(c).delete(star).where(inArray(star.userId, userIds)).run();
-	}
+	},
 };
 
 export default starService;

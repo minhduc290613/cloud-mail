@@ -5,7 +5,7 @@ import KvConst from '../const/kv-const';
 import dayjs from 'dayjs';
 import userService from '../service/user-service';
 import permService from '../service/perm-service';
-import { t } from '../i18n/i18n'
+import { t } from '../i18n/i18n';
 import app from '../hono/hono';
 
 const exclude = [
@@ -18,7 +18,7 @@ const exclude = [
 	'/public/genToken',
 	'/telegram',
 	'/test',
-	'/oauth'
+	'/oauth',
 ];
 
 const requirePerms = [
@@ -58,7 +58,7 @@ const requirePerms = [
 	'/regKey/list',
 	'/regKey/delete',
 	'/regKey/clearNotUse',
-	'/regKey/history'
+	'/regKey/history',
 ];
 
 const premKey = {
@@ -69,31 +69,30 @@ const premKey = {
 	'account:delete': ['/account/delete'],
 	'my:delete': ['/my/delete'],
 	'role:add': ['/role/add'],
-	'role:set': ['/role/set','/role/setDefault'],
+	'role:set': ['/role/set', '/role/setDefault'],
 	'role:query': ['/role/list', '/role/tree'],
 	'role:delete': ['/role/delete'],
-	'user:query': ['/user/list','/user/allAccount'],
+	'user:query': ['/user/list', '/user/allAccount'],
 	'user:add': ['/user/add'],
 	'user:reset-send': ['/user/resetSendCount'],
 	'user:set-pwd': ['/user/setPwd'],
 	'user:set-status': ['/user/setStatus', '/user/restore'],
 	'user:set-type': ['/user/setType'],
-	'user:delete': ['/user/delete','/user/deleteAccount'],
-	'all-email:query': ['/allEmail/list','/allEmail/latest'],
-	'all-email:delete': ['/allEmail/delete','/allEmail/batchDelete'],
+	'user:delete': ['/user/delete', '/user/deleteAccount'],
+	'all-email:query': ['/allEmail/list', '/allEmail/latest'],
+	'all-email:delete': ['/allEmail/delete', '/allEmail/batchDelete'],
 	'setting:query': ['/setting/query'],
-	'setting:set': ['/setting/set', '/setting/setBackground','/setting/deleteBackground','/setting/setBlacklist'],
+	'setting:set': ['/setting/set', '/setting/setBackground', '/setting/deleteBackground', '/setting/setBlacklist'],
 	'analysis:query': ['/analysis/echarts'],
 	'reg-key:add': ['/regKey/add'],
-	'reg-key:query': ['/regKey/list','/regKey/history'],
-	'reg-key:delete': ['/regKey/delete','/regKey/clearNotUse'],
+	'reg-key:query': ['/regKey/list', '/regKey/history'],
+	'reg-key:delete': ['/regKey/delete', '/regKey/clearNotUse'],
 };
 
 app.use('*', async (c, next) => {
-
 	const path = c.req.path;
 
-	const index = exclude.findIndex(item => {
+	const index = exclude.findIndex((item) => {
 		return path.startsWith(item);
 	});
 
@@ -102,7 +101,6 @@ app.use('*', async (c, next) => {
 	}
 
 	if (path.startsWith('/public')) {
-
 		const userPublicToken = await c.env.kv.get(KvConst.PUBLIC_KEY);
 		const publicToken = c.req.header(constant.TOKEN_HEADER);
 		if (publicToken !== userPublicToken) {
@@ -110,7 +108,6 @@ app.use('*', async (c, next) => {
 		}
 		return await next();
 	}
-
 
 	const jwt = c.req.header(constant.TOKEN_HEADER);
 
@@ -131,28 +128,26 @@ app.use('*', async (c, next) => {
 		throw new BizError(t('authExpired'), 401);
 	}
 
-	const permIndex = requirePerms.findIndex(item => {
+	const permIndex = requirePerms.findIndex((item) => {
 		return path.startsWith(item);
 	});
 
 	if (permIndex > -1) {
-
 		const permKeys = await permService.userPermKeys(c, authInfo.user.userId);
 
 		const userPaths = permKeyToPaths(permKeys);
 
-		const userPermIndex = userPaths.findIndex(item => {
+		const userPermIndex = userPaths.findIndex((item) => {
 			return path.startsWith(item);
 		});
 
 		if (userPermIndex === -1 && authInfo.user.email !== c.env.admin) {
 			throw new BizError(t('unauthorized'), 403);
 		}
-
 	}
 
 	const refreshTime = dayjs(authInfo.refreshTime).startOf('day');
-	const nowTime = dayjs().startOf('day')
+	const nowTime = dayjs().startOf('day');
 
 	if (!nowTime.isSame(refreshTime)) {
 		authInfo.refreshTime = dayjs().toISOString();
@@ -160,13 +155,12 @@ app.use('*', async (c, next) => {
 		await c.env.kv.put(KvConst.AUTH_INFO + userId, JSON.stringify(authInfo), { expirationTtl: constant.TOKEN_EXPIRE });
 	}
 
-	c.set('user',authInfo.user)
+	c.set('user', authInfo.user);
 
 	return await next();
 });
 
 function permKeyToPaths(permKeys) {
-
 	const paths = [];
 
 	for (const key of permKeys) {

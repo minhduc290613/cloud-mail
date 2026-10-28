@@ -4,14 +4,17 @@ const fileUtils = {
 			const index = filename.lastIndexOf('.');
 			return index !== -1 ? filename.slice(index) : '';
 		} catch (e) {
-			return ''
+			return '';
 		}
 	},
 
 	async getBuffHash(buff) {
 		const hashBuffer = await crypto.subtle.digest('SHA-256', buff);
 		const hashArray = Array.from(new Uint8Array(hashBuffer));
-		return hashArray.slice(0, 16).map(b => b.toString(16).padStart(2, '0')).join('');
+		return hashArray
+			.slice(0, 16)
+			.map((b) => b.toString(16).padStart(2, '0'))
+			.join('');
 	},
 
 	base64ToDataStr(base64) {
@@ -41,7 +44,7 @@ const fileUtils = {
 		}
 
 		const type = match[1]; // image 或 video
-		const ext = match[2];  // jpg, png, mp4 等
+		const ext = match[2]; // jpg, png, mp4 等
 		const mimeType = `${type}/${ext}`;
 		const cleanBase64 = base64Data.replace(/^data:(image|jpeg|video)\/[a-zA-Z0-9.+-]+;base64,/, '');
 
@@ -61,9 +64,7 @@ const fileUtils = {
 
 		const filename = `${customFilename || `${type}_${Date.now()}`}.${ext}`;
 		return new File([blob], filename, { type: mimeType });
-	}
+	},
 };
 
-
 export default fileUtils;
-

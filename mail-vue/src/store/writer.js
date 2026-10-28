@@ -1,10 +1,10 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useWriterStore = defineStore('writer', {
-    state: () => ({
-        sendRecipientRecord: []
-    }),
-    persist: {
-        pick: ['sendRecipientRecord'],
-    },
-})
+export const useWriterStore = defineStore("writer", {
+  state: () => ({
+    sendRecipientRecord: [],
+  }),
+  persist: {
+    pick: ["sendRecipientRecord"],
+  },
+});

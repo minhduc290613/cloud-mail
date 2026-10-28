@@ -1,7 +1,6 @@
 import { parseHTML } from 'linkedom';
 
 const emailUtils = {
-
 	getDomain(email) {
 		if (typeof email !== 'string') return '';
 		const parts = email.split('@');
@@ -22,11 +21,12 @@ const emailUtils = {
 	},
 
 	formatText(text) {
-		if (!text) return ''
+		if (!text) return '';
 		return text
 			.split('\n')
-			.map(line => {
-				return line.replace(/[\u200B-\u200F\uFEFF\u034F\u200B-\u200F\u00A0\u3000\u00AD]/g, '')
+			.map((line) => {
+				return line
+					.replace(/[\u200B-\u200F\uFEFF\u034F\u200B-\u200F\u00A0\u3000\u00AD]/g, '')
 					.replace(/\s+/g, ' ')
 					.trim();
 			})
@@ -36,20 +36,18 @@ const emailUtils = {
 	},
 
 	htmlToText(content) {
-		if (!content) return ''
+		if (!content) return '';
 		try {
-			const wrappedContent = content.includes('<body')
-				? content
-				: `<!DOCTYPE html><html><body>${content}</body></html>`;
+			const wrappedContent = content.includes('<body') ? content : `<!DOCTYPE html><html><body>${content}</body></html>`;
 			const { document } = parseHTML(wrappedContent);
-			document.querySelectorAll('style, script, title').forEach(el => el.remove());
+			document.querySelectorAll('style, script, title').forEach((el) => el.remove());
 			let text = document.body.innerText;
 			return this.formatText(text);
 		} catch (e) {
-			console.error(e)
-			return ''
+			console.error(e);
+			return '';
 		}
-	}
+	},
 };
 
 export default emailUtils;

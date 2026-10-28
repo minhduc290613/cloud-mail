@@ -1,6 +1,8 @@
 const analysisDao = {
 	async numberCount(c) {
-		const { results } = await c.env.db.prepare(`
+		const { results } = await c.env.db
+			.prepare(
+				`
             SELECT
 				COALESCE(e.receiveTotal, 0) AS receiveTotal,
 				COALESCE(e.sendTotal, 0) AS sendTotal,
@@ -42,13 +44,17 @@ const analysisDao = {
                 FROM
                     account
             ) a
-        `).all();
+        `,
+			)
+			.all();
 		return results[0];
 	},
 
 	async userDayCount(c, diffHours) {
 		const { tzMod, tzBack } = this.tzModifiers(diffHours);
-		const { results } = await c.env.db.prepare(`
+		const { results } = await c.env.db
+			.prepare(
+				`
             SELECT
                 DATE(create_time, '${tzMod}') AS date,
                 COUNT(*) AS total
@@ -61,13 +67,17 @@ const analysisDao = {
                 DATE(create_time, '${tzMod}')
             ORDER BY
                 date ASC
-        `).all();
+        `,
+			)
+			.all();
 		return results;
 	},
 
 	async receiveDayCount(c, diffHours) {
 		const { tzMod, tzBack } = this.tzModifiers(diffHours);
-		const { results } = await c.env.db.prepare(`
+		const { results } = await c.env.db
+			.prepare(
+				`
             SELECT
                 DATE(create_time, '${tzMod}') AS date,
                 COUNT(*) AS total
@@ -81,13 +91,17 @@ const analysisDao = {
                 DATE(create_time, '${tzMod}')
             ORDER BY
                 date ASC
-        `).all();
+        `,
+			)
+			.all();
 		return results;
 	},
 
 	async sendDayCount(c, diffHours) {
 		const { tzMod, tzBack } = this.tzModifiers(diffHours);
-		const { results } = await c.env.db.prepare(`
+		const { results } = await c.env.db
+			.prepare(
+				`
             SELECT
                 DATE(create_time, '${tzMod}') AS date,
                 COUNT(*) AS total
@@ -101,16 +115,17 @@ const analysisDao = {
                 DATE(create_time, '${tzMod}')
             ORDER BY
                 date ASC
-        `).all();
+        `,
+			)
+			.all();
 		return results;
 	},
 
 	tzModifiers(diffHours) {
 		const tzMod = diffHours >= 0 ? `+${diffHours} hours` : `${diffHours} hours`;
-		const tzBack = (-diffHours) >= 0 ? `+${-diffHours} hours` : `${-diffHours} hours`;
+		const tzBack = -diffHours >= 0 ? `+${-diffHours} hours` : `${-diffHours} hours`;
 		return { tzMod, tzBack };
-	}
-
+	},
 };
 
 export default analysisDao;

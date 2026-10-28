@@ -1,9 +1,7 @@
 import { UAParser } from 'ua-parser-js';
 const reqUtils = {
 	getIp(c) {
-		return  c.req.header('CF-Connecting-IP') ||
-			c.req.header('X-Forwarded-For') ||
-			'Unknown';
+		return c.req.header('CF-Connecting-IP') || c.req.header('X-Forwarded-For') || 'Unknown';
 	},
 
 	getUserAgent(c) {
@@ -38,8 +36,8 @@ const reqUtils = {
 			deviceInfo = (namePart + typePart).trim();
 		}
 
-		return {browser: browserInfo || '', device: deviceInfo || '', os: osInfo || ''}
-	}
-}
+		return { browser: browserInfo || '', device: deviceInfo || '', os: osInfo || '' };
+	},
+};
 
-export default reqUtils
+export default reqUtils;

@@ -3,9 +3,7 @@ import settingService from './setting-service';
 import kvObjService from './kv-obj-service';
 
 const r2Service = {
-
 	async storageType(c) {
-
 		const setting = await settingService.query(c);
 		const { bucket, endpoint, s3AccessKey, s3SecretKey } = setting;
 
@@ -21,7 +19,6 @@ const r2Service = {
 	},
 
 	async putObj(c, key, content, metadata) {
-
 		const storageType = await this.storageType(c);
 
 		if (storageType === 'KV') {
@@ -30,14 +27,13 @@ const r2Service = {
 
 		if (storageType === 'R2') {
 			await c.env.r2.put(key, content, {
-				httpMetadata: { ...metadata }
+				httpMetadata: { ...metadata },
 			});
 		}
 
 		if (storageType === 'S3') {
 			await s3Service.putObj(c, key, content, metadata);
 		}
-
 	},
 
 	async getObj(c, key) {
@@ -57,7 +53,6 @@ const r2Service = {
 	},
 
 	async delete(c, key) {
-
 		const storageType = await this.storageType(c);
 
 		if (storageType === 'KV') {
@@ -68,11 +63,9 @@ const r2Service = {
 			await c.env.r2.delete(key);
 		}
 
-		if (storageType === 'S3'){
+		if (storageType === 'S3') {
 			await s3Service.deleteObj(c, key);
 		}
-
-	}
-
+	},
 };
 export default r2Service;

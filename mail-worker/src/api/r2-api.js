@@ -7,9 +7,7 @@ app.get('/oss/*', async (c) => {
 	return new Response(obj.body, {
 		headers: {
 			'Content-Type': obj.httpMetadata?.contentType || 'application/octet-stream',
-			'Content-Disposition': obj.httpMetadata?.contentDisposition || null
-		}
+			'Content-Disposition': obj.httpMetadata?.contentDisposition || null,
+		},
 	});
 });
-
-

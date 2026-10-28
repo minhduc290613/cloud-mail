@@ -1,13 +1,11 @@
 const encoder = new TextEncoder();
 
 const saltHashUtils = {
-
 	generateSalt(length = 16) {
 		const array = new Uint8Array(length);
 		crypto.getRandomValues(array);
 		return btoa(String.fromCharCode(...array));
 	},
-
 
 	async hashPassword(password) {
 		const salt = this.generateSalt();
@@ -34,7 +32,7 @@ const saltHashUtils = {
 			result += chars.charAt(Math.floor(Math.random() * chars.length));
 		}
 		return result;
-	}
+	},
 };
 
 export default saltHashUtils;

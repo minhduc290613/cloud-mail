@@ -2,9 +2,8 @@ import { parseHTML } from 'linkedom';
 import domainUtils from '../utils/domain-uitls';
 
 export default function emailHtmlTemplate(html, domain) {
-
 	const { document } = parseHTML(html);
-	document.querySelectorAll('script').forEach(script => script.remove());
+	document.querySelectorAll('script').forEach((script) => script.remove());
 	html = document.toString();
 	html = html.replace(/{{domain}}/g, domainUtils.toOssDomain(domain) + '/');
 	const safeHtmlJson = JSON.stringify(html).replace(/</g, '\\u003C');
@@ -134,5 +133,5 @@ export default function emailHtmlTemplate(html, domain) {
         renderHTML(exampleHtml);
     </script>
 </body>
-</html>`
+</html>`;
 }

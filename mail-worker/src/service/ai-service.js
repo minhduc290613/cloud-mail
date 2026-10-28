@@ -23,15 +23,16 @@ const aiService = {
 				messages: [
 					{
 						role: 'system',
-						content: 'You extract verification codes from emails. Return only JSON like {"code":"12345678"} or {"code":""}. The code must be 8 characters or fewer and must not contain spaces. If the code is longer than 8 characters or contains spaces, return {"code":""}. Do not explain.'
+						content:
+							'You extract verification codes from emails. Return only JSON like {"code":"12345678"} or {"code":""}. The code must be 8 characters or fewer and must not contain spaces. If the code is longer than 8 characters or contains spaces, return {"code":""}. Do not explain.',
 					},
 					{
 						role: 'user',
-						content: `Subject: ${subject}\n\n${body}`
-					}
+						content: `Subject: ${subject}\n\n${body}`,
+					},
 				],
 				temperature: 0,
-				max_tokens: 32
+				max_tokens: 32,
 			});
 
 			const content = typeof result === 'string' ? result : result?.response || '';
@@ -56,7 +57,12 @@ const aiService = {
 			return false;
 		}
 
-		const filterList = aiCodeFilterStr ? aiCodeFilterStr.split(',').map(item => item.trim().toLowerCase()).filter(Boolean) : [];
+		const filterList = aiCodeFilterStr
+			? aiCodeFilterStr
+					.split(',')
+					.map((item) => item.trim().toLowerCase())
+					.filter(Boolean)
+			: [];
 
 		if (filterList.length === 0) {
 			return true;
@@ -65,8 +71,8 @@ const aiService = {
 		const fromEmail = (email.from?.address || '').trim().toLowerCase();
 		const fromDomain = emailUtils.getDomain(fromEmail).toLowerCase();
 
-		return filterList.some(item => item === fromEmail || item === fromDomain);
-	}
+		return filterList.some((item) => item === fromEmail || item === fromDomain);
+	},
 };
 
 export default aiService;

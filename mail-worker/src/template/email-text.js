@@ -31,5 +31,5 @@ export default function emailTextTemplate(text) {
 <body>
 <span>${text}</span>
 </body>
-</html>`
+</html>`;
 }

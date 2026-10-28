@@ -38,6 +38,3 @@ app.get('/role/selectUse', async (c) => {
 	const roleList = await roleService.roleSelectUse(c);
 	return c.json(result.ok(roleList));
 });
-
-
-

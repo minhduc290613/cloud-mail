@@ -25,15 +25,16 @@
 </p>
 
 ## Description
+
 With only one domain, you can create multiple different email addresses, similar to major email platforms. This project can be deployed on Cloudflare Workers to reduce server costs and build your own email service.
+
 ## Project Showcase
 
 - [Live Demo](https://mail.vandekn.qzz.io)<br>
 - [Deployment Guide](https://doc.mail.vandekn.qzz.io/en/)<br>
 
-
-| ![](/doc/image/demo.png) | ![](/doc/image/demo2.png) |
-|--------------------------|--------------------------|
+| ![](/doc/image/demo.png)  | ![](/doc/image/demo2.png) |
+| ------------------------- | ------------------------- |
 | ![](/doc/image/demo3.png) | ![](/doc/image/demo4.png) |
 
 ## Features
@@ -87,7 +88,7 @@ With only one domain, you can create multiple different email addresses, similar
 ```
 cloud-mail
 ├── mail-worker				    # Backend worker project
-│   ├── src                  
+│   ├── src
 │   │   ├── api	 			    # API layer
 │   │   ├── const  			    # Project constants
 │   │   ├── dao                 # Data access layer
@@ -133,11 +134,12 @@ cloud-mail
 This project is licensed under the [MIT](LICENSE) license.
 
 ## Thanks
+
 This project is a remake based on the original development by maillab. I would like to thank maillab and the contributors who have contributed to this project.
 Original repositories: [Repo](https://github.com/maillab/cloud-mail)
 
 ## sponsor me
+
 minhduc290613:
 [![Sponsor Me](https://img.shields.io/badge/Sponsor-Me-ff69b4?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://donate.protechvn.io.vn) <br/>
 Maillab: [donate](https://doc.skymail.ink/en/support.html)
-

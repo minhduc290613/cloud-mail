@@ -1,9 +1,7 @@
 import domainUtils from '../utils/domain-uitls';
 
 const webhookService = {
-
 	async sendEmail(c, emailRow, webhookUrl, retry = 0, webhookSecret) {
-
 		webhookUrl = domainUtils.toOssDomain(webhookUrl);
 
 		if (!webhookUrl) {
@@ -16,7 +14,7 @@ const webhookService = {
 		}
 
 		const headers = {
-			'Content-Type': 'application/json'
+			'Content-Type': 'application/json',
 		};
 
 		if (webhookSecret) {
@@ -33,7 +31,7 @@ const webhookService = {
 			text: emailRow.text,
 			content: emailRow.content,
 			code: emailRow.code,
-			createTime: emailRow.createTime
+			createTime: emailRow.createTime,
 		});
 
 		let lastError = '';
@@ -43,7 +41,7 @@ const webhookService = {
 				const res = await fetch(webhookUrl, {
 					method: 'POST',
 					headers,
-					body
+					body,
 				});
 
 				if (res.ok) {
@@ -57,8 +55,7 @@ const webhookService = {
 		}
 
 		console.error(`Webhook 推送失败: ${lastError}`);
-	}
-
+	},
 };
 
 export default webhookService;

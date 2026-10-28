@@ -1,10 +1,9 @@
 import settingService from '../service/setting-service';
 import emailUtils from '../utils/email-utils';
-import {emailConst} from "../const/entity-const";
+import { emailConst } from '../const/entity-const';
 
 const dbInit = {
 	async init(c) {
-
 		const secret = c.req.param('secret');
 
 		if (secret !== c.env.jwt_secret) {
@@ -41,7 +40,7 @@ const dbInit = {
 		try {
 			await c.env.db.batch([
 				c.env.db.prepare(`ALTER TABLE email ADD COLUMN folder TEXT NOT NULL DEFAULT 'inbox';`),
-				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_email_folder_user ON email(user_id, folder, is_del, email_id)`)
+				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_email_folder_user ON email(user_id, folder, is_del, email_id)`),
 			]);
 		} catch (e) {
 			console.warn(`skip folder migration: ${e.message}`);
@@ -53,7 +52,7 @@ const dbInit = {
 			await c.env.db.batch([
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN auto_clean_days INTEGER NOT NULL DEFAULT 0;`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN auto_clean_exclude TEXT NOT NULL DEFAULT '';`),
-				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_email_create_time ON email(create_time)`)
+				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_email_create_time ON email(create_time)`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -64,7 +63,7 @@ const dbInit = {
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN webhook_url TEXT NOT NULL DEFAULT '';`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN webhook_status INTEGER NOT NULL DEFAULT 1;`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN webhook_retry INTEGER NOT NULL DEFAULT 0;`),
-				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN webhook_secret TEXT NOT NULL DEFAULT '';`)
+				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN webhook_secret TEXT NOT NULL DEFAULT '';`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -82,7 +81,7 @@ const dbInit = {
 				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN google_client_secret TEXT NOT NULL DEFAULT '';`),
 				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN linuxdo_switch INTEGER NOT NULL DEFAULT 1;`),
 				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN github_switch INTEGER NOT NULL DEFAULT 1;`),
-				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN google_switch INTEGER NOT NULL DEFAULT 1;`)
+				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN google_switch INTEGER NOT NULL DEFAULT 1;`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -110,7 +109,7 @@ const dbInit = {
 				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_attachments_email_type ON attachments(email_id, type)`),
 				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_role_perm_role ON role_perm(role_id)`),
 				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_oauth_oauth_user_id ON oauth(oauth_user_id)`),
-				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_oauth_user_id ON oauth(user_id)`)
+				c.env.db.prepare(`CREATE INDEX IF NOT EXISTS idx_oauth_user_id ON oauth(user_id)`),
 			]);
 		} catch (e) {
 			console.warn(`跳过索引：${e.message}`);
@@ -125,13 +124,12 @@ const dbInit = {
 		}
 	},
 
-
 	async v3_0DB(c) {
 		try {
 			await c.env.db.batch([
 				await c.env.db.prepare(`ALTER TABLE email ADD COLUMN code TEXT NOT NULL DEFAULT '';`),
 				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN ai_code INTEGER NOT NULL DEFAULT 1;`),
-				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN ai_code_filter TEXT NOT NULL DEFAULT '';`)
+				await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN ai_code_filter TEXT NOT NULL DEFAULT '';`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -141,12 +139,11 @@ const dbInit = {
 			await c.env.db.batch([
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN black_subject TEXT NOT NULL DEFAULT '';`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN black_content TEXT NOT NULL DEFAULT '';`),
-				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN black_from TEXT NOT NULL DEFAULT '';`)
+				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN black_from TEXT NOT NULL DEFAULT '';`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
-
 	},
 
 	async v2_9DB(c) {
@@ -159,9 +156,7 @@ const dbInit = {
 
 	async v2_8DB(c) {
 		try {
-			await c.env.db.batch([
-				c.env.db.prepare(`ALTER TABLE account ADD COLUMN sort INTEGER NOT NULL DEFAULT 0;`)
-			]);
+			await c.env.db.batch([c.env.db.prepare(`ALTER TABLE account ADD COLUMN sort INTEGER NOT NULL DEFAULT 0;`)]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
@@ -169,9 +164,7 @@ const dbInit = {
 
 	async v2_7DB(c) {
 		try {
-			await c.env.db.batch([
-				c.env.db.prepare(`ALTER TABLE setting RENAME COLUMN auto_refresh_time TO auto_refresh;`)
-			]);
+			await c.env.db.batch([c.env.db.prepare(`ALTER TABLE setting RENAME COLUMN auto_refresh_time TO auto_refresh;`)]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
@@ -186,7 +179,6 @@ const dbInit = {
 	},
 
 	async v2_5DB(c) {
-
 		try {
 			await c.env.db.prepare(`ALTER TABLE setting ADD COLUMN email_prefix_filter text NOT NULL DEFAULT '';`).run();
 		} catch (e) {
@@ -196,17 +188,18 @@ const dbInit = {
 		try {
 			await c.env.db.batch([
 				c.env.db.prepare(`ALTER TABLE email ADD COLUMN unread INTEGER NOT NULL DEFAULT 0;`),
-				c.env.db.prepare(`UPDATE email SET unread = 1;`)
+				c.env.db.prepare(`UPDATE email SET unread = 1;`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
-
 	},
 
 	async v2_4DB(c) {
 		try {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
 				CREATE TABLE IF NOT EXISTS oauth (
 					oauth_id INTEGER PRIMARY KEY AUTOINCREMENT,
 					oauth_user_id TEXT,
@@ -220,7 +213,9 @@ const dbInit = {
 					platform INTEGER NOT NULL DEFAULT 0,
 					user_id INTEGER NOT NULL DEFAULT 0
 				)
-			`).run();
+			`,
+				)
+				.run();
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
@@ -230,7 +225,6 @@ const dbInit = {
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
-
 	},
 
 	async v2_3DB(c) {
@@ -239,7 +233,7 @@ const dbInit = {
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN force_path_style	INTEGER NOT NULL DEFAULT 1;`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN custom_domain TEXT NOT NULL DEFAULT '';`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN tg_msg_to TEXT NOT NULL DEFAULT 'show';`),
-				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN tg_msg_from TEXT NOT NULL DEFAULT 'only-name';`)
+				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN tg_msg_from TEXT NOT NULL DEFAULT 'only-name';`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -250,7 +244,6 @@ const dbInit = {
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
 		}
-
 	},
 
 	async v2DB(c) {
@@ -261,7 +254,7 @@ const dbInit = {
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN endpoint TEXT NOT NULL DEFAULT '';`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN s3_access_key TEXT NOT NULL DEFAULT '';`),
 				c.env.db.prepare(`ALTER TABLE setting ADD COLUMN s3_secret_key TEXT NOT NULL DEFAULT '';`),
-				c.env.db.prepare(`DELETE FROM perm WHERE perm_key = 'setting:clean'`)
+				c.env.db.prepare(`DELETE FROM perm WHERE perm_key = 'setting:clean'`),
 			]);
 		} catch (e) {
 			console.warn(`跳过字段：${e.message}`);
@@ -277,10 +270,7 @@ const dbInit = {
 	},
 
 	async v1_6DB(c) {
-
-		const noticeContent = '本项目仅供学习交流，禁止用于违法业务\n' +
-			'<br>\n' +
-			'请遵守当地法规，作者不承担任何法律责任'
+		const noticeContent = '本项目仅供学习交流，禁止用于违法业务\n' + '<br>\n' + '请遵守当地法规，作者不承担任何法律责任';
 
 		const ADD_COLUMN_SQL_LIST = [
 			`ALTER TABLE setting ADD COLUMN reg_verify_count INTEGER NOT NULL DEFAULT 1;`,
@@ -302,7 +292,7 @@ const dbInit = {
 			`ALTER TABLE setting ADD COLUMN notice INTEGER NOT NULL DEFAULT 0;`,
 			`ALTER TABLE setting ADD COLUMN no_recipient INTEGER NOT NULL DEFAULT 1;`,
 			`UPDATE role SET avail_domain = '' WHERE role.avail_domain LIKE '@%';`,
-			`CREATE INDEX IF NOT EXISTS idx_email_user_id_account_id ON email(user_id, account_id);`
+			`CREATE INDEX IF NOT EXISTS idx_email_user_id_account_id ON email(user_id, account_id);`,
 		];
 
 		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
@@ -320,12 +310,11 @@ const dbInit = {
 				c.env.db.prepare(`DROP INDEX IF EXISTS idx_account_email`),
 				c.env.db.prepare(`DROP INDEX IF EXISTS idx_user_email`),
 				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_account_email_nocase ON account (email COLLATE NOCASE)`),
-				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email_nocase ON user (email COLLATE NOCASE)`)
+				c.env.db.prepare(`CREATE UNIQUE INDEX IF NOT EXISTS idx_user_email_nocase ON user (email COLLATE NOCASE)`),
 			]);
 		} catch (e) {
-			console.warn(e.message)
+			console.warn(e.message);
 		}
-
 	},
 
 	async v1_5DB(c) {
@@ -339,7 +328,9 @@ const dbInit = {
 	},
 
 	async v1_4DB(c) {
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
       CREATE TABLE IF NOT EXISTS reg_key (
 				rege_key_id INTEGER PRIMARY KEY AUTOINCREMENT,
 				code TEXT NOT NULL COLLATE NOCASE DEFAULT '',
@@ -349,25 +340,34 @@ const dbInit = {
 				expire_time DATETIME,
 				create_time DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `).run();
+    `,
+			)
+			.run();
 
 		// 添加不区分大小写的唯一索引
 		try {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
 				CREATE UNIQUE INDEX IF NOT EXISTS idx_setting_code ON reg_key(code COLLATE NOCASE)
-			`).run();
+			`,
+				)
+				.run();
 		} catch (e) {
 			console.warn(`跳过创建索引：${e.message}`);
 		}
 
-
 		try {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
         INSERT INTO perm (perm_id, name, perm_key, pid, type, sort) VALUES
         (33,'注册密钥', NULL, 0, 1, 5.1),
         (34,'密钥查看', 'reg-key:query', 33, 2, 0),
         (35,'密钥添加', 'reg-key:add', 33, 2, 1),
-        (36,'密钥删除', 'reg-key:delete', 33, 2, 2)`).run();
+        (36,'密钥删除', 'reg-key:delete', 33, 2, 2)`,
+				)
+				.run();
 		} catch (e) {
 			console.warn(`跳过数据：${e.message}`);
 		}
@@ -376,7 +376,7 @@ const dbInit = {
 			`ALTER TABLE setting ADD COLUMN reg_key INTEGER NOT NULL DEFAULT 1;`,
 			`ALTER TABLE role ADD COLUMN ban_email TEXT NOT NULL DEFAULT '';`,
 			`ALTER TABLE role ADD COLUMN ban_email_type INTEGER NOT NULL DEFAULT 0;`,
-			`ALTER TABLE user ADD COLUMN reg_key_id INTEGER NOT NULL DEFAULT 0;`
+			`ALTER TABLE user ADD COLUMN reg_key_id INTEGER NOT NULL DEFAULT 0;`,
 		];
 
 		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
@@ -388,15 +388,17 @@ const dbInit = {
 		});
 
 		await Promise.all(promises);
-
 	},
 
 	async v1_3_1DB(c) {
-		await c.env.db.prepare(`UPDATE email SET name = SUBSTR(send_email, 1, INSTR(send_email, '@') - 1) WHERE (name IS NULL OR name = '') AND type = ${emailConst.type.RECEIVE}`).run();
+		await c.env.db
+			.prepare(
+				`UPDATE email SET name = SUBSTR(send_email, 1, INSTR(send_email, '@') - 1) WHERE (name IS NULL OR name = '') AND type = ${emailConst.type.RECEIVE}`,
+			)
+			.run();
 	},
 
 	async v1_3DB(c) {
-
 		const ADD_COLUMN_SQL_LIST = [
 			`ALTER TABLE setting ADD COLUMN tg_bot_token TEXT NOT NULL DEFAULT '';`,
 			`ALTER TABLE setting ADD COLUMN tg_chat_id TEXT NOT NULL DEFAULT '';`,
@@ -404,7 +406,7 @@ const dbInit = {
 			`ALTER TABLE setting ADD COLUMN forward_email TEXT NOT NULL DEFAULT '';`,
 			`ALTER TABLE setting ADD COLUMN forward_status INTEGER TIME NOT NULL DEFAULT 1;`,
 			`ALTER TABLE setting ADD COLUMN rule_email TEXT NOT NULL DEFAULT '';`,
-			`ALTER TABLE setting ADD COLUMN rule_type INTEGER NOT NULL DEFAULT 0;`
+			`ALTER TABLE setting ADD COLUMN rule_type INTEGER NOT NULL DEFAULT 0;`,
 		];
 
 		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
@@ -420,28 +422,30 @@ const dbInit = {
 		const nameColumn = await c.env.db.prepare(`SELECT * FROM pragma_table_info('email') WHERE name = 'to_email' limit 1`).first();
 
 		if (nameColumn) {
-			return
+			return;
 		}
 
-		const queryList = []
+		const queryList = [];
 
 		queryList.push(c.env.db.prepare(`ALTER TABLE email ADD COLUMN to_email TEXT NOT NULL DEFAULT ''`));
 		queryList.push(c.env.db.prepare(`ALTER TABLE email ADD COLUMN to_name TEXT NOT NULL DEFAULT ''`));
-		queryList.push(c.env.db.prepare(`UPDATE email SET to_email = json_extract(recipient, '$[0].address'), to_name = json_extract(recipient, '$[0].name')`));
+		queryList.push(
+			c.env.db.prepare(
+				`UPDATE email SET to_email = json_extract(recipient, '$[0].address'), to_name = json_extract(recipient, '$[0].name')`,
+			),
+		);
 
 		await c.env.db.batch(queryList);
-
 	},
 
-	async v1_2DB(c){
-
+	async v1_2DB(c) {
 		const ADD_COLUMN_SQL_LIST = [
 			`ALTER TABLE email ADD COLUMN recipient TEXT NOT NULL DEFAULT '[]';`,
 			`ALTER TABLE email ADD COLUMN cc TEXT NOT NULL DEFAULT '[]';`,
 			`ALTER TABLE email ADD COLUMN bcc TEXT NOT NULL DEFAULT '[]';`,
 			`ALTER TABLE email ADD COLUMN message_id TEXT NOT NULL DEFAULT '';`,
 			`ALTER TABLE email ADD COLUMN in_reply_to TEXT NOT NULL DEFAULT '';`,
-			`ALTER TABLE email ADD COLUMN relation TEXT NOT NULL DEFAULT '';`
+			`ALTER TABLE email ADD COLUMN relation TEXT NOT NULL DEFAULT '';`,
 		];
 
 		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
@@ -458,14 +462,17 @@ const dbInit = {
 		await this.initAccountName(c);
 
 		try {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
         INSERT INTO perm (perm_id, name, perm_key, pid, type, sort) VALUES
         (31,'分析页', NULL, 0, 1, 2.1),
-        (32,'数据查看', 'analysis:query', 31, 2, 1)`).run();
+        (32,'数据查看', 'analysis:query', 31, 2, 1)`,
+				)
+				.run();
 		} catch (e) {
 			console.warn(`跳过数据：${e.message}`);
 		}
-
 	},
 
 	async v1_1DB(c) {
@@ -493,7 +500,7 @@ const dbInit = {
 			`ALTER TABLE user ADD COLUMN send_count INTEGER NOT NULL DEFAULT 0;`,
 
 			`ALTER TABLE attachments ADD COLUMN status INTEGER NOT NULL DEFAULT 0;`,
-			`ALTER TABLE attachments ADD COLUMN type INTEGER NOT NULL DEFAULT 0;`
+			`ALTER TABLE attachments ADD COLUMN type INTEGER NOT NULL DEFAULT 0;`,
 		];
 
 		const promises = ADD_COLUMN_SQL_LIST.map(async (sql) => {
@@ -507,7 +514,9 @@ const dbInit = {
 		await Promise.all(promises);
 
 		// 创建 perm 表并初始化
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
       CREATE TABLE IF NOT EXISTS perm (
         perm_id INTEGER PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -516,12 +525,16 @@ const dbInit = {
         type INTEGER NOT NULL DEFAULT 2,
         sort INTEGER
       )
-    `).run();
+    `,
+			)
+			.run();
 
-		const {permTotal} = await c.env.db.prepare(`SELECT COUNT(*) as permTotal FROM perm`).first();
+		const { permTotal } = await c.env.db.prepare(`SELECT COUNT(*) as permTotal FROM perm`).first();
 
 		if (permTotal === 0) {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
         INSERT INTO perm (perm_id, name, perm_key, pid, type, sort) VALUES
         (1, '邮件', NULL, 0, 0, 0),
         (2, '邮件删除', 'email:delete', 1, 2, 1),
@@ -552,13 +565,17 @@ const dbInit = {
         (28, '邮件查看', 'all-email:query', 27, 2, 0),
         (29, '邮件删除', 'all-email:delete', 27, 2, 0),
 				(30, '身份添加', 'role:add', 13, 2, -1)
-      `).run();
+      `,
+				)
+				.run();
 		}
 
 		await c.env.db.prepare(`UPDATE perm SET perm_key = 'setting:clean' WHERE perm_key = 'seting:clear'`).run();
 		await c.env.db.prepare(`DELETE FROM perm WHERE perm_key = 'user:star'`).run();
 		// 创建 role 表并插入默认身份
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
       CREATE TABLE IF NOT EXISTS role (
         role_id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
         name TEXT NOT NULL,
@@ -572,31 +589,43 @@ const dbInit = {
         send_type TEXT NOT NULL DEFAULT 'count',
         account_count INTEGER
       )
-    `).run();
+    `,
+			)
+			.run();
 
 		const { roleCount } = await c.env.db.prepare(`SELECT COUNT(*) as roleCount FROM role`).first();
 		if (roleCount === 0) {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
         INSERT INTO role (
           role_id, name, key, create_time, sort, description, user_id, is_default, send_count, send_type, account_count
         ) VALUES (
           1, '普通用户', NULL, '0000-00-00 00:00:00', 0, '只有普通使用权限', 0, 1, NULL, 'ban', 10
         )
-      `).run();
+      `,
+				)
+				.run();
 		}
 
 		// 创建 role_perm 表并初始化数据
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
       CREATE TABLE IF NOT EXISTS role_perm (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         role_id INTEGER,
         perm_id INTEGER
       )
-    `).run();
+    `,
+			)
+			.run();
 
-		const {rolePermCount} = await c.env.db.prepare(`SELECT COUNT(*) as rolePermCount FROM role_perm`).first();
+		const { rolePermCount } = await c.env.db.prepare(`SELECT COUNT(*) as rolePermCount FROM role_perm`).first();
 		if (rolePermCount === 0) {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
         INSERT INTO role_perm (id, role_id, perm_id) VALUES
           (100, 1, 2),
           (101, 1, 21),
@@ -607,13 +636,17 @@ const dbInit = {
           (106, 1, 5),
           (107, 1, 1),
           (108, 1, 3)
-      `).run();
+      `,
+				)
+				.run();
 		}
 	},
 
 	async intDB(c) {
 		// 初始化数据库表结构
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS email (
 			email_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
 			send_email TEXT,
@@ -626,18 +659,26 @@ const dbInit = {
 			create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
 			is_del INTEGER DEFAULT 0 NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS star (
 			star_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
 			email_id INTEGER NOT NULL,
 			create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS attachments (
 			att_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			user_id INTEGER NOT NULL,
@@ -653,9 +694,13 @@ const dbInit = {
 			encoding TEXT,
 			create_time DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS user (
 			user_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			email TEXT NOT NULL,
@@ -667,9 +712,13 @@ const dbInit = {
 			active_time DATETIME,
 			is_del INTEGER DEFAULT 0 NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS account (
 			account_id INTEGER PRIMARY KEY AUTOINCREMENT,
 			email TEXT NOT NULL,
@@ -679,9 +728,13 @@ const dbInit = {
 			user_id INTEGER NOT NULL,
 			is_del INTEGER DEFAULT 0 NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
-		await c.env.db.prepare(`
+		await c.env.db
+			.prepare(
+				`
 		  CREATE TABLE IF NOT EXISTS setting (
 			register INTEGER NOT NULL,
 			receive INTEGER NOT NULL,
@@ -692,68 +745,72 @@ const dbInit = {
 			register_verify INTEGER NOT NULL,
 			add_email_verify INTEGER NOT NULL
 		  )
-		`).run();
+		`,
+			)
+			.run();
 
 		try {
-			await c.env.db.prepare(`
+			await c.env.db
+				.prepare(
+					`
 			  INSERT INTO setting (
 				register, receive, add_email, many_email, title, auto_refresh, register_verify, add_email_verify
 			  )
 			  SELECT 0, 0, 0, 0, 'Cloud Mail', 0, 1, 1
 			  WHERE NOT EXISTS (SELECT 1 FROM setting)
-			`).run();
+			`,
+				)
+				.run();
 		} catch (e) {
-			console.warn(e)
+			console.warn(e);
 		}
-
 	},
 
 	async receiveEmailToRecipient(c) {
-
-		const receiveEmailColumn = await c.env.db.prepare(`SELECT * FROM pragma_table_info('email') WHERE name = 'receive_email' limit 1`).first();
+		const receiveEmailColumn = await c.env.db
+			.prepare(`SELECT * FROM pragma_table_info('email') WHERE name = 'receive_email' limit 1`)
+			.first();
 
 		if (!receiveEmailColumn) {
-			return
+			return;
 		}
 
-		const queryList = []
-		const {results} = await c.env.db.prepare('SELECT receive_email,email_id FROM email').all();
-		results.forEach(emailRow => {
-			const recipient = {}
-			recipient.address = emailRow.receive_email
-			recipient.name = ''
+		const queryList = [];
+		const { results } = await c.env.db.prepare('SELECT receive_email,email_id FROM email').all();
+		results.forEach((emailRow) => {
+			const recipient = {};
+			recipient.address = emailRow.receive_email;
+			recipient.name = '';
 			const recipientStr = JSON.stringify([recipient]);
-			const sql = c.env.db.prepare('UPDATE email SET recipient = ? WHERE email_id = ?').bind(recipientStr,emailRow.email_id);
-			queryList.push(sql)
-		})
+			const sql = c.env.db.prepare('UPDATE email SET recipient = ? WHERE email_id = ?').bind(recipientStr, emailRow.email_id);
+			queryList.push(sql);
+		});
 
-		queryList.push(c.env.db.prepare("ALTER TABLE email DROP COLUMN receive_email"));
+		queryList.push(c.env.db.prepare('ALTER TABLE email DROP COLUMN receive_email'));
 
 		await c.env.db.batch(queryList);
 	},
 
-
 	async initAccountName(c) {
-
 		const nameColumn = await c.env.db.prepare(`SELECT * FROM pragma_table_info('account') WHERE name = 'name' limit 1`).first();
 
 		if (nameColumn) {
-			return
+			return;
 		}
 
-		const queryList = []
+		const queryList = [];
 
 		queryList.push(c.env.db.prepare(`ALTER TABLE account ADD COLUMN name TEXT NOT NULL DEFAULT ''`));
 
-		const {results} = await c.env.db.prepare(`SELECT account_id, email FROM account`).all();
+		const { results } = await c.env.db.prepare(`SELECT account_id, email FROM account`).all();
 
-		results.forEach(accountRow => {
+		results.forEach((accountRow) => {
 			const name = emailUtils.getName(accountRow.email);
-			const sql = c.env.db.prepare('UPDATE account SET name = ? WHERE account_id = ?').bind(name,accountRow.account_id);
-			queryList.push(sql)
-		})
+			const sql = c.env.db.prepare('UPDATE account SET name = ? WHERE account_id = ?').bind(name, accountRow.account_id);
+			queryList.push(sql);
+		});
 
 		await c.env.db.batch(queryList);
-	}
+	},
 };
 export { dbInit };

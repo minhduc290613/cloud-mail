@@ -1,4 +1,4 @@
 export const AutoRefreshEnum = {
-    DISABLED: 0,
-    ENABLED: 1
-}
+  DISABLED: 0,
+  ENABLED: 1,
+};

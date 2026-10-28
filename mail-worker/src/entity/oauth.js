@@ -10,8 +10,9 @@ export const oauth = sqliteTable('oauth', {
 	active: integer('active'),
 	trustLevel: integer('trust_level'),
 	silenced: integer('silenced'),
-	createTime: text('create_time').default(sql`CURRENT_TIMESTAMP`).notNull(),
+	createTime: text('create_time')
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
 	platform: text('platform'),
-	userId: integer('user_id').default(0).notNull()
+	userId: integer('user_id').default(0).notNull(),
 });
-

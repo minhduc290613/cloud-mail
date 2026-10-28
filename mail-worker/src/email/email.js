@@ -14,9 +14,7 @@ import aiService from '../service/ai-service';
 import webhookService from '../service/webhook-service';
 
 export async function email(message, env, ctx) {
-
 	try {
-
 		const {
 			receive,
 			tgChatId,
@@ -35,7 +33,7 @@ export async function email(message, env, ctx) {
 			blackContent,
 			blackFrom,
 			aiCode,
-			aiCodeFilter
+			aiCodeFilter,
 		} = await settingService.query({ env });
 
 		if (receive === settingConst.receive.CLOSE) {
@@ -53,7 +51,6 @@ export async function email(message, env, ctx) {
 		}
 
 		const email = await PostalMime.parse(content);
-
 
 		const blockFlag = checkBlock(blackSubject, blackContent, blackFrom, email);
 
@@ -76,14 +73,13 @@ export async function email(message, env, ctx) {
 			return;
 		}
 
-		let userRow = {}
+		let userRow = {};
 
 		if (account) {
-			 userRow = await userService.selectByIdIncludeDel({ env: env }, account.userId);
+			userRow = await userService.selectByIdIncludeDel({ env: env }, account.userId);
 		}
 
 		if (account && userRow.email !== env.admin) {
-
 			let { banEmail, availDomain } = await roleService.selectByUserId({ env: env }, account.userId);
 
 			if (!roleService.hasAvailDomainPerm(availDomain, message.to)) {
@@ -91,19 +87,17 @@ export async function email(message, env, ctx) {
 				return;
 			}
 
-			if(roleService.isBanEmail(banEmail, email.from.address)) {
+			if (roleService.isBanEmail(banEmail, email.from.address)) {
 				message.setReject('The recipient is disabled from receiving emails.');
 				return;
 			}
-
 		}
-
 
 		if (!email.to) {
-			email.to = [{ address: message.to, name: emailUtils.getName(message.to)}]
+			email.to = [{ address: message.to, name: emailUtils.getName(message.to) }];
 		}
 
-		const toName = email.to.find(item => item.address === message.to)?.name || '';
+		const toName = email.to.find((item) => item.address === message.to)?.name || '';
 		const code = await aiService.extractCode({ env }, email, { aiCode, aiCodeFilter });
 
 		const params = {
@@ -124,7 +118,7 @@ export async function email(message, env, ctx) {
 			userId: account ? account.userId : 0,
 			accountId: account ? account.accountId : 0,
 			isDel: isDel.DELETE,
-			status: emailConst.status.SAVING
+			status: emailConst.status.SAVING,
 		};
 
 		const attachments = [];
@@ -132,7 +126,8 @@ export async function email(message, env, ctx) {
 
 		for (let item of email.attachments) {
 			let attachment = { ...item };
-			attachment.key = constant.ATTACHMENT_PREFIX + await fileUtils.getBuffHash(attachment.content) + fileUtils.getExtFileName(item.filename);
+			attachment.key =
+				constant.ATTACHMENT_PREFIX + (await fileUtils.getBuffHash(attachment.content)) + fileUtils.getExtFileName(item.filename);
 			attachment.size = item.content.length ?? item.content.byteLength;
 			attachments.push(attachment);
 			if (attachment.contentId) {
@@ -142,7 +137,7 @@ export async function email(message, env, ctx) {
 
 		let emailRow = await emailService.receive({ env }, params, cidAttachments, r2Domain);
 
-		attachments.forEach(attachment => {
+		attachments.forEach((attachment) => {
 			attachment.emailId = emailRow.emailId;
 			attachment.userId = emailRow.userId;
 			attachment.accountId = emailRow.accountId;
@@ -158,74 +153,66 @@ export async function email(message, env, ctx) {
 
 		emailRow = await emailService.completeReceive({ env }, account ? emailConst.status.RECEIVE : emailConst.status.NOONE, emailRow.emailId);
 
-
 		if (ruleType === settingConst.ruleType.RULE) {
-
 			const emails = ruleEmail.split(',');
 
 			if (!emails.includes(message.to)) {
 				return;
 			}
-
 		}
 
 		//转发到TG
 		if (tgBotStatus === settingConst.tgBotStatus.OPEN && tgChatId) {
-			await telegramService.sendEmailToBot({ env }, emailRow)
+			await telegramService.sendEmailToBot({ env }, emailRow);
 		}
 
 		//转发到其他邮箱
 		if (forwardStatus === settingConst.forwardStatus.OPEN && forwardEmail) {
-
 			const emails = forwardEmail.split(',');
 
-			await Promise.all(emails.map(async email => {
-
-				try {
-					await message.forward(email);
-				} catch (e) {
-					console.error(`转发邮箱 ${email} 失败：`, e);
-				}
-
-			}));
-
+			await Promise.all(
+				emails.map(async (email) => {
+					try {
+						await message.forward(email);
+					} catch (e) {
+						console.error(`转发邮箱 ${email} 失败：`, e);
+					}
+				}),
+			);
 		}
 
 		//转发到 Webhook
 		if (webhookStatus === settingConst.webhookStatus.OPEN && webhookUrl) {
 			await webhookService.sendEmail({ env }, emailRow, webhookUrl, webhookRetry, webhookSecret);
 		}
-
 	} catch (e) {
 		console.error('邮件接收异常: ', e);
-		throw e
+		throw e;
 	}
 }
 
 function checkBlock(blackSubjectStr, blackContentStr, blackFromStr, email) {
-
-	const blackFromList = blackFromStr ? blackFromStr.split(',') : []
-	const blackContentList = blackContentStr ? blackContentStr.split(',') : []
-	const blackSubjectList = blackSubjectStr ? blackSubjectStr.split(',') : []
+	const blackFromList = blackFromStr ? blackFromStr.split(',') : [];
+	const blackContentList = blackContentStr ? blackContentStr.split(',') : [];
+	const blackSubjectList = blackSubjectStr ? blackSubjectStr.split(',') : [];
 
 	for (const blackSubject of blackSubjectList) {
 		if (email.subject?.includes(blackSubject)) {
-			return true
+			return true;
 		}
 	}
 
 	for (const blackContent of blackContentList) {
 		if (email.html?.includes(blackContent) || email.text?.includes(blackContent)) {
-			return true
+			return true;
 		}
 	}
 
 	for (const blackFrom of blackFromList) {
 		if (email.from.address === blackFrom || emailUtils.getDomain(email.from.address) === blackFrom) {
-			return true
+			return true;
 		}
 	}
 
-	return false
-
+	return false;
 }

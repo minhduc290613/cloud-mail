@@ -4,6 +4,6 @@ const result = {
 	},
 	fail(message, code = 500) {
 		return { code, message };
-	}
+	},
 };
 export default result;

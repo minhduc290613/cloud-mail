@@ -4,9 +4,7 @@ const TELEGRAM_MESSAGE_LIMIT = 3500;
 const TRUNCATED_SUFFIX = '...';
 
 function escapeHtml(text = '') {
-	return text
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;');
+	return text.replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 function truncateText(text, maxLength) {
@@ -22,43 +20,40 @@ function truncateText(text, maxLength) {
 }
 
 export default function emailMsgTemplate(email, tgMsgTo, tgMsgFrom, tgMsgText) {
+	let template = `<b>${escapeHtml(email.subject || '')}</b>`;
 
-	let template = `<b>${escapeHtml(email.subject || '')}</b>`
-
-		if (tgMsgFrom === 'only-name') {
-			template += `
-
-From\u200B：${escapeHtml(email.name || '')}`
-		}
-
-		if (tgMsgFrom === 'show') {
-			template += `
-
-From\u200B：${escapeHtml(email.name || '')}  &lt;${escapeHtml(email.sendEmail || '')}&gt;`
-		}
-
-		if(tgMsgTo === 'show' && tgMsgFrom === 'hide') {
-			template += `
-
-To：\u200B${escapeHtml(email.toEmail || '')}`
-
-		} else if(tgMsgTo === 'show') {
+	if (tgMsgFrom === 'only-name') {
 		template += `
-To：\u200B${escapeHtml(email.toEmail || '')}`
+
+From\u200B：${escapeHtml(email.name || '')}`;
+	}
+
+	if (tgMsgFrom === 'show') {
+		template += `
+
+From\u200B：${escapeHtml(email.name || '')}  &lt;${escapeHtml(email.sendEmail || '')}&gt;`;
+	}
+
+	if (tgMsgTo === 'show' && tgMsgFrom === 'hide') {
+		template += `
+
+To：\u200B${escapeHtml(email.toEmail || '')}`;
+	} else if (tgMsgTo === 'show') {
+		template += `
+To：\u200B${escapeHtml(email.toEmail || '')}`;
 	}
 
 	const text = escapeHtml(emailUtils.formatText(email.text) || emailUtils.htmlToText(email.content));
 
-	if(tgMsgText === 'show') {
+	if (tgMsgText === 'show') {
 		const prefix = `${template}
 
 `;
 		const maxTextLength = Math.max(0, TELEGRAM_MESSAGE_LIMIT - prefix.length);
 		template += `
 
-${truncateText(text, maxTextLength)}`
+${truncateText(text, maxTextLength)}`;
 	}
 
 	return template;
-
 }

@@ -16,12 +16,11 @@ import userService from './user-service';
 import KvConst from '../const/kv-const';
 
 const publicService = {
-
 	async emailList(c, params) {
+		let { toEmail, content, subject, sendName, sendEmail, timeSort, num, size, type, isDel } = params;
 
-		let { toEmail, content, subject, sendName, sendEmail, timeSort, num, size, type , isDel } = params
-
-		const query = orm(c).select({
+		const query = orm(c)
+			.select({
 				emailId: email.emailId,
 				sendEmail: email.sendEmail,
 				sendName: email.name,
@@ -33,14 +32,15 @@ const publicService = {
 				content: email.content,
 				text: email.text,
 				isDel: email.isDel,
-		}).from(email)
+			})
+			.from(email);
 
 		if (!size) {
-			size = 20
+			size = 20;
 		}
 
 		if (!num) {
-			num = 1
+			num = 1;
 		}
 
 		size = Number(size);
@@ -48,40 +48,40 @@ const publicService = {
 
 		num = (num - 1) * size;
 
-		let conditions = []
+		let conditions = [];
 
 		if (toEmail) {
-			conditions.push(sql`${email.toEmail} COLLATE NOCASE LIKE ${toEmail}`)
+			conditions.push(sql`${email.toEmail} COLLATE NOCASE LIKE ${toEmail}`);
 		}
 
 		if (sendEmail) {
-			conditions.push(sql`${email.sendEmail} COLLATE NOCASE LIKE ${sendEmail}`)
+			conditions.push(sql`${email.sendEmail} COLLATE NOCASE LIKE ${sendEmail}`);
 		}
 
 		if (sendName) {
-			conditions.push(sql`${email.name} COLLATE NOCASE LIKE ${sendName}`)
+			conditions.push(sql`${email.name} COLLATE NOCASE LIKE ${sendName}`);
 		}
 
 		if (subject) {
-			conditions.push(sql`${email.subject} COLLATE NOCASE LIKE ${subject}`)
+			conditions.push(sql`${email.subject} COLLATE NOCASE LIKE ${subject}`);
 		}
 
 		if (content) {
-			conditions.push(sql`${email.content} COLLATE NOCASE LIKE ${content}`)
+			conditions.push(sql`${email.content} COLLATE NOCASE LIKE ${content}`);
 		}
 
 		if (type || type === 0) {
-			conditions.push(eq(email.type, type))
+			conditions.push(eq(email.type, type));
 		}
 
 		if (isDel || isDel === 0) {
-			conditions.push(eq(email.isDel, isDel))
+			conditions.push(eq(email.isDel, isDel));
 		}
 
 		if (conditions.length === 1) {
-			query.where(...conditions)
+			query.where(...conditions);
 		} else if (conditions.length > 1) {
-			query.where(and(...conditions))
+			query.where(and(...conditions));
 		}
 
 		if (timeSort === 'asc') {
@@ -91,7 +91,6 @@ const publicService = {
 		}
 
 		return query.limit(size).offset(num);
-
 	},
 
 	async addUser(c, params) {
@@ -108,21 +107,18 @@ const publicService = {
 				throw new BizError(t('notEmailDomain'));
 			}
 
-			const { salt, hash } = await saltHashUtils.hashPassword(
-				emailRow.password || cryptoUtils.genRandomPwd()
-			);
+			const { salt, hash } = await saltHashUtils.hashPassword(emailRow.password || cryptoUtils.genRandomPwd());
 
 			emailRow.salt = salt;
 			emailRow.hash = hash;
 		}
-
 
 		const activeIp = reqUtils.getIp(c);
 		const { os, browser, device } = reqUtils.getUserAgent(c);
 		const activeTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
 
 		const roleList = await roleService.roleSelectUse(c);
-		const defRole = roleList.find(roleRow => roleRow.isDefault === roleConst.isDefault.OPEN);
+		const defRole = roleList.find((roleRow) => roleRow.isDefault === roleConst.isDefault.OPEN);
 
 		const userList = [];
 
@@ -131,49 +127,47 @@ const publicService = {
 			let type = defRole.roleId;
 
 			if (roleName) {
-				const roleRow = roleList.find(role => role.name === roleName);
+				const roleRow = roleList.find((role) => role.name === roleName);
 				type = roleRow ? roleRow.roleId : type;
 			}
 
 			const userSql = `INSERT INTO user (email, password, salt, type, os, browser, active_ip, create_ip, device, active_time, create_time)
-			VALUES ('${email}', '${hash}', '${salt}', '${type}', '${os}', '${browser}', '${activeIp}', '${activeIp}', '${device}', '${activeTime}', '${activeTime}')`
+			VALUES ('${email}', '${hash}', '${salt}', '${type}', '${os}', '${browser}', '${activeIp}', '${activeIp}', '${device}', '${activeTime}', '${activeTime}')`;
 
 			const accountSql = `INSERT INTO account (email, name, user_id)
 			VALUES ('${email}', '${emailUtils.getName(email)}', 0);`;
 
 			userList.push(c.env.db.prepare(userSql));
 			userList.push(c.env.db.prepare(accountSql));
-
 		}
 
-		userList.push(c.env.db.prepare(`UPDATE account SET user_id = (SELECT user_id FROM user WHERE user.email = account.email) WHERE user_id = 0;`))
+		userList.push(
+			c.env.db.prepare(`UPDATE account SET user_id = (SELECT user_id FROM user WHERE user.email = account.email) WHERE user_id = 0;`),
+		);
 
 		try {
 			await c.env.db.batch(userList);
 		} catch (e) {
-			if(e.message.includes('SQLITE_CONSTRAINT')) {
-				throw new BizError(t('emailExistDatabase'))
+			if (e.message.includes('SQLITE_CONSTRAINT')) {
+				throw new BizError(t('emailExistDatabase'));
 			} else {
-				throw e
+				throw e;
 			}
 		}
-
 	},
 
 	async genToken(c, params) {
-
-		await this.verifyUser(c, params)
+		await this.verifyUser(c, params);
 
 		const uuid = uuidv4();
 
 		await c.env.kv.put(KvConst.PUBLIC_KEY, uuid);
 
-		return {token: uuid}
+		return { token: uuid };
 	},
 
 	async verifyUser(c, params) {
-
-		const { email, password } = params
+		const { email, password } = params;
 
 		const userRow = await userService.selectByEmailIncludeDel(c, email);
 
@@ -185,11 +179,10 @@ const publicService = {
 			throw new BizError(t('notExistUser'));
 		}
 
-		if (!await cryptoUtils.verifyPassword(password, userRow.salt, userRow.password)) {
+		if (!(await cryptoUtils.verifyPassword(password, userRow.salt, userRow.password))) {
 			throw new BizError(t('IncorrectPwd'));
 		}
-	}
+	},
+};
 
-}
-
-export default publicService
+export default publicService;

@@ -32,65 +32,65 @@ Dự án hỗ trợ triển khai trên Cloudflare Workers, giúp giảm chi phí
 
 ## Demo dự án
 
-* [Demo trực tuyến](https://mail.vandekn.qzz.io)<br>
-* [Tài liệu triển khai](https://doc.mail.vandekn.qzz.io/)<br>
+- [Demo trực tuyến](https://mail.vandekn.qzz.io)<br>
+- [Tài liệu triển khai](https://doc.mail.vandekn.qzz.io/)<br>
 
-| ![](/doc/image/demo.png) | ![](/doc/image/demo2.png) |
-| ------------------------ | ------------------------ |
+| ![](/doc/image/demo.png)  | ![](/doc/image/demo2.png) |
+| ------------------------- | ------------------------- |
 | ![](/doc/image/demo3.png) | ![](/doc/image/demo4.png) |
 
 ## Các tính năng
 
-* **💰 Chi phí sử dụng thấp**: Có thể triển khai trên Cloudflare Workers để giảm chi phí máy chủ.
+- **💰 Chi phí sử dụng thấp**: Có thể triển khai trên Cloudflare Workers để giảm chi phí máy chủ.
 
-* **💻 Thiết kế responsive**: Giao diện responsive tự động thích ứng với máy tính và hầu hết trình duyệt trên điện thoại.
+- **💻 Thiết kế responsive**: Giao diện responsive tự động thích ứng với máy tính và hầu hết trình duyệt trên điện thoại.
 
-* **📧 Gửi email**: Tích hợp Resend để gửi email, hỗ trợ gửi hàng loạt, gửi hình ảnh nhúng và tệp đính kèm, đồng thời có thể xem trạng thái gửi.
+- **📧 Gửi email**: Tích hợp Resend để gửi email, hỗ trợ gửi hàng loạt, gửi hình ảnh nhúng và tệp đính kèm, đồng thời có thể xem trạng thái gửi.
 
-* **🛡️ Chức năng quản trị**: Có thể quản lý người dùng và email, sử dụng phân quyền RBAC để kiểm soát chức năng và giới hạn tài nguyên sử dụng.
+- **🛡️ Chức năng quản trị**: Có thể quản lý người dùng và email, sử dụng phân quyền RBAC để kiểm soát chức năng và giới hạn tài nguyên sử dụng.
 
-* **📦 Gửi và nhận tệp đính kèm**: Hỗ trợ gửi/nhận tệp đính kèm, sử dụng R2 Object Storage để lưu trữ và tải xuống tệp.
+- **📦 Gửi và nhận tệp đính kèm**: Hỗ trợ gửi/nhận tệp đính kèm, sử dụng R2 Object Storage để lưu trữ và tải xuống tệp.
 
-* **🔔 Thông báo email**: Sau khi nhận email, hệ thống có thể chuyển tiếp thông báo đến bot Telegram hoặc email của các nhà cung cấp dịch vụ khác.
+- **🔔 Thông báo email**: Sau khi nhận email, hệ thống có thể chuyển tiếp thông báo đến bot Telegram hoặc email của các nhà cung cấp dịch vụ khác.
 
-* **📡 API mở**: Hỗ trợ sử dụng API để tạo hàng loạt người dùng và tìm kiếm email theo nhiều điều kiện.
+- **📡 API mở**: Hỗ trợ sử dụng API để tạo hàng loạt người dùng và tìm kiếm email theo nhiều điều kiện.
 
-* **🔢 Nhận diện mã xác minh**: Sử dụng Workers AI để tự động nhận diện mã xác minh trong email.
+- **🔢 Nhận diện mã xác minh**: Sử dụng Workers AI để tự động nhận diện mã xác minh trong email.
 
-* **📈 Trực quan hóa dữ liệu**: Sử dụng ECharts để trực quan hóa dữ liệu hệ thống và thống kê sự tăng trưởng của người dùng, email.
+- **📈 Trực quan hóa dữ liệu**: Sử dụng ECharts để trực quan hóa dữ liệu hệ thống và thống kê sự tăng trưởng của người dùng, email.
 
-* **🎨 Tùy chỉnh giao diện**: Có thể tùy chỉnh tiêu đề website, hình nền đăng nhập và độ trong suốt.
+- **🎨 Tùy chỉnh giao diện**: Có thể tùy chỉnh tiêu đề website, hình nền đăng nhập và độ trong suốt.
 
-* **🤖 Xác minh người dùng**: Tích hợp Turnstile để xác minh người dùng, ngăn chặn việc đăng ký hàng loạt tự động.
+- **🤖 Xác minh người dùng**: Tích hợp Turnstile để xác minh người dùng, ngăn chặn việc đăng ký hàng loạt tự động.
 
-* **📜 Nhiều tính năng khác**: Đang được phát triển...
+- **📜 Nhiều tính năng khác**: Đang được phát triển...
 
 ## Công nghệ sử dụng
 
-* **Nền tảng**: [Cloudflare Workers](https://developers.cloudflare.com/workers/)
+- **Nền tảng**: [Cloudflare Workers](https://developers.cloudflare.com/workers/)
 
-* **Framework Web**: [Hono](https://hono.dev/)
+- **Framework Web**: [Hono](https://hono.dev/)
 
-* **ORM**: [Drizzle](https://orm.drizzle.team/)
+- **ORM**: [Drizzle](https://orm.drizzle.team/)
 
-* **Framework Frontend**: [Vue3](https://vuejs.org/)
+- **Framework Frontend**: [Vue3](https://vuejs.org/)
 
-* **Framework UI**: [Element Plus](https://element-plus.org/)
+- **Framework UI**: [Element Plus](https://element-plus.org/)
 
-* **Gửi email**: [Resend](https://resend.com/)
+- **Gửi email**: [Resend](https://resend.com/)
 
-* **Bộ nhớ đệm**: [Cloudflare KV](https://developers.cloudflare.com/kv/)
+- **Bộ nhớ đệm**: [Cloudflare KV](https://developers.cloudflare.com/kv/)
 
-* **Cơ sở dữ liệu**: [Cloudflare D1](https://developers.cloudflare.com/d1/)
+- **Cơ sở dữ liệu**: [Cloudflare D1](https://developers.cloudflare.com/d1/)
 
-* **Lưu trữ tệp**: [Cloudflare R2](https://developers.cloudflare.com/r2/)
+- **Lưu trữ tệp**: [Cloudflare R2](https://developers.cloudflare.com/r2/)
 
 ## Cấu trúc thư mục
 
 ```text
 cloud-mail
 ├── mail-worker				    # Dự án backend Worker
-│   ├── src                  
+│   ├── src
 │   │   ├── api	 			    # Tầng API
 │   │   ├── const  			    # Hằng số của dự án
 │   │   ├── dao                 # Tầng truy cập dữ liệu
@@ -129,17 +129,18 @@ cloud-mail
 │   ├── package.json			# Các thư viện/phụ thuộc của dự án
 └── └── env.release				# Cấu hình dự án
 ```
+
 ## Donate me
+
 minhduc290613:
 [![Donate Me](https://img.shields.io/badge/Donate-Me-ff69b4?style=for-the-badge&logo=githubsponsors&logoColor=white)](https://donate.protechvn.io.vn) <br/>
 Maillab: [donate](https://doc.skymail.ink/en/support.html)
-
 
 ## Giấy phép
 
 Dự án này được phát hành theo giấy phép [MIT](LICENSE).
 
 ## Thanks
+
 This project is a remake based on the original development by maillab. I would like to thank maillab and the contributors who have contributed to this project.
 Original repositories: [Repo](https://github.com/maillab/cloud-mail)
-

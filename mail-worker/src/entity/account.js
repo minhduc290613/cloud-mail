@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer} from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 export const account = sqliteTable('account', {
 	accountId: integer('account_id').primaryKey({ autoIncrement: true }),
@@ -12,4 +12,4 @@ export const account = sqliteTable('account', {
 	sort: integer('sort').default(0).notNull(),
 	isDel: integer('is_del').default(0).notNull(),
 });
-export default account
+export default account;

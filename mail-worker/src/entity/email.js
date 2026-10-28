@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer} from 'drizzle-orm/sqlite-core';
+import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
 import { sql } from 'drizzle-orm';
 export const email = sqliteTable('email', {
 	emailId: integer('email_id').primaryKey({ autoIncrement: true }),
@@ -22,9 +22,11 @@ export const email = sqliteTable('email', {
 	status: integer('status').default(0).notNull(),
 	resendEmailId: text('resend_email_id'),
 	message: text('message'),
-		unread: integer('unread').default(0).notNull(),
-		createTime: text('create_time').default(sql`CURRENT_TIMESTAMP`).notNull(),
-		isDel: integer('is_del').default(0).notNull(),
-		folder: text('folder').default('inbox').notNull()
+	unread: integer('unread').default(0).notNull(),
+	createTime: text('create_time')
+		.default(sql`CURRENT_TIMESTAMP`)
+		.notNull(),
+	isDel: integer('is_del').default(0).notNull(),
+	folder: text('folder').default('inbox').notNull(),
 });
-export default email
+export default email;

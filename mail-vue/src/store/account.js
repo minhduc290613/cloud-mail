@@ -1,9 +1,9 @@
-    import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const useAccountStore = defineStore('account', {
-    state: () => ({
-        currentAccountId: 0,
-        currentAccount: {},
-        changeUserAccountName: ''
-    })
-})
+export const useAccountStore = defineStore("account", {
+  state: () => ({
+    currentAccountId: 0,
+    currentAccount: {},
+    changeUserAccountName: "",
+  }),
+});

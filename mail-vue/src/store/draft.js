@@ -1,8 +1,8 @@
-import { defineStore } from 'pinia'
+import { defineStore } from "pinia";
 
-export const userDraftStore = defineStore('draft', {
-    state: () => ({
-        refreshList: 0,
-        setDraft: {},
-    })
-})
+export const userDraftStore = defineStore("draft", {
+  state: () => ({
+    refreshList: 0,
+    setDraft: {},
+  }),
+});

@@ -9,8 +9,8 @@ const constant = {
 		name: 'admin',
 		sendCount: 0,
 		sendType: 'count',
-		accountCount: 0
-	}
-}
+		accountCount: 0,
+	},
+};
 
-export default constant
+export default constant;

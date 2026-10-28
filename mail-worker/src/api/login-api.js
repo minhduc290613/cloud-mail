@@ -17,4 +17,3 @@ app.delete('/logout', async (c) => {
 	await loginService.logout(c, userContext.getUserId(c));
 	return c.json(result.ok());
 });
-
